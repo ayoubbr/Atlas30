@@ -342,7 +342,7 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar">
-                <img src="https://via.placeholder.com/120x120" alt="User Avatar">
+                <img src="https://cdn-icons-png.flaticon.com/128/3177/3177465.png" alt="User Avatar">
             </div>
             <div class="profile-info">
                 <h1 class="profile-name">John Doe</h1>
