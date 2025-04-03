@@ -199,9 +199,9 @@
 </head>
 
 <body>
-    @include('components.header')
+    @include('user.components.header')
     @yield('content')
-    @include('components.footer')
+    @include('user.components.footer')
     @yield('js')
 </body>
 

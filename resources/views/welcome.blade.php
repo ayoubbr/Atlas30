@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('user.layout')
 
 @section('title', 'World Cup 2030 - Tickets & Fan Community')
 
