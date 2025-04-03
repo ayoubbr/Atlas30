@@ -23,21 +23,21 @@ Route::get('/auth', function () {
 });
 
 Route::get('/matches', function () {
-    return view('matches');
+    return view('user.matches');
 });
 
 Route::get('/match', function () {
-    return view('match');
+    return view('user.match');
 });
 
 Route::get('/payment', function () {
-    return view('payment');
+    return view('user.payment');
 });
 
 Route::get('/forum', function () {
-    return view('forum');
+    return view('user.forum');
 });
 
 Route::get('/profile', function () {
-    return view('profile');
+    return view('user.profile');
 });
