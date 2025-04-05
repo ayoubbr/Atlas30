@@ -26,19 +26,22 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/flash-messages.css') }}">
     @yield('css')
 </head>
 
 <body>
     <div class="admin-container">
-
         @include('admin.components.sidebar')
-
+        <div class="flash-messages-container">
+            @include('partials.flash-messages')
+        </div>
         @yield('content')
     </div>
 
     @yield('modal')
 
+    <script src="{{ asset('js/flash-messages.js') }}"></script>
     @yield('js')
 </body>
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,41 +14,56 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// User
+Route::prefix('/')->group(function () {
+
+    Route::get('', function () {
+        return view('welcome');
+    })->name('home');
+
+    Route::get('login', function () {
+        return view('user.auth');
+    })->name('login');
+
+    Route::get('matches', function () {
+        return view('user.matches');
+    });
+
+    Route::get('match', function () {
+        return view('user.match');
+    });
+
+    Route::get('payment', function () {
+        return view('user.payment');
+    });
+
+    Route::get('forum', function () {
+        return view('user.forum');
+    });
+
+    Route::get('profile', function () {
+        return view('user.profile');
+    });
+
+    // Authentication 
+    Route::post('login', [UserController::class, 'login'])->name('login');
+    Route::post('register', [UserController::class, 'register'])->name('register');
+    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+    Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('forgot-password');
 });
 
-
-Route::get('/auth', function () {
-    return view('user.auth');
+// User profile 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
 });
 
-Route::get('/matches', function () {
-    return view('user.matches');
-});
+// Admin
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
-Route::get('/match', function () {
-    return view('user.match');
-});
-
-Route::get('/payment', function () {
-    return view('user.payment');
-});
-
-Route::get('/forum', function () {
-    return view('user.forum');
-});
-
-Route::get('/profile', function () {
-    return view('user.profile');
-});
-
-
-Route::prefix('admin')->group(function () {
-    
     Route::get('dashboard', function () {
         return view('admin.dashboard');
-    });
+    })->name("admin");
 
     Route::get('analytics', function () {
         return view('admin.analytics');
