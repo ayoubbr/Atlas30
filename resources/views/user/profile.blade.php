@@ -1,7 +1,6 @@
 @extends('user.layout')
 
-@section('title', 'User Profile - World Cup 2030')
-
+@section('title', 'My Profile - World Cup 2030')
 @section('css')
     <style>
         .profile-container {
@@ -342,40 +341,35 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar">
-                <img src="https://cdn-icons-png.flaticon.com/128/3177/3177465.png" alt="User Avatar">
+                <img src="https://cdn-icons-png.flaticon.com/128/3177/3177465.png" alt="{{ $user->firstname }} Avatar">
             </div>
             <div class="profile-info">
-                <h1 class="profile-name">John Doe</h1>
-                <div class="profile-email">johndoe@example.com</div>
+                <h1 class="profile-name">{{ $user->firstname }} {{ $user->lastname }}</h1>
+                <div class="profile-email">{{ $user->email }}</div>
                 <div class="profile-stats">
                     <div class="stat-item">
-                        <div class="stat-value">5</div>
+                        <div class="stat-value">{{ $tickets->count() }}</div>
                         <div class="stat-label">Tickets</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value">3</div>
-                        <div class="stat-label">Favorite Teams</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">8</div>
+                        <div class="stat-value">{{ $postCount }}</div>
                         <div class="stat-label">Forum Posts</div>
                     </div>
                 </div>
             </div>
             <div class="profile-actions">
-                <button class="btn btn-outline">
+                <a href="#account-tab" class="btn btn-outline tab-link" data-tab="account">
                     <i class="fas fa-cog"></i> Settings
-                </button>
-                <button class="btn btn-primary">
+                </a>
+                <a href="" class="btn btn-primary">
                     <i class="fas fa-ticket-alt"></i> Buy Tickets
-                </button>
+                </a>
             </div>
         </div>
 
         <!-- Profile Tabs -->
         <div class="profile-tabs">
             <div class="profile-tab active" data-tab="tickets">My Tickets</div>
-            <div class="profile-tab" data-tab="teams">Favorite Teams</div>
             <div class="profile-tab" data-tab="account">Account Settings</div>
             <div class="profile-tab" data-tab="activity">Activity</div>
         </div>
@@ -390,158 +384,52 @@
                     </button>
                 </div>
                 <div class="section-content">
-                    <!-- Ticket Item -->
-                    <div class="ticket-card">
-                        <div class="ticket-info">
-                            <div class="ticket-match">Brazil vs Germany</div>
-                            <div class="ticket-venue">Rio Stadium, Brazil</div>
-                            <div class="ticket-details">
-                                <div class="ticket-detail">
-                                    <i class="far fa-calendar-alt"></i> June 12, 2030
+                    @if ($tickets->isEmpty())
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <h3>No Tickets Yet</h3>
+                            <p>You haven't purchased any tickets for the World Cup 2030 matches.</p>
+                            <a href="" class="btn btn-primary">Browse Tickets</a>
+                        </div>
+                    @else
+                        @foreach ($tickets as $ticket)
+                            <!-- Ticket Item -->
+                            <div class="ticket-card">
+                                <div class="ticket-info">
+                                    <div class="ticket-match">{{ $ticket->game->homeTeam->name }} vs
+                                        {{ $ticket->game->awayTeam->name }}</div>
+                                    <div class="ticket-venue">{{ $ticket->game->stadium->name }},
+                                        {{ $ticket->game->stadium->city }}</div>
+                                    <div class="ticket-details">
+                                        <div class="ticket-detail">
+                                            <i class="far fa-calendar-alt"></i> {{ $ticket->game->date->format('F j, Y') }}
+                                        </div>
+                                        <div class="ticket-detail">
+                                            <i class="far fa-clock"></i> {{ $ticket->game->time->format('H:i') }}
+                                        </div>
+                                        <div class="ticket-detail">
+                                            <i class="fas fa-ticket-alt"></i> {{ $ticket->category->name }}
+                                        </div>
+                                        <div class="ticket-detail">
+                                            <i class="fas fa-chair"></i> Seat: {{ $ticket->seat_number }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="ticket-detail">
-                                    <i class="far fa-clock"></i> 15:00
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="fas fa-ticket-alt"></i> Category A
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="fas fa-chair"></i> Seat: A-123
+                                <div class="ticket-actions">
+                                    <a href="{{ route('tickets.download', $ticket->id) }}" class="btn btn-sm btn-outline">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="ticket-actions">
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-download"></i> Download
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Ticket Item -->
-                    <div class="ticket-card">
-                        <div class="ticket-info">
-                            <div class="ticket-match">Spain vs Portugal</div>
-                            <div class="ticket-venue">Madrid Stadium, Spain</div>
-                            <div class="ticket-details">
-                                <div class="ticket-detail">
-                                    <i class="far fa-calendar-alt"></i> June 13, 2030
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="far fa-clock"></i> 12:00
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="fas fa-ticket-alt"></i> Category B
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="fas fa-chair"></i> Seat: B-456
-                                </div>
-                            </div>
-                        </div>
-                        <div class="ticket-actions">
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-download"></i> Download
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Ticket Item -->
-                    <div class="ticket-card">
-                        <div class="ticket-info">
-                            <div class="ticket-match">France vs Netherlands</div>
-                            <div class="ticket-venue">Paris Stadium, France</div>
-                            <div class="ticket-details">
-                                <div class="ticket-detail">
-                                    <i class="far fa-calendar-alt"></i> June 13, 2030
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="far fa-clock"></i> 18:00
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="fas fa-ticket-alt"></i> Category A
-                                </div>
-                                <div class="ticket-detail">
-                                    <i class="fas fa-chair"></i> Seat: A-789
-                                </div>
-                            </div>
-                        </div>
-                        <div class="ticket-actions">
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-download"></i> Download
-                            </button>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- Favorite Teams Tab -->
-        <div class="tab-content" id="teams-tab">
-            <div class="profile-section">
-                <div class="section-header">
-                    <div class="section-title">Favorite Teams</div>
-                    <button class="btn btn-sm btn-primary">
-                        <i class="fas fa-plus"></i> Add Team
-                    </button>
-                </div>
-                <div class="section-content">
-                    <!-- Team Item -->
-                    <div class="team-card">
-                        <div class="team-flag"
-                            style="background-image: url('https://via.placeholder.com/60x40/3498db/ffffff?text=BRA')"></div>
-                        <div class="team-info">
-                            <div class="team-name">Brazil</div>
-                            <div class="team-stats">Group A • 5-time World Cup Champions</div>
-                        </div>
-                        <div class="team-actions">
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-calendar-alt"></i> Matches
-                            </button>
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-star"></i> Following
-                            </button>
-                        </div>
-                    </div>
 
-                    <!-- Team Item -->
-                    <div class="team-card">
-                        <div class="team-flag"
-                            style="background-image: url('https://via.placeholder.com/60x40/e74c3c/ffffff?text=GER')">
-                        </div>
-                        <div class="team-info">
-                            <div class="team-name">Germany</div>
-                            <div class="team-stats">Group B • 4-time World Cup Champions</div>
-                        </div>
-                        <div class="team-actions">
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-calendar-alt"></i> Matches
-                            </button>
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-star"></i> Following
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Team Item -->
-                    <div class="team-card">
-                        <div class="team-flag"
-                            style="background-image: url('https://via.placeholder.com/60x40/f39c12/ffffff?text=ESP')">
-                        </div>
-                        <div class="team-info">
-                            <div class="team-name">Spain</div>
-                            <div class="team-stats">Group C • 1-time World Cup Champions</div>
-                        </div>
-                        <div class="team-actions">
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-calendar-alt"></i> Matches
-                            </button>
-                            <button class="btn btn-sm btn-outline">
-                                <i class="fas fa-star"></i> Following
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Account Settings Tab -->
         <div class="tab-content" id="account-tab">
@@ -550,58 +438,107 @@
                     <div class="section-title">Personal Information</div>
                 </div>
                 <div class="section-content">
-                    <form id="profile-form">
+                    <form id="profile-form" action="{{ route('profile.update') }}" method="POST">
+                        @csrf
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="first-name">First Name</label>
-                                <input type="text" id="first-name" class="form-control" value="John">
+                                <label for="firstname">First Name</label>
+                                <input type="text" id="firstname" name="firstname"
+                                    class="form-control @error('firstname') is-invalid @enderror"
+                                    value="{{ old('firstname', $user->firstname) }}">
+                                @error('firstname')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group">
-                                <label for="last-name">Last Name</label>
-                                <input type="text" id="last-name" class="form-control" value="Doe">
+                                <label for="lastname">Last Name</label>
+                                <input type="text" id="lastname" name="lastname"
+                                    class="form-control @error('lastname') is-invalid @enderror"
+                                    value="{{ old('lastname', $user->lastname) }}">
+                                @error('lastname')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="email">Email Address</label>
-                                <input type="email" id="email" class="form-control" value="johndoe@example.com">
+                                <input type="email" id="email" name="email"
+                                    class="form-control @error('email') is-invalid @enderror"
+                                    value="{{ old('email', $user->email) }}">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
-                                <input type="tel" id="phone" class="form-control" value="+1 (555) 123-4567">
+                                <input type="tel" id="phone" name="phone"
+                                    class="form-control @error('phone') is-invalid @enderror"
+                                    value="{{ old('phone', $user->phone) }}">
+                                @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="country">Country</label>
-                                <select id="country" class="form-control">
-                                    <option value="us">United States</option>
-                                    <option value="ca">Canada</option>
-                                    <option value="uk">United Kingdom</option>
-                                    <option value="au">Australia</option>
-                                    <option value="br">Brazil</option>
-                                    <option value="fr">France</option>
-                                    <option value="de">Germany</option>
-                                    <option value="es">Spain</option>
+                                <select id="country" name="country"
+                                    class="form-control @error('country') is-invalid @enderror">
+                                    <option value="">Select a country</option>
+                                    <option value="us" {{ old('country', $user->country) == 'us' ? 'selected' : '' }}>
+                                        United States</option>
+                                    <option value="ca" {{ old('country', $user->country) == 'ca' ? 'selected' : '' }}>
+                                        Canada</option>
+                                    <option value="uk" {{ old('country', $user->country) == 'uk' ? 'selected' : '' }}>
+                                        United Kingdom</option>
+                                    <option value="au" {{ old('country', $user->country) == 'au' ? 'selected' : '' }}>
+                                        Australia</option>
+                                    <option value="br" {{ old('country', $user->country) == 'br' ? 'selected' : '' }}>
+                                        Brazil</option>
+                                    <option value="fr" {{ old('country', $user->country) == 'fr' ? 'selected' : '' }}>
+                                        France</option>
+                                    <option value="de" {{ old('country', $user->country) == 'de' ? 'selected' : '' }}>
+                                        Germany</option>
+                                    <option value="es" {{ old('country', $user->country) == 'es' ? 'selected' : '' }}>
+                                        Spain</option>
                                 </select>
+                                @error('country')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label for="language">Preferred Language</label>
-                                <select id="language" class="form-control">
-                                    <option value="en">English</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                    <option value="de">German</option>
-                                    <option value="pt">Portuguese</option>
+                                <select id="language" name="language"
+                                    class="form-control @error('language') is-invalid @enderror">
+                                    <option value="">Select a language</option>
+                                    <option value="en"
+                                        {{ old('language', $user->language) == 'en' ? 'selected' : '' }}>English</option>
+                                    <option value="es"
+                                        {{ old('language', $user->language) == 'es' ? 'selected' : '' }}>Spanish</option>
+                                    <option value="fr"
+                                        {{ old('language', $user->language) == 'fr' ? 'selected' : '' }}>French</option>
+                                    <option value="de"
+                                        {{ old('language', $user->language) == 'de' ? 'selected' : '' }}>German</option>
+                                    <option value="pt"
+                                        {{ old('language', $user->language) == 'pt' ? 'selected' : '' }}>Portuguese
+                                    </option>
                                 </select>
+                                @error('language')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="bio">Bio</label>
-                            <textarea id="bio" class="form-control" rows="4">Football enthusiast and World Cup fan since 1998. Looking forward to the 2030 tournament!</textarea>
+                            <textarea id="bio" name="bio" class="form-control @error('bio') is-invalid @enderror" rows="4">{{ old('bio', $user->bio) }}</textarea>
+                            @error('bio')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-actions" style="text-align: right; margin-top: 20px;">
-                            <button type="button" class="btn btn-outline">Cancel</button>
+                            <button type="button" class="btn btn-outline"
+                                onclick="resetForm('profile-form')">Cancel</button>
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
                     </form>
@@ -613,23 +550,34 @@
                     <div class="section-title">Change Password</div>
                 </div>
                 <div class="section-content">
-                    <form id="password-form">
+                    <form id="password-form" action="{{ route('profile.password') }}" method="POST">
+                        @csrf
                         <div class="form-group">
-                            <label for="current-password">Current Password</label>
-                            <input type="password" id="current-password" class="form-control">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password"
+                                class="form-control @error('current_password') is-invalid @enderror">
+                            @error('current_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="new-password">New Password</label>
-                                <input type="password" id="new-password" class="form-control">
+                                <label for="new_password">New Password</label>
+                                <input type="password" id="new_password" name="new_password"
+                                    class="form-control @error('new_password') is-invalid @enderror">
+                                @error('new_password')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group">
-                                <label for="confirm-password">Confirm New Password</label>
-                                <input type="password" id="confirm-password" class="form-control">
+                                <label for="new_password_confirmation">Confirm New Password</label>
+                                <input type="password" id="new_password_confirmation" name="new_password_confirmation"
+                                    class="form-control">
                             </div>
                         </div>
                         <div class="form-actions" style="text-align: right; margin-top: 20px;">
-                            <button type="button" class="btn btn-outline">Cancel</button>
+                            <button type="button" class="btn btn-outline"
+                                onclick="resetForm('password-form')">Cancel</button>
                             <button type="submit" class="btn btn-primary">Update Password</button>
                         </div>
                     </form>
@@ -641,63 +589,77 @@
                     <div class="section-title">Notification Settings</div>
                 </div>
                 <div class="section-content">
-                    <div class="notification-settings">
-                        <div class="notification-item"
-                            style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
-                            <div>
-                                <h4 style="margin: 0 0 5px 0;">Email Notifications</h4>
-                                <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Receive updates about
-                                    matches, tickets, and special offers</p>
+                    <form id="notification-form" action="{{ route('profile.notifications') }}" method="POST">
+                        @csrf
+                        <div class="notification-settings">
+                            <div class="notification-item"
+                                style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0;">Email Notifications</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Receive updates about
+                                        matches, tickets, and special offers</p>
+                                </div>
+                                <label class="switch"
+                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                    <input type="checkbox" name="email_notifications"
+                                        {{ $user->email_notifications ? 'checked' : '' }}
+                                        style="opacity: 0; width: 0; height: 0;">
+                                    <span
+                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->email_notifications ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
+                                </label>
                             </div>
-                            <label class="switch"
-                                style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
-                                <span
-                                    style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary); border-radius: 34px; transition: .4s;"></span>
-                            </label>
-                        </div>
-                        <div class="notification-item"
-                            style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
-                            <div>
-                                <h4 style="margin: 0 0 5px 0;">SMS Notifications</h4>
-                                <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Receive text messages for
-                                    important updates</p>
+                            <div class="notification-item"
+                                style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0;">SMS Notifications</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Receive text messages
+                                        for important updates</p>
+                                </div>
+                                <label class="switch"
+                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                    <input type="checkbox" name="sms_notifications"
+                                        {{ $user->sms_notifications ? 'checked' : '' }}
+                                        style="opacity: 0; width: 0; height: 0;">
+                                    <span
+                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->sms_notifications ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
+                                </label>
                             </div>
-                            <label class="switch"
-                                style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                <input type="checkbox" style="opacity: 0; width: 0; height: 0;">
-                                <span
-                                    style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--gray-300); border-radius: 34px; transition: .4s;"></span>
-                            </label>
-                        </div>
-                        <div class="notification-item"
-                            style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
-                            <div>
-                                <h4 style="margin: 0 0 5px 0;">Match Reminders</h4>
-                                <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Get notified before
-                                    matches of your favorite teams</p>
+                            <div class="notification-item"
+                                style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0;">Match Reminders</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Get notified before
+                                        matches of your favorite teams</p>
+                                </div>
+                                <label class="switch"
+                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                    <input type="checkbox" name="match_reminders"
+                                        {{ $user->match_reminders ? 'checked' : '' }}
+                                        style="opacity: 0; width: 0; height: 0;">
+                                    <span
+                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->match_reminders ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
+                                </label>
                             </div>
-                            <label class="switch"
-                                style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
-                                <span
-                                    style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary); border-radius: 34px; transition: .4s;"></span>
-                            </label>
-                        </div>
-                        <div class="notification-item" style="display: flex; justify-content: space-between;">
-                            <div>
-                                <h4 style="margin: 0 0 5px 0;">Forum Activity</h4>
-                                <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Get notified about replies
-                                    to your posts</p>
+                            <div class="notification-item" style="display: flex; justify-content: space-between;">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0;">Forum Activity</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Get notified about
+                                        replies to your posts</p>
+                                </div>
+                                <label class="switch"
+                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
+                                    <input type="checkbox" name="forum_notifications"
+                                        {{ $user->forum_notifications ? 'checked' : '' }}
+                                        style="opacity: 0; width: 0; height: 0;">
+                                    <span
+                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->forum_notifications ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
+                                </label>
                             </div>
-                            <label class="switch"
-                                style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                <input type="checkbox" checked style="opacity: 0; width: 0; height: 0;">
-                                <span
-                                    style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary); border-radius: 34px; transition: .4s;"></span>
-                            </label>
                         </div>
-                    </div>
+                        <div class="form-actions" style="text-align: right; margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary">Save Notification Settings</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -709,60 +671,28 @@
                     <div class="section-title">Recent Activity</div>
                 </div>
                 <div class="section-content">
-                    <!-- Activity Item -->
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-ticket-alt"></i>
+                    @if ($activities->isEmpty())
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h3>No Recent Activity</h3>
+                            <p>Your recent activities will appear here.</p>
                         </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Purchased ticket for Brazil vs Germany</div>
-                            <div class="activity-time">2 days ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Activity Item -->
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Added Spain to favorite teams</div>
-                            <div class="activity-time">3 days ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Activity Item -->
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-comment"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Posted a comment in "World Cup 2030 Predictions" forum</div>
-                            <div class="activity-time">5 days ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Activity Item -->
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-ticket-alt"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Purchased ticket for Spain vs Portugal</div>
-                            <div class="activity-time">1 week ago</div>
-                        </div>
-                    </div>
-
-                    <!-- Activity Item -->
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-user-edit"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Updated profile information</div>
-                            <div class="activity-time">2 weeks ago</div>
-                        </div>
-                    </div>
+                    @else
+                        @foreach ($activities as $activity)
+                            <!-- Activity Item -->
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-{{ $activity['icon'] }}"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">{{ $activity['title'] }}</div>
+                                    <div class="activity-time">{{ $activity['time']->diffForHumans() }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
@@ -775,48 +705,51 @@
             // Tab switching functionality
             const tabs = document.querySelectorAll('.profile-tab');
             const tabContents = document.querySelectorAll('.tab-content');
+            const tabLinks = document.querySelectorAll('.tab-link');
+
+            function activateTab(tabId) {
+                // Hide all tab contents
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Show the selected tab content
+                document.getElementById(tabId + '-tab').classList.add('active');
+
+                // Update active tab
+                tabs.forEach(tab => {
+                    if (tab.getAttribute('data-tab') === tabId) {
+                        tab.classList.add('active');
+                    } else {
+                        tab.classList.remove('active');
+                    }
+                });
+            }
 
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
-
-                    // Remove active class from all tabs and contents
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.remove('active'));
-
-                    // Add active class to current tab and content
-                    this.classList.add('active');
-                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    activateTab(tabId);
                 });
             });
 
-            // Form submission handling
-            const profileForm = document.getElementById('profile-form');
-            if (profileForm) {
-                profileForm.addEventListener('submit', function(e) {
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Show success message or handle form submission
-                    alert('Profile updated successfully!');
+                    const tabId = this.getAttribute('data-tab');
+                    activateTab(tabId);
                 });
-            }
+            });
 
-            const passwordForm = document.getElementById('password-form');
-            if (passwordForm) {
-                passwordForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
+            // Form reset function
+            window.resetForm = function(formId) {
+                document.getElementById(formId).reset();
+            };
 
-                    const newPassword = document.getElementById('new-password').value;
-                    const confirmPassword = document.getElementById('confirm-password').value;
-
-                    if (newPassword !== confirmPassword) {
-                        alert('Passwords do not match!');
-                        return;
-                    }
-
-                    // Handle password update
-                    alert('Password updated successfully!');
-                    this.reset();
-                });
+            // Check for hash in URL to activate specific tab
+            if (window.location.hash) {
+                const tabId = window.location.hash.substring(1).replace('-tab', '');
+                activateTab(tabId);
             }
         });
     </script>

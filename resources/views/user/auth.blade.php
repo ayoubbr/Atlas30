@@ -417,80 +417,55 @@
 @endsection
 
 @section('content')
-    <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>Join Our Community</h1>
             <p>Sign in or create an account to participate in discussions, purchase tickets, and connect with football
                 fans from around the world.</p>
             <ul class="breadcrumb">
-                <li><a href="#">Home</a></li>
+                <li><a href="{{ route('home') }}">Home</a></li>
                 <li><a href="#">Account</a></li>
             </ul>
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="container">
-        <!-- Auth Container -->
         <div class="auth-container">
-            <!-- Auth Content -->
             <div class="auth-content">
-                <!-- Success Alert (Hidden by default) -->
-                <div class="alert alert-success" id="success-alert" style="display: none;">
-                    <div class="alert-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="alert-content">
-                        <div class="alert-title">Success!</div>
-                        <div class="alert-text">Your account has been created successfully. You can now log in.</div>
-                    </div>
-                </div>
-
-                <!-- Error Alert (Hidden by default) -->
-                <div class="alert alert-danger" id="error-alert" style="display: none;">
-                    <div class="alert-icon">
-                        <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <div class="alert-content">
-                        <div class="alert-title">Error!</div>
-                        <div class="alert-text">There was a problem with your submission. Please check your information
-                            and try again.</div>
-                    </div>
-                </div>
-
-                <!-- Auth Tabs -->
                 <div class="auth-tabs">
-                    <div class="auth-tab active" data-tab="login">Sign In</div>
-                    <div class="auth-tab" data-tab="register">Create Account</div>
+                    <div class="auth-tab {{ request()->routeIs('login') ? 'active' : '' }}" data-tab="login">Sign In</div>
+                    <div class="auth-tab {{ request()->routeIs('register') ? 'active' : '' }}" data-tab="register">Create
+                        Account</div>
                 </div>
 
-                <!-- Auth Forms Container -->
                 <div class="auth-form-container">
                     <!-- Login Form -->
-                    <form class="auth-form active" id="login-form">
+                    <form class="auth-form {{ request()->routeIs('login') ? 'active' : '' }}" id="login-form"
+                        action="{{ route('login') }}" method="POST">
+                        @csrf
                         <h2 class="form-title">Sign In to Your Account</h2>
 
                         <div class="form-group">
-                            <label for="login-email" class="form-label">Email Address</label>
-                            <input type="email" id="login-email" class="form-control" placeholder="your.email@example.com"
-                                required>
-                            <div class="invalid-feedback">Please enter a valid email address</div>
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email"
+                                class="form-control @error('email') is-invalid @enderror"
+                                placeholder="your.email@example.com" value="{{ old('email') }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="login-password" class="form-label">Password</label>
+                            <label for="password" class="form-label">Password</label>
                             <div class="password-toggle">
-                                <input type="password" id="login-password" class="form-control"
+                                <input type="password" id="password" name="password"
+                                    class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Enter your password" required>
-                                <i class="far fa-eye toggle-password" data-target="login-password"></i>
+                                <i class="far fa-eye toggle-password" data-target="password"></i>
                             </div>
-                            <div class="invalid-feedback">Please enter your password</div>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" id="remember-me" class="form-check-input">
-                            <label for="remember-me" class="form-check-label">Remember me</label>
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
@@ -515,32 +490,54 @@
                     </form>
 
                     <!-- Register Form -->
-                    <form class="auth-form" id="register-form">
+                    <form class="auth-form {{ request()->routeIs('register') ? 'active' : '' }}" id="register-form"
+                        action="{{ route('register') }}" method="POST">
+                        @csrf
                         <h2 class="form-title">Create a New Account</h2>
 
                         <div class="form-group">
-                            <label for="register-username" class="form-label">Username</label>
-                            <input type="text" id="register-username" class="form-control"
-                                placeholder="Choose a username" required>
-                            <div class="invalid-feedback">Please choose a username (3-20 characters)</div>
+                            <label for="firstname" class="form-label">First Name</label>
+                            <input type="text" id="firstname" name="firstname"
+                                class="form-control @error('firstname') is-invalid @enderror"
+                                placeholder="Enter your first name" value="{{ old('firstname') }}" required>
+                            @error('firstname')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">This will be displayed publicly in the forum</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastname" class="form-label">Last name</label>
+                            <input type="text" id="lastname" name="lastname"
+                                class="form-control @error('lastname') is-invalid @enderror"
+                                placeholder="Enter your last name" value="{{ old('lastname') }}" required>
+                            @error('lastname')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                             <div class="form-text">This will be displayed publicly in the forum</div>
                         </div>
 
                         <div class="form-group">
                             <label for="register-email" class="form-label">Email Address</label>
-                            <input type="email" id="register-email" class="form-control"
-                                placeholder="your.email@example.com" required>
-                            <div class="invalid-feedback">Please enter a valid email address</div>
+                            <input type="email" id="register-email" name="email"
+                                class="form-control @error('email') is-invalid @enderror"
+                                placeholder="your.email@example.com" value="{{ old('email') }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="register-password" class="form-label">Password</label>
                             <div class="password-toggle">
-                                <input type="password" id="register-password" class="form-control"
+                                <input type="password" id="register-password" name="password"
+                                    class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Create a password" required>
                                 <i class="far fa-eye toggle-password" data-target="register-password"></i>
                             </div>
-                            <div class="invalid-feedback">Password must be at least 8 characters</div>
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
 
                             <div class="password-strength">
                                 <div class="strength-meter">
@@ -554,37 +551,23 @@
                         <div class="form-group">
                             <label for="register-confirm-password" class="form-label">Confirm Password</label>
                             <div class="password-toggle">
-                                <input type="password" id="register-confirm-password" class="form-control"
-                                    placeholder="Confirm your password" required>
+                                <input type="password" id="register-confirm-password" name="password_confirmation"
+                                    class="form-control" placeholder="Confirm your password" required>
                                 <i class="far fa-eye toggle-password" data-target="register-confirm-password"></i>
                             </div>
-                            <div class="invalid-feedback">Passwords do not match</div>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" id="terms-agree" class="form-check-input" required>
-                            <label for="terms-agree" class="form-check-label">
-                                I agree to the <a href="#" target="_blank">Terms of Service</a> and <a
-                                    href="#" target="_blank">Privacy Policy</a>
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input type="checkbox" id="newsletter-subscribe" class="form-check-input">
-                            <label for="newsletter-subscribe" class="form-check-label">
-                                Subscribe to our newsletter for updates about matches, tickets, and special offers
-                            </label>
                         </div>
 
                         <button type="submit" class="btn btn-success btn-lg btn-block">Create Account</button>
 
                         <div class="form-footer">
-                            Already have an account? <a href="#" id="login-link">Sign in</a>
+                            Already have an account? <a href="{{ route('login') }}" id="login-link">Sign in</a>
                         </div>
                     </form>
 
                     <!-- Forgot Password Form -->
-                    <form class="auth-form" id="forgot-password-form">
+                    <form class="auth-form" id="forgot-password-form" action="{{ route('forgot-password') }}"
+                        method="POST">
+                        @csrf
                         <h2 class="form-title">Reset Your Password</h2>
 
                         <div class="alert alert-info">
@@ -599,15 +582,18 @@
 
                         <div class="form-group">
                             <label for="reset-email" class="form-label">Email Address</label>
-                            <input type="email" id="reset-email" class="form-control"
-                                placeholder="your.email@example.com" required>
-                            <div class="invalid-feedback">Please enter a valid email address</div>
+                            <input type="email" id="reset-email" name="email"
+                                class="form-control @error('email') is-invalid @enderror"
+                                placeholder="your.email@example.com" value="{{ old('email') }}" required>
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-lg btn-block">Send Reset Link</button>
 
                         <div class="form-footer">
-                            <a href="#" id="back-to-login">Back to Sign In</a>
+                            <a href="{{ route('login') }}" id="back-to-login">Back to Sign In</a>
                         </div>
                     </form>
                 </div>
@@ -684,17 +670,12 @@
 @endsection
 
 @section('js')
-    <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
-            const mobileMenuBtn = document.querySelector('.mobile-menu');
-            const navLinks = document.querySelector('.nav-links');
-
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', function() {
-                    navLinks.classList.toggle('active');
-                });
+            function validateEmail(email) {
+                const re =
+                    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
             }
 
             // Auth tabs functionality
@@ -705,11 +686,9 @@
                 tab.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
 
-                    // Update active tab
                     authTabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
 
-                    // Show corresponding form
                     authForms.forEach(form => form.classList.remove('active'));
 
                     if (tabId === 'login') {
@@ -723,13 +702,16 @@
             // Forgot password link
             const forgotPasswordLink = document.getElementById('forgot-password-link');
             const backToLoginLink = document.getElementById('back-to-login');
-            const loginLink = document.getElementById('login-link');
 
             if (forgotPasswordLink) {
                 forgotPasswordLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    authForms.forEach(form => form.classList.remove('active'));
-                    document.getElementById('forgot-password-form').classList.add('active');
+                    {
+                        forgotPasswordLink.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            authForms.forEach(form => form.classList.remove('active'));
+                            document.getElementById('forgot-password-form').classList.add('active');
+                        });
+                    }
                 });
             }
 
@@ -741,17 +723,6 @@
                 });
             }
 
-            if (loginLink) {
-                loginLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    authTabs.forEach(t => t.classList.remove('active'));
-                    authTabs[0].classList.add('active');
-                    authForms.forEach(form => form.classList.remove('active'));
-                    document.getElementById('login-form').classList.add('active');
-                });
-            }
-
-            // Password toggle
             const togglePasswordBtns = document.querySelectorAll('.toggle-password');
 
             togglePasswordBtns.forEach(btn => {
@@ -804,12 +775,10 @@
                         strengthLabel = 'Strong';
                     }
 
-                    // Additional checks for stronger passwords
                     if (password.match(/[A-Z]/) && strength < 4) strength += 1;
                     if (password.match(/[0-9]/) && strength < 4) strength += 1;
                     if (password.match(/[^A-Za-z0-9]/) && strength < 4) strength += 1;
 
-                    // Update strength meter
                     strengthMeter.className = 'strength-meter-fill';
 
                     if (strength === 0) {
@@ -833,20 +802,16 @@
                 });
             }
 
-            // Form validation
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
             const forgotPasswordForm = document.getElementById('forgot-password-form');
 
             if (loginForm) {
                 loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    const email = document.getElementById('login-email');
-                    const password = document.getElementById('login-password');
+                    const email = document.getElementById('email');
+                    const password = document.getElementById('password');
                     let isValid = true;
 
-                    // Simple validation
                     if (!email.value || !validateEmail(email.value)) {
                         email.classList.add('is-invalid');
                         isValid = false;
@@ -861,31 +826,37 @@
                         password.classList.remove('is-invalid');
                     }
 
-                    if (isValid) {
-                        // Simulate successful login
-                        // In a real application, this would send data to the server
-                        window.location.href = 'forum.html';
+                    if (!isValid) {
+                        e.preventDefault();
                     }
                 });
             }
 
             if (registerForm) {
                 registerForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    const username = document.getElementById('register-username');
+                    const firstname = document.getElementById('firstname');
+                    const lastname = document.getElementById('lastname');
                     const email = document.getElementById('register-email');
                     const password = document.getElementById('register-password');
-                    const confirmPassword = document.getElementById('register-confirm-password');
-                    const termsAgree = document.getElementById('terms-agree');
+                    const confirmPassword = document.getElementById(
+                        'register-confirm-password');
                     let isValid = true;
 
                     // Simple validation
-                    if (!username.value || username.value.length < 3 || username.value.length > 20) {
-                        username.classList.add('is-invalid');
+                    if (!firstname.value || firstname.value.length < 3 || firstname.value
+                        .length > 50) {
+                        firstname.classList.add('is-invalid');
                         isValid = false;
                     } else {
-                        username.classList.remove('is-invalid');
+                        firstname.classList.remove('is-invalid');
+                    }
+
+                    if (!lastname.value || lastname.value.length < 3 || lastname.value.length >
+                        50) {
+                        lastname.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        lastname.classList.remove('is-invalid');
                     }
 
                     if (!email.value || !validateEmail(email.value)) {
@@ -909,33 +880,14 @@
                         confirmPassword.classList.remove('is-invalid');
                     }
 
-                    if (!termsAgree.checked) {
-                        isValid = false;
-                        alert('You must agree to the Terms of Service and Privacy Policy');
-                    }
-
-                    if (isValid) {
-                        // Simulate successful registration
-                        // In a real application, this would send data to the server
-                        document.getElementById('success-alert').style.display = 'flex';
-                        registerForm.reset();
-
-                        // Switch to login tab after successful registration
-                        setTimeout(function() {
-                            authTabs.forEach(t => t.classList.remove('active'));
-                            authTabs[0].classList.add('active');
-                            authForms.forEach(form => form.classList.remove('active'));
-                            document.getElementById('login-form').classList.add('active');
-                            document.getElementById('success-alert').style.display = 'none';
-                        }, 3000);
+                    if (!isValid) {
+                        e.preventDefault();
                     }
                 });
             }
 
             if (forgotPasswordForm) {
                 forgotPasswordForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
                     const email = document.getElementById('reset-email');
                     let isValid = true;
 
@@ -946,24 +898,10 @@
                         email.classList.remove('is-invalid');
                     }
 
-                    if (isValid) {
-                        // Simulate successful password reset request
-                        // In a real application, this would send data to the server
-                        alert('Password reset instructions have been sent to your email address.');
-                        forgotPasswordForm.reset();
-
-                        // Switch back to login form
-                        authForms.forEach(form => form.classList.remove('active'));
-                        document.getElementById('login-form').classList.add('active');
+                    if (!isValid) {
+                        e.preventDefault();
                     }
                 });
-            }
-
-            // Email validation helper function
-            function validateEmail(email) {
-                const re =
-                    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return re.test(String(email).toLowerCase());
             }
         });
     </script>
