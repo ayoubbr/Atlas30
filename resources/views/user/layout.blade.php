@@ -19,8 +19,9 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/flash-messages.css') }}">
     <style>
-          :root {
+        :root {
             --primary: #e63946;
             --secondary: #1d3557;
             --accent: #f1c40f;
@@ -200,8 +201,16 @@
 
 <body>
     @include('user.components.header')
+
+    <div class="flash-messages-container">
+        @include('partials.flash-messages')
+    </div>
+
     @yield('content')
+
     @include('user.components.footer')
+
+    <script src="{{ asset('js/flash-messages.js') }}"></script>
     @yield('js')
 </body>
 
