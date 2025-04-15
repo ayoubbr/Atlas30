@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,9 +42,9 @@ Route::prefix('/')->group(function () {
         return view('user.forum');
     });
 
-    Route::get('profile', function () {
-        return view('user.profile');
-    });
+    // Route::get('profile', function () {
+    //     return view('user.profile');
+    // });
 
     // Authentication 
     Route::post('login', [UserController::class, 'login'])->name('login');
@@ -54,12 +55,15 @@ Route::prefix('/')->group(function () {
 
 // User profile 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
-    Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+    // Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
 });
 
 // Admin
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+// Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('dashboard', function () {
         return view('admin.dashboard');
@@ -96,4 +100,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('settings', function () {
         return view('admin.settings');
     });
-});
+// });
