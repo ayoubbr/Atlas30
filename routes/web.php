@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,16 +55,23 @@ Route::prefix('/')->group(function () {
 });
 
 // User profile 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
-    // Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
-});
+// Route::middleware(['auth'])->group(function () {
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+// });
 
 // Admin
-// Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+// middleware(['auth', 'admin'])->
+Route::prefix('admin')->group(function () {
+    //TEAM
+    Route::get('teams', [TeamController::class, 'index'])->name('admin.teams.index');
+    Route::post('teams', [TeamController::class, 'store'])->name('admin.teams.store');
+    Route::put('teams/{id}', [TeamController::class, 'update'])->name('admin.teams.update');
+    Route::delete('teams/{id}', [TeamController::class, 'destroy'])->name('admin.teams.destroy');
+
 
     Route::get('dashboard', function () {
         return view('admin.dashboard');
@@ -85,10 +93,6 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.venues');
     });
 
-    Route::get('teams', function () {
-        return view('admin.teams');
-    });
-
     Route::get('users', function () {
         return view('admin.users');
     });
@@ -100,4 +104,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings', function () {
         return view('admin.settings');
     });
-// });
+});

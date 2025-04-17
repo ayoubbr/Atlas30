@@ -533,7 +533,7 @@
 
             <div class="user-profile">
                 <div class="user-avatar">
-                    <img src="https://via.placeholder.com/40x40" alt="Admin Avatar">
+                    <img src="https://cdn-icons-png.flaticon.com/128/6024/6024190.png" alt="Admin Avatar">
                 </div>
                 <div class="user-info">
                     <div class="user-name">John Doe</div>
@@ -552,10 +552,7 @@
                 <p class="page-header-description">Manage all participating teams in the World Cup 2030</p>
             </div>
             <div class="page-header-actions">
-                <button class="btn btn-outline" id="importTeamsBtn">
-                    <i class="fas fa-file-import"></i> Import Teams
-                </button>
-                <button class="btn btn-primary" id="addTeamBtn">
+                <button type="button" class="btn btn-primary" id="addTeamBtn">
                     <i class="fas fa-plus"></i> Add Team
                 </button>
             </div>
@@ -574,16 +571,6 @@
             </div>
 
             <div class="team-stats-card">
-                <div class="stats-icon stats-icon-players">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">736</div>
-                    <div class="stats-label">Total Players</div>
-                </div>
-            </div>
-
-            <div class="team-stats-card">
                 <div class="stats-icon stats-icon-matches">
                     <i class="fas fa-futbol"></i>
                 </div>
@@ -593,82 +580,13 @@
                 </div>
             </div>
 
-            <div class="team-stats-card">
-                <div class="stats-icon stats-icon-groups">
-                    <i class="fas fa-layer-group"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">8</div>
-                    <div class="stats-label">Groups</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Team Filters -->
-        <div class="match-filters">
-            <div class="filter-group">
-                <label for="confederation-filter">Confederation</label>
-                <select id="confederation-filter" class="filter-select">
-                    <option value="">All Confederations</option>
-                    <option value="UEFA">UEFA (Europe)</option>
-                    <option value="CONMEBOL">CONMEBOL (South America)</option>
-                    <option value="CONCACAF">CONCACAF (North America)</option>
-                    <option value="CAF">CAF (Africa)</option>
-                    <option value="AFC">AFC (Asia)</option>
-                    <option value="OFC">OFC (Oceania)</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="group-filter">Group</label>
-                <select id="group-filter" class="filter-select">
-                    <option value="">All Groups</option>
-                    <option value="A">Group A</option>
-                    <option value="B">Group B</option>
-                    <option value="C">Group C</option>
-                    <option value="D">Group D</option>
-                    <option value="E">Group E</option>
-                    <option value="F">Group F</option>
-                    <option value="G">Group G</option>
-                    <option value="H">Group H</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="status-filter">Status</label>
-                <select id="status-filter" class="filter-select">
-                    <option value="">All Statuses</option>
-                    <option value="qualified">Qualified</option>
-                    <option value="pending">Pending Qualification</option>
-                    <option value="eliminated">Eliminated</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="sort-filter">Sort By</label>
-                <select id="sort-filter" class="filter-select">
-                    <option value="name">Team Name</option>
-                    <option value="rank">FIFA Ranking</option>
-                    <option value="group">Group</option>
-                    <option value="confederation">Confederation</option>
-                </select>
-            </div>
-
-            <div class="filter-group" style="display: flex; align-items: flex-end;">
-                <button class="btn btn-primary">
-                    <i class="fas fa-filter"></i> Apply Filters
-                </button>
-            </div>
         </div>
 
         <!-- Team Table -->
         <div class="team-table-container">
             <div class="view-toggle">
-                <button class="view-btn active">
+                <button class="view-btn active" type="button">
                     <i class="fas fa-table"></i> Table View
-                </button>
-                <button class="view-btn">
-                    <i class="fas fa-th-large"></i> Card View
                 </button>
             </div>
 
@@ -677,394 +595,84 @@
                     <thead>
                         <tr>
                             <th>Team</th>
-                            <th>Group</th>
-                            <th>FIFA Rank</th>
-                            <th>Confederation</th>
-                            <th>Coach</th>
-                            <th>Status</th>
+                            <th>flag</th>
+                            <th>code</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/3498db/ffffff?text=BRA')">
+                        @foreach ($teams as $team)
+                            <tr>
+                                <td>
+                                    <div class="team-table-name">
+                                        {{ $team->name }}
                                     </div>
-                                    Brazil
-                                </div>
-                            </td>
-                            <td>Group A</td>
-                            <td>1</td>
-                            <td>CONMEBOL</td>
-                            <td>Carlos Amaral</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="1">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="1">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="1">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/e74c3c/ffffff?text=GER')">
+                                </td>
+                                <td>
+                                    <img src="{{ asset($team->flag) }}" alt="{{ $team->name }} flag" width="40"
+                                        class="img-thumbnail">
+                                </td>
+                                <td>
+                                    <span class="status-badge status-scheduled">{{ $team->code }}</span>
+                                </td>
+                                <td>
+                                    <div class="team-table-actions">
+                                        <button type="button" class="btn btn-sm btn-outline edit-team-btn"
+                                            data-id="{{ $team->id }}" data-name="{{ $team->name }}"
+                                            data-code="{{ $team->code }}" data-flag="{{ asset($team->flag) }}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline btn-danger delete-team-btn"
+                                            data-id="{{ $team->id }}" data-name="{{ $team->name }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
-                                    Germany
-                                </div>
-                            </td>
-                            <td>Group A</td>
-                            <td>2</td>
-                            <td>UEFA</td>
-                            <td>Hans Mueller</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="2">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="2">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="2">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/f39c12/ffffff?text=ESP')">
-                                    </div>
-                                    Spain
-                                </div>
-                            </td>
-                            <td>Group B</td>
-                            <td>3</td>
-                            <td>UEFA</td>
-                            <td>Miguel Rodriguez</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="3">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="3">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="3">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/2ecc71/ffffff?text=POR')">
-                                    </div>
-                                    Portugal
-                                </div>
-                            </td>
-                            <td>Group B</td>
-                            <td>4</td>
-                            <td>UEFA</td>
-                            <td>José Silva</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="4">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="4">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="4">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/9b59b6/ffffff?text=FRA')">
-                                    </div>
-                                    France
-                                </div>
-                            </td>
-                            <td>Group C</td>
-                            <td>5</td>
-                            <td>UEFA</td>
-                            <td>Pierre Dupont</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="5">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="5">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="5">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/e67e22/ffffff?text=NED')">
-                                    </div>
-                                    Netherlands
-                                </div>
-                            </td>
-                            <td>Group C</td>
-                            <td>6</td>
-                            <td>UEFA</td>
-                            <td>Jan de Boer</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="6">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="6">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="6">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/1abc9c/ffffff?text=ARG')">
-                                    </div>
-                                    Argentina
-                                </div>
-                            </td>
-                            <td>Group D</td>
-                            <td>7</td>
-                            <td>CONMEBOL</td>
-                            <td>Diego Fernandez</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="7">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="7">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="7">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="team-table-name">
-                                    <div class="team-table-flag"
-                                        style="background-image: url('https://via.placeholder.com/30x20/34495e/ffffff?text=ENG')">
-                                    </div>
-                                    England
-                                </div>
-                            </td>
-                            <td>Group D</td>
-                            <td>8</td>
-                            <td>UEFA</td>
-                            <td>James Wilson</td>
-                            <td><span class="status-badge status-scheduled">Qualified</span></td>
-                            <td>
-                                <div class="team-table-actions">
-                                    <button class="btn btn-sm btn-outline view-team-btn" data-id="8">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline edit-team-btn" data-id="8">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline btn-danger delete-team-btn" data-id="8">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
-
             <!-- Pagination -->
             <div class="pagination">
-                <button class="pagination-btn" disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <div class="pagination-info">
-                    Showing 1-8 of 32 teams
-                </div>
-                <button class="pagination-btn">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
+                @if ($teams->hasPages())
+                    <div class="pagination-container">
+                        <ul class="pagination">
+                            @if ($teams->onFirstPage())
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a href="{{ $teams->previousPageUrl() }}" class="page-link">&laquo;</a>
+                                </li>
+                            @endif
 
-        <!-- Group Overview -->
-        <h3 class="section-title">Group Overview</h3>
-        <div class="group-grid">
-            <div class="group-card">
-                <div class="group-card-header">Group A</div>
-                <div class="group-teams">
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/3498db/ffffff?text=BRA')">
-                        </div>
-                        <div class="group-team-name">Brazil</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/e74c3c/ffffff?text=GER')">
-                        </div>
-                        <div class="group-team-name">Germany</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/27ae60/ffffff?text=MEX')">
-                        </div>
-                        <div class="group-team-name">Mexico</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/8e44ad/ffffff?text=SUI')">
-                        </div>
-                        <div class="group-team-name">Switzerland</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                </div>
-            </div>
+                            @foreach ($teams->getUrlRange(1, $teams->lastPage()) as $page => $url)
+                                @if ($page == $teams->currentPage())
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ $page }}</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a href="{{ $url }}" class="page-link">{{ $page }}</a>
+                                    </li>
+                                @endif
+                            @endforeach
 
-            <div class="group-card">
-                <div class="group-card-header">Group B</div>
-                <div class="group-teams">
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/f39c12/ffffff?text=ESP')">
-                        </div>
-                        <div class="group-team-name">Spain</div>
-                        <div class="group-team-points">0 pts</div>
+                            @if ($teams->hasMorePages())
+                                <li class="page-item">
+                                    <a href="{{ $teams->nextPageUrl() }}" class="page-link">&raquo;</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;</span>
+                                </li>
+                            @endif
+                        </ul>
                     </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/2ecc71/ffffff?text=POR')">
-                        </div>
-                        <div class="group-team-name">Portugal</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/e67e22/ffffff?text=USA')">
-                        </div>
-                        <div class="group-team-name">USA</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/16a085/ffffff?text=GHA')">
-                        </div>
-                        <div class="group-team-name">Ghana</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group-card">
-                <div class="group-card-header">Group C</div>
-                <div class="group-teams">
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/9b59b6/ffffff?text=FRA')">
-                        </div>
-                        <div class="group-team-name">France</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/e67e22/ffffff?text=NED')">
-                        </div>
-                        <div class="group-team-name">Netherlands</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/3498db/ffffff?text=SEN')">
-                        </div>
-                        <div class="group-team-name">Senegal</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/e74c3c/ffffff?text=JPN')">
-                        </div>
-                        <div class="group-team-name">Japan</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="group-card">
-                <div class="group-card-header">Group D</div>
-                <div class="group-teams">
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/1abc9c/ffffff?text=ARG')">
-                        </div>
-                        <div class="group-team-name">Argentina</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/34495e/ffffff?text=ENG')">
-                        </div>
-                        <div class="group-team-name">England</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/f1c40f/ffffff?text=CRO')">
-                        </div>
-                        <div class="group-team-name">Croatia</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                    <div class="group-team">
-                        <div class="group-team-flag"
-                            style="background-image: url('https://via.placeholder.com/30x20/95a5a6/ffffff?text=AUS')">
-                        </div>
-                        <div class="group-team-name">Australia</div>
-                        <div class="group-team-points">0 pts</div>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
     </main>
@@ -1076,233 +684,44 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="teamModalTitle">Add New Team</h3>
-                <button class="modal-close" id="closeTeamModal">
+                <button type="button" class="modal-close" id="closeTeamModal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="teamForm">
+                <form id="teamForm" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="team-form-row">
                         <div class="team-form-col">
                             <div class="team-form-group">
                                 <label class="team-form-label" for="teamName">Team Name</label>
                                 <input type="text" class="team-form-control" id="teamName"
-                                    placeholder="Enter team name">
+                                    placeholder="Enter team name" name="name" required>
                             </div>
                         </div>
                         <div class="team-form-col">
                             <div class="team-form-group">
                                 <label class="team-form-label" for="teamCode">Team Code</label>
                                 <input type="text" class="team-form-control" id="teamCode"
-                                    placeholder="3-letter code (e.g. BRA)">
+                                    placeholder="3-letter code (e.g. BRA)" name="code" required>
                             </div>
                         </div>
                     </div>
-
-                    <div class="team-form-row">
-                        <div class="team-form-col">
-                            <div class="team-form-group">
-                                <label class="team-form-label" for="teamConfederation">Confederation</label>
-                                <select class="team-form-control" id="teamConfederation">
-                                    <option value="">Select Confederation</option>
-                                    <option value="UEFA">UEFA (Europe)</option>
-                                    <option value="CONMEBOL">CONMEBOL (South America)</option>
-                                    <option value="CONCACAF">CONCACAF (North America)</option>
-                                    <option value="CAF">CAF (Africa)</option>
-                                    <option value="AFC">AFC (Asia)</option>
-                                    <option value="OFC">OFC (Oceania)</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="team-form-col">
-                            <div class="team-form-group">
-                                <label class="team-form-label" for="teamGroup">Group</label>
-                                <select class="team-form-control" id="teamGroup">
-                                    <option value="">Select Group</option>
-                                    <option value="A">Group A</option>
-                                    <option value="B">Group B</option>
-                                    <option value="C">Group C</option>
-                                    <option value="D">Group D</option>
-                                    <option value="E">Group E</option>
-                                    <option value="F">Group F</option>
-                                    <option value="G">Group G</option>
-                                    <option value="H">Group H</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="team-form-row">
-                        <div class="team-form-col">
-                            <div class="team-form-group">
-                                <label class="team-form-label" for="teamRank">FIFA Ranking</label>
-                                <input type="number" class="team-form-control" id="teamRank"
-                                    placeholder="Enter FIFA ranking">
-                            </div>
-                        </div>
-                        <div class="team-form-col">
-                            <div class="team-form-group">
-                                <label class="team-form-label" for="teamStatus">Status</label>
-                                <select class="team-form-control" id="teamStatus">
-                                    <option value="qualified">Qualified</option>
-                                    <option value="pending">Pending Qualification</option>
-                                    <option value="eliminated">Eliminated</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="team-form-group">
-                        <label class="team-form-label" for="teamCoach">Head Coach</label>
-                        <input type="text" class="team-form-control" id="teamCoach"
-                            placeholder="Enter head coach name">
-                    </div>
-
                     <div class="team-form-group">
                         <label class="team-form-label" for="teamFlag">Team Flag URL</label>
-                        <input type="text" class="team-form-control" id="teamFlag"
-                            placeholder="Enter flag image URL">
-                    </div>
+                        <input type="file" class="team-form-control" id="teamFlag" name="flag" accept="image/*"
+                            required>
+                        <img id="flagPreview" src="#" alt="Flag Preview"
+                            style="display: none; width: 80px; margin-top: 10px;">
 
-                    <div class="team-form-group">
-                        <label class="team-form-label">Team Players</label>
-                        <div class="player-form-list">
-                            <div class="player-form-header">
-                                Player List
-                            </div>
-                            <div class="player-form-body" id="playerFormList">
-                                <div class="player-form-row">
-                                    <div class="player-form-col">
-                                        <div class="team-form-group">
-                                            <label class="team-form-label">Name</label>
-                                            <input type="text" class="team-form-control" placeholder="Player name">
-                                        </div>
-                                    </div>
-                                    <div class="player-form-col">
-                                        <div class="team-form-group">
-                                            <label class="team-form-label">Position</label>
-                                            <select class="team-form-control">
-                                                <option value="GK">Goalkeeper (GK)</option>
-                                                <option value="DF">Defender (DF)</option>
-                                                <option value="MF">Midfielder (MF)</option>
-                                                <option value="FW">Forward (FW)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="player-form-col-small">
-                                        <div class="team-form-group">
-                                            <label class="team-form-label">Number</label>
-                                            <input type="number" class="team-form-control" placeholder="No.">
-                                        </div>
-                                    </div>
-                                    <div class="player-form-actions">
-                                        <button type="button"
-                                            class="btn btn-sm btn-outline btn-danger remove-player-btn">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-outline add-player-btn" id="addPlayerBtn">
-                            <i class="fas fa-plus"></i> Add Player
-                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit" id="saveTeamBtn">Save Team</button>
+                        <button class="btn btn-outline" type="button" id="cancelTeamBtn">Cancel</button>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancelTeamBtn">Cancel</button>
-                <button class="btn btn-primary" id="saveTeamBtn">Save Team</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- View Team Modal -->
-    <div class="modal" id="viewTeamModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="viewTeamModalTitle">Team Details</h3>
-                <button class="modal-close" id="closeViewTeamModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="team-card">
-                    <div class="team-card-header">
-                        <div class="team-flag" id="viewTeamFlag"
-                            style="background-image: url('https://via.placeholder.com/60x40/3498db/ffffff?text=BRA')">
-                        </div>
-                        <div class="team-info">
-                            <div class="team-name" id="viewTeamName">Brazil</div>
-                            <div class="team-code" id="viewTeamCode">BRA</div>
-                        </div>
-                    </div>
-                    <div class="team-card-body">
-                        <div class="team-details">
-                            <div class="team-detail">
-                                <div class="detail-label">Group</div>
-                                <div class="detail-value" id="viewTeamGroup">Group A</div>
-                            </div>
-                            <div class="team-detail">
-                                <div class="detail-label">FIFA Rank</div>
-                                <div class="detail-value" id="viewTeamRank">1</div>
-                            </div>
-                            <div class="team-detail">
-                                <div class="detail-label">Confederation</div>
-                                <div class="detail-value" id="viewTeamConfederation">CONMEBOL</div>
-                            </div>
-                            <div class="team-detail">
-                                <div class="detail-label">Head Coach</div>
-                                <div class="detail-value" id="viewTeamCoach">Carlos Amaral</div>
-                            </div>
-                        </div>
-
-                        <h4 class="mt-4 mb-2">Squad</h4>
-                        <div class="player-list" id="viewTeamPlayers">
-                            <div class="player-item">
-                                <div class="player-photo"
-                                    style="background-image: url('https://via.placeholder.com/40x40')"></div>
-                                <div class="player-info">
-                                    <div class="player-name">Alisson Becker</div>
-                                    <div class="player-position">Goalkeeper (GK)</div>
-                                </div>
-                                <div class="player-number">1</div>
-                            </div>
-                            <div class="player-item">
-                                <div class="player-photo"
-                                    style="background-image: url('https://via.placeholder.com/40x40')"></div>
-                                <div class="player-info">
-                                    <div class="player-name">Thiago Silva</div>
-                                    <div class="player-position">Defender (DF)</div>
-                                </div>
-                                <div class="player-number">3</div>
-                            </div>
-                            <div class="player-item">
-                                <div class="player-photo"
-                                    style="background-image: url('https://via.placeholder.com/40x40')"></div>
-                                <div class="player-info">
-                                    <div class="player-name">Casemiro</div>
-                                    <div class="player-position">Midfielder (MF)</div>
-                                </div>
-                                <div class="player-number">5</div>
-                            </div>
-                            <div class="player-item">
-                                <div class="player-photo"
-                                    style="background-image: url('https://via.placeholder.com/40x40')"></div>
-                                <div class="player-info">
-                                    <div class="player-name">Neymar Jr.</div>
-                                    <div class="player-position">Forward (FW)</div>
-                                </div>
-                                <div class="player-number">10</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="closeViewTeamBtn">Close</button>
-                <button class="btn btn-primary edit-from-view-btn">Edit Team</button>
-            </div>
         </div>
     </div>
 
@@ -1311,7 +730,7 @@
         <div class="modal-content modal-sm">
             <div class="modal-header">
                 <h3 class="modal-title">Confirm Delete</h3>
-                <button class="modal-close" id="closeDeleteModal">
+                <button class="modal-close" type="button" id="closeDeleteModal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -1319,10 +738,14 @@
                 <p>Are you sure you want to delete this team? This action cannot be undone.</p>
                 <p><strong>Team: </strong><span id="deleteTeamName">Brazil</span></p>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
-                <button class="btn btn-danger" id="confirmDeleteBtn">Delete Team</button>
-            </div>
+            <form id="deleteTeamForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Delete Team</button>
+                </div>
+            </form>
         </div>
     </div>
 @endsection
@@ -1340,21 +763,6 @@
                 });
             }
 
-            // View toggle
-            const viewBtns = document.querySelectorAll('.view-btn');
-
-            if (viewBtns.length) {
-                viewBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        viewBtns.forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-
-                        // Here you would toggle between table and card view
-                        // For now, we'll just keep the table view
-                    });
-                });
-            }
-
             // Team Modal
             const teamModal = document.getElementById('teamModal');
             const addTeamBtn = document.getElementById('addTeamBtn');
@@ -1364,8 +772,21 @@
 
             if (addTeamBtn && teamModal) {
                 addTeamBtn.addEventListener('click', function() {
+                    const form = document.getElementById('teamForm');
                     document.getElementById('teamModalTitle').textContent = 'Add New Team';
-                    document.getElementById('teamForm').reset();
+                    form.reset();
+
+                    form.action = "{{ route('admin.teams.store') }}";
+                    const methodInput = form.querySelector('input[name="_method"]');
+
+                    if (methodInput) methodInput.remove();
+                    const flagPreview = document.getElementById('flagPreview');
+
+                    if (flagPreview) {
+                        flagPreview.style.display = 'none';
+                        flagPreview.src = '#';
+                    }
+
                     teamModal.classList.add('show');
                 });
             }
@@ -1385,43 +806,34 @@
             if (editTeamBtns.length && teamModal) {
                 editTeamBtns.forEach(btn => {
                     btn.addEventListener('click', function() {
-                        const teamId = this.getAttribute('data-id');
+
+                        const teamId = this.dataset.id;
+                        const teamName = this.dataset.name;
+                        const teamCode = this.dataset.code;
+                        const teamFlag = this.dataset.flag;
                         document.getElementById('teamModalTitle').textContent = 'Edit Team';
 
-                        // Here you would fetch team data and populate the form
-                        // For now, we'll just show the modal
+                        document.getElementById('teamName').value = teamName;
+                        document.getElementById('teamCode').value = teamCode;
+                        const flagPreview = document.getElementById('flagPreview');
+                        if (flagPreview) {
+                            flagPreview.src = teamFlag;
+                            flagPreview.style.display = 'block';
+                        }
+
+                        teamForm.action = `/admin/teams/${teamId}`;
+
+                        let methodInput = teamForm.querySelector('input[name="_method"]');
+                        if (!methodInput) {
+                            methodInput = document.createElement('input');
+                            methodInput.type = 'hidden';
+                            methodInput.name = '_method';
+                            teamForm.appendChild(methodInput);
+                        }
+                        methodInput.value = 'PUT';
+
                         teamModal.classList.add('show');
                     });
-                });
-            }
-
-            // View Team Modal
-            const viewTeamModal = document.getElementById('viewTeamModal');
-            const viewTeamBtns = document.querySelectorAll('.view-team-btn');
-            const closeViewTeamModal = document.getElementById('closeViewTeamModal');
-            const closeViewTeamBtn = document.getElementById('closeViewTeamBtn');
-
-            if (viewTeamBtns.length && viewTeamModal) {
-                viewTeamBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const teamId = this.getAttribute('data-id');
-
-                        // Here you would fetch team data and populate the modal
-                        // For now, we'll just show the modal
-                        viewTeamModal.classList.add('show');
-                    });
-                });
-            }
-
-            if (closeViewTeamModal && viewTeamModal) {
-                closeViewTeamModal.addEventListener('click', function() {
-                    viewTeamModal.classList.remove('show');
-                });
-            }
-
-            if (closeViewTeamBtn && viewTeamModal) {
-                closeViewTeamBtn.addEventListener('click', function() {
-                    viewTeamModal.classList.remove('show');
                 });
             }
 
@@ -1431,14 +843,18 @@
             const closeDeleteModal = document.getElementById('closeDeleteModal');
             const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
             const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const deleteTeamForm = document.getElementById('deleteTeamForm');
 
             if (deleteTeamBtns.length && deleteTeamModal) {
                 deleteTeamBtns.forEach(btn => {
                     btn.addEventListener('click', function() {
-                        const teamId = this.getAttribute('data-id');
 
-                        // Here you would fetch team name and set it in the modal
-                        // For now, we'll just show the modal
+                        const teamId = this.getAttribute('data-id');
+                        const teamName = this.getAttribute('data-name');
+
+                        deleteTeamName.textContent = teamName;
+                        deleteTeamForm.action = `/admin/teams/${teamId}`;
+
                         deleteTeamModal.classList.add('show');
                     });
                 });
@@ -1458,84 +874,7 @@
 
             if (confirmDeleteBtn && deleteTeamModal) {
                 confirmDeleteBtn.addEventListener('click', function() {
-                    // Here you would delete the team
-                    // For now, we'll just close the modal
                     deleteTeamModal.classList.remove('show');
-                });
-            }
-
-            // Add Player Button
-            const addPlayerBtn = document.getElementById('addPlayerBtn');
-            const playerFormList = document.getElementById('playerFormList');
-
-            if (addPlayerBtn && playerFormList) {
-                addPlayerBtn.addEventListener('click', function() {
-                    const playerRow = document.createElement('div');
-                    playerRow.className = 'player-form-row';
-                    playerRow.innerHTML = `
-                    <div class="player-form-col">
-                        <div class="team-form-group">
-                            <label class="team-form-label">Name</label>
-                            <input type="text" class="team-form-control" placeholder="Player name">
-                        </div>
-                    </div>
-                    <div class="player-form-col">
-                        <div class="team-form-group">
-                            <label class="team-form-label">Position</label>
-                            <select class="team-form-control">
-                                <option value="GK">Goalkeeper (GK)</option>
-                                <option value="DF">Defender (DF)</option>
-                                <option value="MF">Midfielder (MF)</option>
-                                <option value="FW">Forward (FW)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="player-form-col-small">
-                        <div class="team-form-group">
-                            <label class="team-form-label">Number</label>
-                            <input type="number" class="team-form-control" placeholder="No.">
-                        </div>
-                    </div>
-                    <div class="player-form-actions">
-                        <button type="button" class="btn btn-sm btn-outline btn-danger remove-player-btn">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-
-                    playerFormList.appendChild(playerRow);
-
-                    // Add event listener to remove button
-                    const removeBtn = playerRow.querySelector('.remove-player-btn');
-                    if (removeBtn) {
-                        removeBtn.addEventListener('click', function() {
-                            playerRow.remove();
-                        });
-                    }
-                });
-            }
-
-            // Add event listeners to existing remove player buttons
-            const removePlayerBtns = document.querySelectorAll('.remove-player-btn');
-            if (removePlayerBtns.length) {
-                removePlayerBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        this.closest('.player-form-row').remove();
-                    });
-                });
-            }
-
-            // Edit from view button
-            const editFromViewBtn = document.querySelector('.edit-from-view-btn');
-            if (editFromViewBtn && teamModal && viewTeamModal) {
-                editFromViewBtn.addEventListener('click', function() {
-                    viewTeamModal.classList.remove('show');
-
-                    document.getElementById('teamModalTitle').textContent = 'Edit Team';
-
-                    // Here you would populate the form with the team data
-                    // For now, we'll just show the modal
-                    teamModal.classList.add('show');
                 });
             }
         });

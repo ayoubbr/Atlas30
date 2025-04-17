@@ -27,6 +27,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <link rel="stylesheet" href="{{ asset('css/flash-messages.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pagination.css') }}">
     @yield('css')
 </head>
 

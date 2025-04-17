@@ -10,10 +10,4 @@ const mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
-mix.js('resources/js/app.js', 'public/js').
-    js('resources/js/flash-messages.js', 'public/js');
-
-// Compile multiple CSS files separately
-mix.postCss('resources/css/app.css', 'public/css')
-    .postCss('resources/css/admin.css', 'public/css')
-    .postCss('resources/css/flash-messages.css', 'public/css');
+mix.js('resources/js/app.js', 'public/js');
