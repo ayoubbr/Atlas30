@@ -12,24 +12,25 @@ class StadiumController extends Controller
     
     public function index()
     {
-        $stadiums = Stadium::withCount('games')->get();
-        return view('admin.stadiums.index', compact('stadiums'));
+        $stadiums = Stadium::all();
+        return view('admin.stadiums', compact('stadiums'));
     }
 
     
     public function create()
     {
-        return view('admin.stadiums.create');
+        return view('admin.stadiums');
     }
 
   
     public function store(Request $request)
     {
+
         $request->validate([
             'name' => 'required|string|max:255|unique:stadiums',
             'city' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         $stadium = new Stadium();
@@ -53,13 +54,13 @@ class StadiumController extends Controller
     public function show(Stadium $stadium)
     {
         $stadium->load('games.homeTeam', 'games.awayTeam');
-        return view('admin.stadiums.show', compact('stadium'));
+        return view('admin.stadiums', compact('stadium'));
     }
 
    
     public function edit(Stadium $stadium)
     {
-        return view('admin.stadiums.edit', compact('stadium'));
+        return view('admin.stadiums', compact('stadium'));
     }
 
  
