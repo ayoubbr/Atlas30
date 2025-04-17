@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('flag');
+            $table->string('code');
             $table->timestamps();
         });
     }
