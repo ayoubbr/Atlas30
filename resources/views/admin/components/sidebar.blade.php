@@ -61,6 +61,13 @@
                         <span class="nav-text">Teams</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/categories') }}"
+                        class="nav-link {{ request()->is('admin/categories') ? 'active' : '' }}">
+                        <i class="fas fa-users nav-icon"></i>
+                        <span class="nav-text">categories</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
