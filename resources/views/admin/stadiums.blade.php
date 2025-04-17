@@ -110,7 +110,6 @@
 
         .venue-actions {
             padding: 15px 20px;
-            border-top: 1px solid var(--gray-200);
             display: flex;
             justify-content: flex-end;
             gap: 10px;
@@ -207,13 +206,12 @@
         <!-- Page Header -->
         <div class="page-header">
             <div class="page-header-content">
-                <h2 class="page-header-title">Venue Management</h2>
-                <p class="page-header-description">Create, edit, and manage all World Cup 2030 venues and stadiums
-                </p>
+                <h2 class="page-header-title">Stadium Management</h2>
+                <p class="page-header-description">Create, edit, and manage all World Cup 2030 stadiums</p>
             </div>
             <div class="page-header-actions">
                 <button class="btn btn-primary" id="add-venue-btn">
-                    <i class="fas fa-plus"></i> Add New Venue
+                    <i class="fas fa-plus"></i> Add New Stadium
                 </button>
             </div>
         </div>
@@ -231,10 +229,45 @@
 
             <!-- Card View -->
             <div class="venue-cards-view" id="venue-cards-view">
-                <!-- Cards will be dynamically generated here -->
+                @if ($stadiums->isEmpty())
+                    <div class="no-venues">No stadiums found.</div>
+                @else
+                    @foreach ($stadiums as $venue)
+                        <div class="match-card venue-card">
+                            <div class="venue-image"
+                                style="background-image: url('{{ asset($venue->image ?? 'https://via.placeholder.com/400x200/3498db/ffffff?text=' . urlencode($venue->name)) }}')">
+                            </div>
+
+                            <div class="venue-content">
+                                <h3 class="venue-name">{{ $venue->name }}</h3>
+
+                                <div class="venue-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    {{ $venue->city }}
+                                </div>
+
+                                <div class="venue-capacity">
+                                    <i class="fas fa-users"></i>
+                                    Capacity: {{ number_format($venue->capacity) }} seats
+                                </div>
+                            </div>
+
+                            <div class="venue-actions">
+                                <button class="btn btn-sm btn-outline edit-venue-btn" data-id="{{ $venue->id }}"
+                                    data-name="{{ $venue->name }}" data-city="{{ $venue->city }}"
+                                    data-capacity="{{ $venue->capacity }}" data-image="{{ $venue->image }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-venue-btn" data-id="{{ $venue->id }}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
 
-            <!-- Table View (hidden by default) -->
+            <!-- Table View -->
             <div class="venue-table-view" id="venue-table-view" style="display: none;">
                 <table class="match-table">
                     <thead>
@@ -243,53 +276,73 @@
                             <th>Name</th>
                             <th>Location</th>
                             <th>Capacity</th>
-                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="venue-table-body">
-                        <!-- Table rows will be dynamically generated here -->
+                        @forelse ($stadiums as $venue)
+                            <tr>
+                                <td>
+                                    <div class="table-image"
+                                        style="background-image: url('{{ asset($venue->image ?? 'https://via.placeholder.com/100x60/3498db/ffffff?text=' . urlencode($venue->name)) }}')">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-venue-name">{{ $venue->name }}</div>
+                                </td>
+                                <td>
+                                    {{ $venue->city }}
+                                </td>
+                                <td>
+                                    {{ number_format($venue->capacity) }} seats
+                                </td>
+                                <td>
+                                    <div class="venue-actions">
+                                        <button class="btn btn-sm btn-outline edit-venue-btn" data-id="{{ $venue->id }}"
+                                            data-name="{{ $venue->name }}" data-city="{{ $venue->city }}"
+                                            data-capacity="{{ $venue->capacity }}" data-image="{{ $venue->image }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-venue-btn"
+                                            data-id="{{ $venue->id }}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px;">
+                                    No stadiums found.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            </div>
-
-            <!-- Pagination -->
-            <div class="pagination">
-                <button class="pagination-btn" id="prev-page" disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <div class="pagination-info">
-                    Page <span id="current-page">1</span> of <span id="total-pages">1</span>
-                </div>
-                <button class="pagination-btn" id="next-page">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
             </div>
         </div>
     </main>
 @endsection
 
 @section('modal')
-    <!-- Add/Edit Venue Modal -->
+    <!-- Add/Edit Stadium Modal -->
     <div class="modal" id="venue-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">Add New Venue</h3>
+                <h3 class="modal-title" id="modal-title">Add New Stadium</h3>
                 <button class="modal-close" id="modal-close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="venue-form" method="POST"  enctype="multipart/form-data">
+                <form id="venue-form" method="POST" action=""
+                    enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" id="venue-id">
+                    <input type="hidden" name="_method" id="form-method" value="POST">
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="venue-name">Venue Name</label>
-                            <input type="text" id="venue-name" class="form-control" required name="name">
-                        </div>
-
+                    <div class="form-group">
+                        <label for="venue-name">Stadium Name</label>
+                        <input type="text" id="venue-name" class="form-control" required name="name">
                     </div>
 
                     <div class="form-row">
@@ -304,22 +357,20 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="venue-city" for="stadiumImage">Stadium Image</label>
-                            <input type="file" class="venue-form-control" id="stadiumImage" name="image"
-                                accept="image/*" required>
-                            <img id="imagePreview" src="#" alt="Image Preview"
-                                style="display: none; width: 80px; margin-top: 10px;">
-                        </div>
+                    <div class="form-group">
+                        <label for="stadium-image">Stadium Image</label>
+                        <input type="file" class="form-control" id="stadium-image" name="image" accept="image/*">
+                        <div class="form-text" id="image-help-text">Upload an image of the stadium</div>
+                        <img id="image-preview" src="#" alt="Image Preview"
+                            style="display: none; max-width: 100%; margin-top: 10px;">
                     </div>
+
                     <div class="modal-footer">
-                        <button class="btn btn-outline" type="button" id="cancel-btn">Cancel</button>
-                        <button class="btn btn-primary" type="submit" id="save-venue-btn">Save Venue</button>
+                        <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="save-venue-btn">Save Stadium</button>
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 
@@ -333,66 +384,61 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this venue? This action cannot be undone.</p>
-                <input type="hidden" id="delete-venue-id">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancel-delete-btn">Cancel</button>
-                <button class="btn btn-danger" id="confirm-delete-btn">Delete Venue</button>
+                <p>Are you sure you want to delete this stadium? This action cannot be undone.</p>
+                <form id="delete-form" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" id="cancel-delete-btn">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete Stadium</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.getElementById('sidebar');
             const addVenueBtn = document.getElementById('add-venue-btn');
             const venueModal = document.getElementById('venue-modal');
             const modalClose = document.getElementById('modal-close');
             const cancelBtn = document.getElementById('cancel-btn');
-            const saveVenueBtn = document.getElementById('save-venue-btn');
+            const venueForm = document.getElementById('venue-form');
             const deleteModal = document.getElementById('delete-modal');
             const deleteModalClose = document.getElementById('delete-modal-close');
             const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-            const venueForm = document.getElementById('venue-form');
+            const deleteForm = document.getElementById('delete-form');
             const venueCardsView = document.getElementById('venue-cards-view');
             const venueTableView = document.getElementById('venue-table-view');
-            const venueTableBody = document.getElementById('venue-table-body');
             const viewBtns = document.querySelectorAll('.view-btn');
-            const filterCountry = document.getElementById('filter-country');
-            const filterCapacity = document.getElementById('filter-capacity');
-            const filterStatus = document.getElementById('filter-status');
-            const resetFiltersBtn = document.getElementById('reset-filters');
-            const prevPageBtn = document.getElementById('prev-page');
-            const nextPageBtn = document.getElementById('next-page');
-            const currentPageSpan = document.getElementById('current-page');
-            const totalPagesSpan = document.getElementById('total-pages');
-            const searchInput = document.querySelector('.search-input');
+            const stadiumImage = document.getElementById('stadium-image');
+            const imagePreview = document.getElementById('image-preview');
+            const imageHelpText = document.getElementById('image-help-text');
 
-            // State
-            let venues = [];
-            let currentPage = 1;
-            let itemsPerPage = 8;
-            let currentView = 'card';
-            let currentFilters = {
-                country: 'all',
-                capacity: 'all',
-                status: 'all',
-                search: ''
-            };
+            // Add event listeners for all edit buttons
+            document.querySelectorAll('.edit-venue-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const venueId = this.getAttribute('data-id');
+                    const venueName = this.getAttribute('data-name');
+                    const venueCity = this.getAttribute('data-city');
+                    const venueCapacity = this.getAttribute('data-capacity');
+                    const venueImage = this.getAttribute('data-image');
+
+                    openEditVenueModal(venueId, venueName, venueCity, venueCapacity, venueImage);
+                });
+            });
+
+            // Add event listeners for all delete buttons
+            document.querySelectorAll('.delete-venue-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const venueId = this.getAttribute('data-id');
+                    openDeleteModal(venueId);
+                });
+            });
 
             // Event Listeners
-            if (menuToggle) {
-                menuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
-                });
-            }
-
             addVenueBtn.addEventListener('click', function() {
                 openAddVenueModal();
             });
@@ -413,27 +459,6 @@
                 closeDeleteModal();
             });
 
-            saveVenueBtn.addEventListener('click', function() {
-                document.getElementById('venue-id').value = '';
-                document.getElementById('modal-title').textContent = 'Add New Venue';
-
-
-                venueForm.action = "{{ route('admin.stadiums.store') }}";
-                const methodInput = venueForm.querySelector('input[name="_method"]');
-
-                if (methodInput) methodInput.remove();
-                const imagePreview = document.getElementById('imagePreview');
-
-                if (imagePreview) {
-                    imagePreview.style.display = 'none';
-                    imagePreview.src = '#';
-                }
-            });
-
-            confirmDeleteBtn.addEventListener('click', function() {
-                deleteVenue();
-            });
-
             viewBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const view = this.getAttribute('data-view');
@@ -441,170 +466,12 @@
                 });
             });
 
+            stadiumImage.addEventListener('change', function() {
+                previewImage(this);
+            });
 
-            function renderVenues() {
-                const filteredVenues = getFilteredVenues();
-                const totalPages = Math.ceil(filteredVenues.length / itemsPerPage);
-
-                // Update pagination info
-                currentPageSpan.textContent = currentPage;
-                totalPagesSpan.textContent = totalPages;
-
-                // Enable/disable pagination buttons
-                prevPageBtn.disabled = currentPage <= 1;
-                nextPageBtn.disabled = currentPage >= totalPages;
-
-                // Get current page venues
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                const currentVenues = filteredVenues.slice(startIndex, endIndex);
-
-                // Render based on current view
-                if (currentView === 'card') {
-                    renderCardView(currentVenues);
-                } else {
-                    renderTableView(currentVenues);
-                }
-            }
-
-
-            function renderCardView(venues) {
-                venueCardsView.innerHTML = '';
-
-                if (venues.length === 0) {
-                    venueCardsView.innerHTML =
-                        '<div class="no-venues">No venues found. Try adjusting your filters.</div>';
-                    return;
-                }
-
-                venues.forEach(venue => {
-                    const venueCard = document.createElement('div');
-                    venueCard.className = 'match-card venue-card';
-
-                    // Get features as formatted string
-                    const featuresList = venue.features && venue.features.length > 0 ?
-                        `<div class="venue-features">
-                ${venue.features.map(feature => `<span class="feature-badge">${getFeatureName(feature)}</span>`).join('')}
-              </div>` :
-                        '';
-
-                    venueCard.innerHTML = `
-            <div class="venue-image" style="background-image: url('${venue.image || `https://via.placeholder.com/400x200/3498db/ffffff?text=${venue.name}`}')">
-                <div class="status-badge status-${venue.status}">${getStatusName(venue.status)}</div>
-            </div>
-            <div class="venue-content">
-                <h3 class="venue-name">${venue.name}</h3>
-                <div class="venue-location">
-                    <i class="fas fa-map-marker-alt"></i> ${venue.city}, ${getCountryName(venue.country)}
-                </div>
-                <div class="venue-capacity">
-                    <i class="fas fa-users"></i> Capacity: ${venue.capacity.toLocaleString()} seats
-                </div>
-                ${venue.yearBuilt ? `<div class="venue-year">
-                                                                                                <i class="fas fa-calendar-alt"></i> Built: ${venue.yearBuilt}
-                                                                                            </div>` : ''}
-                ${venue.surface ? `<div class="venue-surface">
-                                                                                                <i class="fas fa-leaf"></i> Surface: ${getSurfaceName(venue.surface)}
-                                                                                            </div>` : ''}
-                ${featuresList}
-                ${venue.description ? `<div class="venue-description">${truncateText(venue.description, 100)}</div>` : ''}
-            </div>
-            <div class="venue-actions">
-                <button class="btn btn-sm btn-outline edit-venue-btn" data-id="${venue.id}">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn btn-sm btn-danger delete-venue-btn" data-id="${venue.id}">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
-            </div>
-        `;
-
-                    venueCardsView.appendChild(venueCard);
-
-                    // Add event listeners to the buttons
-                    const editBtn = venueCard.querySelector('.edit-venue-btn');
-                    const deleteBtn = venueCard.querySelector('.delete-venue-btn');
-
-                    editBtn.addEventListener('click', function() {
-                        const venueId = parseInt(this.getAttribute('data-id'));
-                        openEditVenueModal(venueId);
-                    });
-
-                    deleteBtn.addEventListener('click', function() {
-                        const venueId = parseInt(this.getAttribute('data-id'));
-                        openDeleteModal(venueId);
-                    });
-                });
-            }
-
-            function renderTableView(venues) {
-                venueTableBody.innerHTML = '';
-
-                if (venues.length === 0) {
-                    venueTableBody.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align: center; padding: 30px;">
-                    No venues found. Try adjusting your filters.
-                </td>
-            </tr>
-        `;
-                    return;
-                }
-
-                venues.forEach(venue => {
-                    const venueRow = document.createElement('tr');
-
-                    venueRow.innerHTML = `
-            <td>
-                <div class="table-image" style="background-image: url('${venue.image || `https://via.placeholder.com/100x60/3498db/ffffff?text=${venue.name}`}')"></div>
-            </td>
-            <td>
-                <div class="table-venue-name">${venue.name}</div>
-                ${venue.yearBuilt ? `<div class="table-venue-year">Built: ${venue.yearBuilt}</div>` : ''}
-            </td>
-            <td>
-                ${venue.city}, ${getCountryName(venue.country)}
-            </td>
-            <td>
-                ${venue.capacity.toLocaleString()} seats
-            </td>
-            <td>
-                <span class="status-badge status-${venue.status}">${getStatusName(venue.status)}</span>
-            </td>
-            <td>
-                <div class="venue-actions">
-                    <button class="btn btn-sm btn-outline edit-venue-btn" data-id="${venue.id}">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-sm btn-danger delete-venue-btn" data-id="${venue.id}">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            </td>
-        `;
-
-                    venueTableBody.appendChild(venueRow);
-
-                    // Add event listeners to the buttons
-                    const editBtn = venueRow.querySelector('.edit-venue-btn');
-                    const deleteBtn = venueRow.querySelector('.delete-venue-btn');
-
-                    editBtn.addEventListener('click', function() {
-                        const venueId = parseInt(this.getAttribute('data-id'));
-                        openEditVenueModal(venueId);
-                    });
-
-                    deleteBtn.addEventListener('click', function() {
-                        const venueId = parseInt(this.getAttribute('data-id'));
-                        openDeleteModal(venueId);
-                    });
-                });
-            }
-
+            // Functions
             function changeView(view) {
-                currentView = view;
-
-                // Update active button
                 viewBtns.forEach(btn => {
                     if (btn.getAttribute('data-view') === view) {
                         btn.classList.add('active');
@@ -621,43 +488,42 @@
                     venueCardsView.style.display = 'none';
                     venueTableView.style.display = 'block';
                 }
-
-                renderVenues();
             }
 
             function openAddVenueModal() {
                 venueForm.reset();
-                // Show modal
+                document.getElementById('form-method').value = 'POST';
+                document.getElementById('modal-title').textContent = 'Add New Stadium';
+                venueForm.action = "{{ route('admin.stadiums.store') }}";
+
+                // Reset image preview
+                imagePreview.style.display = 'none';
+                stadiumImage.required = true;
+                imageHelpText.textContent = 'Upload an image of the stadium';
+
                 venueModal.classList.add('show');
             }
 
-            function openEditVenueModal(venueId) {
-                const venue = venues.find(v => v.id === venueId);
-                if (!venue) return;
+            function openEditVenueModal(venueId, venueName, venueCity, venueCapacity, venueImage) {
+                document.getElementById('venue-name').value = venueName;
+                document.getElementById('venue-city').value = venueCity;
+                document.getElementById('venue-capacity').value = venueCapacity;
+                document.getElementById('form-method').value = 'PUT';
 
-                // Set form values
-                document.getElementById('venue-id').value = venue.id;
-                document.getElementById('venue-name').value = venue.name;
-                document.getElementById('venue-code').value = venue.code;
-                document.getElementById('venue-city').value = venue.city;
-                document.getElementById('venue-country').value = venue.country;
-                document.getElementById('venue-capacity').value = venue.capacity;
-                document.getElementById('venue-status').value = venue.status;
-                document.getElementById('venue-image').value = venue.image || '';
-                document.getElementById('venue-description').value = venue.description || '';
-                document.getElementById('venue-year').value = venue.yearBuilt || '';
-                document.getElementById('venue-surface').value = venue.surface || '';
+                venueForm.action = "{{ url('admin/stadiums') }}/" + venueId;
 
-                // Set checkboxes
-                document.querySelectorAll('.feature-checkbox').forEach(checkbox => {
-                    const featureId = checkbox.id.replace('feature-', '');
-                    checkbox.checked = venue.features && venue.features.includes(featureId);
-                });
+                // Show image preview
+                if (venueImage) {
+                    imagePreview.src = "{{ asset('') }}" + venueImage;
+                    imagePreview.style.display = 'block';
+                    stadiumImage.required = false;
+                    imageHelpText.textContent = 'Leave empty to keep current image';
+                } else {
+                    imagePreview.style.display = 'none';
+                    stadiumImage.required = true;
+                }
 
-                // Update modal title
-                document.getElementById('modal-title').textContent = 'Edit Venue';
-
-                // Show modal
+                document.getElementById('modal-title').textContent = 'Edit Stadium';
                 venueModal.classList.add('show');
             }
 
@@ -666,7 +532,7 @@
             }
 
             function openDeleteModal(venueId) {
-                document.getElementById('delete-venue-id').value = venueId;
+                deleteForm.action = `/admin/stadiums/${venueId}`;
                 deleteModal.classList.add('show');
             }
 
@@ -674,10 +540,17 @@
                 deleteModal.classList.remove('show');
             }
 
-            function truncateText(text, maxLength) {
-                if (!text) return '';
-                if (text.length <= maxLength) return text;
-                return text.substring(0, maxLength) + '...';
+            function previewImage(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
             }
         });
     </script>
