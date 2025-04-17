@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('stade_name');
             $table->string('city');
+            $table->string('image');
             $table->integer('capacity');
             $table->timestamps();
         });

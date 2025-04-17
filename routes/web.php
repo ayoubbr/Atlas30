@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -72,6 +73,12 @@ Route::prefix('admin')->group(function () {
     Route::put('teams/{id}', [TeamController::class, 'update'])->name('admin.teams.update');
     Route::delete('teams/{id}', [TeamController::class, 'destroy'])->name('admin.teams.destroy');
 
+    //STADIUM
+    Route::get('stadiums', [StadiumController::class, 'index'])->name('admin.stadiums.index');
+    Route::post('stadiums', [StadiumController::class, 'store'])->name('admin.stadiums.store');
+    Route::put('stadiums/{id}', [StadiumController::class, 'update'])->name('admin.stadiums.update');
+    Route::delete('stadiums/{id}', [StadiumController::class, 'destroy'])->name('admin.stadiums.destroy');
+
 
     Route::get('dashboard', function () {
         return view('admin.dashboard');
@@ -89,9 +96,7 @@ Route::prefix('admin')->group(function () {
         return view('admin.tickets');
     });
 
-    Route::get('venues', function () {
-        return view('admin.venues');
-    });
+    
 
     Route::get('users', function () {
         return view('admin.users');
