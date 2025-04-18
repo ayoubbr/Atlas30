@@ -48,11 +48,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url('/admin/venues') }}"
-                        class="nav-link {{ request()->is('admin/venues') ? 'active' : '' }}">
+                    <a href="{{ url('/admin/stadiums') }}"
+                        class="nav-link {{ request()->is('admin/stadiums') ? 'active' : '' }}">
                         <i class="fas fa-map-marker-alt nav-icon"></i>
-                        <span class="nav-text">Venues</span>
-                        <span class="nav-badge">8</span>
+                        <span class="nav-text">stadiums</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -60,6 +59,13 @@
                         class="nav-link {{ request()->is('admin/teams') ? 'active' : '' }}">
                         <i class="fas fa-users nav-icon"></i>
                         <span class="nav-text">Teams</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/categories') }}"
+                        class="nav-link {{ request()->is('admin/categories') ? 'active' : '' }}">
+                        <i class="fas fa-users nav-icon"></i>
+                        <span class="nav-text">categories</span>
                     </a>
                 </li>
             </ul>
