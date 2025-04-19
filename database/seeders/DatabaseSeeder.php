@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->count(5)->create(['role_id' => $userRole->id]);
 
         // Teams
-        $teams = Team::factory()->count(5)->create();
+        $teams = Team::factory()->count(6)->create();
 
         // Stadiums
         $stadiums = Stadium::factory()->count(5)->create();
@@ -46,11 +46,7 @@ class DatabaseSeeder extends Seeder
         $categories = Category::factory()->count(5)->create();
 
         // Games
-        $games = Game::factory()->count(5)->create([
-            'home_team_id' => $teams[0]->id,
-            'away_team_id' => $teams[1]->id,
-            'stadium_id' => $stadiums[0]->id
-        ]);
+        $games = Game::factory()->count(3)->create();
 
         // Tickets
         $users = User::where('role_id', $userRole->id)->get();

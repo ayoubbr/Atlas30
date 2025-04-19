@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+
 use App\Models\Team;
 use App\Models\Stadium;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -25,7 +26,7 @@ class GameFactory extends Factory
             'stadium_id' => Stadium::inRandomOrder()->first()->id,
             'home_team_goals' => $this->faker->numberBetween(0, 5),
             'away_team_goals' => $this->faker->numberBetween(0, 5),
-            'image' => 'https://via.placeholder.com/400x200',
+            'image' => 'https://cdn.vectorstock.com/i/500p/58/35/soccer-bannertemplate-football-banner-vs-vector-53655835.jpg',
             'status' => $this->faker->randomElement(['scheduled', 'live', 'finished']),
         ];
     }
