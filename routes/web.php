@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StadiumController;
@@ -59,11 +60,11 @@ Route::prefix('/')->group(function () {
 
 // User profile 
 // Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
-    // Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
 // });
 
 // Admin
@@ -93,6 +94,12 @@ Route::prefix('admin')->group(function () {
     Route::put('roles/{id}', [RoleController::class, 'update'])->name('admin.roles.update');
     Route::delete('roles/{id}', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
 
+    // GAME
+    Route::get('games', [GameController::class, 'index'])->name('admin.games.index');
+    Route::post('games', [GameController::class, 'store'])->name('admin.games.store');
+    Route::put('games/{id}', [GameController::class, 'update'])->name('admin.games.update');
+    Route::delete('games/{id}', [GameController::class, 'destroy'])->name('admin.games.destroy');
+
 
     Route::get('dashboard', function () {
         return view('admin.dashboard');
@@ -100,10 +107,6 @@ Route::prefix('admin')->group(function () {
 
     Route::get('analytics', function () {
         return view('admin.analytics');
-    });
-
-    Route::get('matches', function () {
-        return view('admin.matches');
     });
 
     Route::get('tickets', function () {
