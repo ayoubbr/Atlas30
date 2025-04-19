@@ -51,7 +51,7 @@
                     <a href="{{ url('/admin/stadiums') }}"
                         class="nav-link {{ request()->is('admin/stadiums') ? 'active' : '' }}">
                         <i class="fas fa-map-marker-alt nav-icon"></i>
-                        <span class="nav-text">stadiums</span>
+                        <span class="nav-text">Stadiums</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -64,8 +64,15 @@
                 <li class="nav-item">
                     <a href="{{ url('/admin/categories') }}"
                         class="nav-link {{ request()->is('admin/categories') ? 'active' : '' }}">
-                        <i class="fas fa-users nav-icon"></i>
-                        <span class="nav-text">categories</span>
+                        <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                        <span class="nav-text">Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/roles') }}"
+                        class="nav-link {{ request()->is('admin/roles') ? 'active' : '' }}">
+                        <i class="fa-solid fa-user-gear nav-icon"></i>
+                        <span class="nav-text">Roles</span>
                     </a>
                 </li>
             </ul>

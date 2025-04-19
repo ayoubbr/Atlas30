@@ -7,19 +7,25 @@ use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
-    
+
     public function index()
     {
         $roles = Role::all();
-        return view('admin.roles.index', compact('roles'));
+        return view('admin.roles', compact('roles'));
     }
 
- 
+
+    public function create()
+    {
+        return view('admin.roles');
+    }
+
+
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:roles',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
         ]);
 
         $role = new Role();
@@ -31,36 +37,26 @@ class RoleController extends Controller
             ->with('success', 'Role created successfully.');
     }
 
-    
-    // public function show(Role $role)
-    // {
-    //     $role->load('users');
-    //     return view('admin.roles.show', compact('role'));
-    // }
 
-    /**
-     * Show the form for editing the specified role.
-     *
-     * @param  \App\Models\Role  $role
-     * @return \Illuminate\View\View
-     */
-    public function edit(Role $role)
+    public function show(Role $role)
     {
-        return view('admin.roles.edit', compact('role'));
+        return view('admin.roles', compact('role'));
     }
 
-    /**
-     * Update the specified role in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Role  $role
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, Role $role)
+
+    public function edit(Role $role)
     {
+        return view('admin.roles', compact('role'));
+    }
+
+
+    public function update(Request $request, $roleId)
+    {
+        $role = Role::find($roleId);
+
         $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:255',
         ]);
 
         $role->name = $request->name;
@@ -71,24 +67,14 @@ class RoleController extends Controller
             ->with('success', 'Role updated successfully.');
     }
 
-    /**
-     * Remove the specified role from storage.
-     *
-     * @param  \App\Models\Role  $role
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function destroy(Role $role)
+
+    public function destroy($roleId)
     {
-        // Check if role has users
+        $role = Role::find($roleId);
+
         if ($role->users()->count() > 0) {
             return redirect()->route('admin.roles.index')
                 ->with('error', 'Cannot delete role with associated users.');
-        }
-
-        // Prevent deletion of admin role
-        if ($role->name === 'admin') {
-            return redirect()->route('admin.roles.index')
-                ->with('error', 'Cannot delete the admin role.');
         }
 
         $role->delete();
