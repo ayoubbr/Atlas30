@@ -34,10 +34,10 @@
             <div class="nav-section-title">Management</div>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="{{ url('/admin/matches') }}"
-                        class="nav-link {{ request()->is('admin/matches') ? 'active' : '' }}">
+                    <a href="{{ url('/admin/games') }}"
+                        class="nav-link {{ request()->is('admin/games') ? 'active' : '' }}">
                         <i class="fas fa-futbol nav-icon"></i>
-                        <span class="nav-text">Matches</span>
+                        <span class="nav-text">Games</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -48,11 +48,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url('/admin/venues') }}"
-                        class="nav-link {{ request()->is('admin/venues') ? 'active' : '' }}">
+                    <a href="{{ url('/admin/stadiums') }}"
+                        class="nav-link {{ request()->is('admin/stadiums') ? 'active' : '' }}">
                         <i class="fas fa-map-marker-alt nav-icon"></i>
-                        <span class="nav-text">Venues</span>
-                        <span class="nav-badge">8</span>
+                        <span class="nav-text">Stadiums</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -60,6 +59,20 @@
                         class="nav-link {{ request()->is('admin/teams') ? 'active' : '' }}">
                         <i class="fas fa-users nav-icon"></i>
                         <span class="nav-text">Teams</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/categories') }}"
+                        class="nav-link {{ request()->is('admin/categories') ? 'active' : '' }}">
+                        <i class="fa-solid fa-table-cells-large nav-icon"></i>
+                        <span class="nav-text">Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/roles') }}"
+                        class="nav-link {{ request()->is('admin/roles') ? 'active' : '' }}">
+                        <i class="fa-solid fa-user-gear nav-icon"></i>
+                        <span class="nav-text">Roles</span>
                     </a>
                 </li>
             </ul>
@@ -141,7 +154,7 @@
 
         <div class="user-profile">
             <div class="user-avatar">
-                <img src="https://cdn-icons-png.flaticon.com/128/3177/3177465.png" alt="Admin Avatar">
+                <img src="https://cdn-icons-png.flaticon.com/128/6024/6024190.png" alt="Admin Avatar">
             </div>
             <div class="user-info">
                 <div class="user-name">John Doe</div>

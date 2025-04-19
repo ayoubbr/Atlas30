@@ -1,0 +1,78 @@
+/* Pagination Container */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+/* Pagination List */
+.pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    align-items: center;
+}
+
+/* Page Items */
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+/* Page Links */
+.pagination .page-link {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #444;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* Page Numbers */
+.pagination .page-numbers {
+    display: flex;
+    margin: 0 10px;
+}
+
+.pagination .page-number {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 3px;
+    text-decoration: none;
+    color: #444;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* Active state */
+.pagination .page-number.active {
+    background-color: #8A1538; /* World Cup color */
+    color: white;
+    border-color: #8A1538;
+}
+
+/* Hover state */
+.pagination .page-link:hover:not(.disabled),
+.pagination .page-number:hover:not(.active) {
+    background-color: #f5f5f5;
+    color: #8A1538;
+}
+
+/* Disabled state */
+.pagination .page-item.disabled .page-link {
+    color: #aaa;
+    pointer-events: none;
+    background-color: #f8f8f8;
+    border-color: #ddd;
+}
+
+/* Previous/Next buttons */
+.pagination .prev,
+.pagination .next {
+    font-weight: bold;
+}

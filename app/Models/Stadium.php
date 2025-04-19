@@ -10,6 +10,7 @@ class Stadium extends Model
     use HasFactory;
 
     protected $fillable = ['stade_name', 'city', 'capacity'];
+    protected $table = 'stadiums';
 
 
     public function games()

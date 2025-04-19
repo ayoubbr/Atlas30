@@ -675,7 +675,7 @@
         
         <div class="user-profile">
             <div class="user-avatar">
-                <img src="https://via.placeholder.com/40x40" alt="Admin Avatar">
+                <img src="https://cdn-icons-png.flaticon.com/128/6024/6024190.png" alt="Admin Avatar">
             </div>
             <div class="user-info">
                 <div class="user-name">John Doe</div>

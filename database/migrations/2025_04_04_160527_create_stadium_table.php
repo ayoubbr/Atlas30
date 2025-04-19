@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('stadiums', function (Blueprint $table) {
             $table->id();
-            $table->string('stade_name');
+            $table->string('name');
             $table->string('city');
+            $table->string('image');
             $table->integer('capacity');
             $table->timestamps();
         });

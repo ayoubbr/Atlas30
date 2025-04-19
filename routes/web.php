@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StadiumController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,16 +60,54 @@ Route::prefix('/')->group(function () {
 });
 
 // User profile 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
-    // Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
-});
+// Route::middleware(['auth'])->group(function () {
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+// });
 
 // Admin
-// Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+// middleware(['auth', 'admin'])->
+Route::prefix('admin')->group(function () {
+    // TEAM
+    Route::get('teams', [TeamController::class, 'index'])->name('admin.teams.index');
+    Route::post('teams', [TeamController::class, 'store'])->name('admin.teams.store');
+    Route::put('teams/{id}', [TeamController::class, 'update'])->name('admin.teams.update');
+    Route::delete('teams/{id}', [TeamController::class, 'destroy'])->name('admin.teams.destroy');
+
+    // STADIUM
+    Route::get('stadiums', [StadiumController::class, 'index'])->name('admin.stadiums.index');
+    Route::post('stadiums', [StadiumController::class, 'store'])->name('admin.stadiums.store');
+    Route::put('stadiums/{id}', [StadiumController::class, 'update'])->name('admin.stadiums.update');
+    Route::delete('stadiums/{id}', [StadiumController::class, 'destroy'])->name('admin.stadiums.destroy');
+
+    // CATEGORY
+    Route::get('categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::post('categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::put('categories/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+
+    // ROLE
+    Route::get('roles', [RoleController::class, 'index'])->name('admin.roles.index');
+    Route::post('roles', [RoleController::class, 'store'])->name('admin.roles.store');
+    Route::put('roles/{id}', [RoleController::class, 'update'])->name('admin.roles.update');
+    Route::delete('roles/{id}', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
+
+    // GAME
+    Route::get('games', [GameController::class, 'index'])->name('admin.games.index');
+    Route::post('games', [GameController::class, 'store'])->name('admin.games.store');
+    Route::put('games/{id}', [GameController::class, 'update'])->name('admin.games.update');
+    Route::delete('games/{id}', [GameController::class, 'destroy'])->name('admin.games.destroy');
+    Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
+
+    // TICKET
+    Route::get('tickets', [TicketController::class, 'index'])->name('admin.tickets.index');
+    Route::post('tickets', [TicketController::class, 'store'])->name('admin.tickets.store');
+    Route::put('tickets/{id}', [TicketController::class, 'update'])->name('admin.tickets.update');
+    Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
+
 
     Route::get('dashboard', function () {
         return view('admin.dashboard');
@@ -71,22 +115,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('analytics', function () {
         return view('admin.analytics');
-    });
-
-    Route::get('matches', function () {
-        return view('admin.matches');
-    });
-
-    Route::get('tickets', function () {
-        return view('admin.tickets');
-    });
-
-    Route::get('venues', function () {
-        return view('admin.venues');
-    });
-
-    Route::get('teams', function () {
-        return view('admin.teams');
     });
 
     Route::get('users', function () {
@@ -100,4 +128,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings', function () {
         return view('admin.settings');
     });
-// });
+});

@@ -20,6 +20,7 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/flash-messages.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pagination.css') }}">
     <style>
         :root {
             --primary: #e63946;

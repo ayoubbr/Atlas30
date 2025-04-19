@@ -17,7 +17,8 @@ class Game extends Model
         'stadium_id',
         'home_team_goals',
         'away_team_goals',
-        'image'
+        'image',
+        'status',
     ];
 
    
