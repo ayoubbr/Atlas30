@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -101,16 +102,19 @@ Route::prefix('admin')->group(function () {
     Route::delete('games/{id}', [GameController::class, 'destroy'])->name('admin.games.destroy');
     Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
 
+    // TICKET
+    Route::get('tickets', [TicketController::class, 'index'])->name('admin.tickets.index');
+    Route::post('tickets', [TicketController::class, 'store'])->name('admin.tickets.store');
+    Route::put('tickets/{id}', [TicketController::class, 'update'])->name('admin.tickets.update');
+    Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
+
+
     Route::get('dashboard', function () {
         return view('admin.dashboard');
     })->name("admin");
 
     Route::get('analytics', function () {
         return view('admin.analytics');
-    });
-
-    Route::get('tickets', function () {
-        return view('admin.tickets');
     });
 
     Route::get('users', function () {
