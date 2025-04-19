@@ -109,7 +109,6 @@ Route::prefix('admin')->group(function () {
     Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
 
 
-
     Route::get('dashboard', function () {
         return view('admin.dashboard');
     })->name("admin");

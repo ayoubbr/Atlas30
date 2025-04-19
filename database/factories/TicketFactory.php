@@ -24,7 +24,7 @@ class TicketFactory extends Factory
             'user_id' => User::inRandomOrder()->first()->id,
             'price' => $this->faker->numberBetween(20, 150),
             'place_number' => $this->faker->unique()->numberBetween(1, 500),
-            'status' => $this->faker->randomElement(['pending', 'confirmed', 'cancelled']),
+            'status' => $this->faker->randomElement(['available', 'sold', 'reserved', 'canceled']),
             'category_id' => Category::inRandomOrder()->first()->id,
         ];
     }

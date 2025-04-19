@@ -17,7 +17,7 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->randomElement(['VIP', 'Regular', 'Premium', 'Economy', 'Standard']),
+            'title' => $this->faker->unique()->randomElement(['VIP', 'Regular', 'Premium', 'Economy', 'Standard']),
             'price' => $this->faker->randomFloat(2, 20, 150),
         ];
     }
