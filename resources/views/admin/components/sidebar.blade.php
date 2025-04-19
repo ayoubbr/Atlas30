@@ -34,10 +34,10 @@
             <div class="nav-section-title">Management</div>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="{{ url('/admin/matches') }}"
-                        class="nav-link {{ request()->is('admin/matches') ? 'active' : '' }}">
+                    <a href="{{ url('/admin/games') }}"
+                        class="nav-link {{ request()->is('admin/games') ? 'active' : '' }}">
                         <i class="fas fa-futbol nav-icon"></i>
-                        <span class="nav-text">Matches</span>
+                        <span class="nav-text">Games</span>
                     </a>
                 </li>
                 <li class="nav-item">
