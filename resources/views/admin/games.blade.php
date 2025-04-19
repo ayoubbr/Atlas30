@@ -15,14 +15,288 @@
             align-items: center;
             z-index: 100;
         }
+
+        .modal.show {
+            display: flex;
+        }
+
+        /* Match Card Styles */
+        .match-cards-view {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .match-card {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+            border-left: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            background-color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .match-date {
+            padding: 10px 15px;
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .match-teams {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .match-team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 40%;
+        }
+
+        .team-flag {
+            width: 60px;
+            height: 40px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: var(--secondary);
+            text-align: center;
+        }
+
+        .match-vs {
+            font-weight: 600;
+            color: var(--gray-500);
+        }
+
+        .match-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .match-venue {
+            padding: 10px 15px;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .match-info {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .match-stage {
+            font-size: 0.9rem;
+            color: var(--gray-700);
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-scheduled {
+            background-color: var(--info-light);
+            color: var(--info);
+        }
+
+        .status-live {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+
+        .status-completed {
+            background-color: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .status-postponed {
+            background-color: var(--warning-light);
+            color: var(--warning);
+        }
+
+        .status-cancelled {
+            background-color: var(--danger-light);
+            color: var(--danger);
+        }
+
+        .match-notes {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            border-top: 1px solid var(--gray-200);
+            font-style: italic;
+        }
+
+        .match-actions {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* Table View Styles */
+        .match-table-view {
+            padding: 20px;
+        }
+
+        .match-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .match-table th,
+        .match-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .match-table th {
+            background-color: var(--gray-100);
+            font-weight: 600;
+        }
+
+        .table-teams {
+            display: flex;
+            align-items: center;
+        }
+
+        .table-team {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-flag {
+            width: 30px;
+            height: 20px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Filters */
+        .match-filters {
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            background-color: white;
+            min-width: 150px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--gray-300);
+            background-color: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .match-filters {
+                flex-direction: column;
+            }
+
+            .match-cards-view {
+                grid-template-columns: 1fr;
+            }
+
+            .match-teams {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .match-team {
+                width: 100%;
+            }
+
+            .table-teams {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
     </style>
 @endsection
 
 @section('content')
-
-    <!-- Main Content -->
     <main class="admin-main">
-        <!-- Page Header -->
         <div class="page-header">
             <div class="page-header-content">
                 <h2 class="page-header-title">Match Management</h2>
@@ -35,47 +309,24 @@
             </div>
         </div>
 
-        <!-- Match Filters -->
         <div class="match-filters">
-            <div class="filter-group">
-                <label for="filter-stage">Stage:</label>
-                <select id="filter-stage" class="filter-select">
-                    <option value="all">All Stages</option>
-                    <option value="group">Group Stage</option>
-                    <option value="round16">Round of 16</option>
-                    <option value="quarter">Quarter Finals</option>
-                    <option value="semi">Semi Finals</option>
-                    <option value="final">Final</option>
-                </select>
-            </div>
-
             <div class="filter-group">
                 <label for="filter-team">Team:</label>
                 <select id="filter-team" class="filter-select">
                     <option value="all">All Teams</option>
-                    <option value="brazil">Brazil</option>
-                    <option value="germany">Germany</option>
-                    <option value="spain">Spain</option>
-                    <option value="france">France</option>
-                    <option value="england">England</option>
-                    <option value="argentina">Argentina</option>
-                    <option value="portugal">Portugal</option>
-                    <option value="netherlands">Netherlands</option>
-                    <option value="italy">Italy</option>
-                    <option value="belgium">Belgium</option>
+                    @foreach ($teams as $team)
+                        <option value="{{ $team->id }}">{{ $team->name }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <div class="filter-group">
-                <label for="filter-venue">Venue:</label>
-                <select id="filter-venue" class="filter-select">
-                    <option value="all">All Venues</option>
-                    <option value="rio">Rio Stadium, Brazil</option>
-                    <option value="madrid">Madrid Stadium, Spain</option>
-                    <option value="paris">Paris Stadium, France</option>
-                    <option value="london">London Stadium, England</option>
-                    <option value="berlin">Berlin Stadium, Germany</option>
-                    <option value="rome">Rome Stadium, Italy</option>
+                <label for="filter-stadium">Stadium:</label>
+                <select id="filter-stadium" class="filter-select">
+                    <option value="all">All Stadiums</option>
+                    @foreach ($stadiums as $stadium)
+                        <option value="{{ $stadium->id }}">{{ $stadium->name }}, {{ $stadium->city }}</option>
+                    @endforeach
                 </select>
             </div>
 
@@ -111,7 +362,62 @@
 
             <!-- Card View -->
             <div class="match-cards-view" id="match-cards-view">
-                <!-- Cards will be dynamically generated here -->
+                @if ($games->isEmpty())
+                    <div class="no-matches">No matches found. Try adjusting your filters.</div>
+                @else
+                    @foreach ($games as $game)
+                        <div class="match-card" data-team-home="{{ $game->home_team_id }}"
+                            data-team-away="{{ $game->away_team_id }}" data-stadium="{{ $game->stadium_id }}"
+                            data-status="{{ $game->status }}">
+                            <div class="match-date">
+                                <i class="far fa-calendar-alt"></i> {{ date('l, F j, Y', strtotime($game->start_date)) }} -
+                                {{ date('g:i A', strtotime($game->start_hour)) }}
+                            </div>
+                            <div class="match-teams">
+                                <div class="match-team">
+                                    <div class="team-flag"
+                                        style="background-image: url('{{ asset($game->homeTeam->flag) }}')"></div>
+                                    <div class="team-name">{{ $game->homeTeam->name }}</div>
+                                </div>
+                                @if ($game->status === 'completed' || $game->status === 'live')
+                                    <div class="match-score">
+                                        <span>{{ $game->home_team_goals }}</span>
+                                        <span>-</span>
+                                        <span>{{ $game->away_team_goals }}</span>
+                                    </div>
+                                @else
+                                    <div class="match-vs">VS</div>
+                                @endif
+                                <div class="match-team">
+                                    <div class="team-flag"
+                                        style="background-image: url('{{ asset($game->awayTeam->flag) }}')"></div>
+                                    <div class="team-name">{{ $game->awayTeam->name }}</div>
+                                </div>
+                            </div>
+                            <div class="match-venue">
+                                <i class="fas fa-map-marker-alt"></i> {{ $game->stadium->name }},
+                                {{ $game->stadium->city }}
+                            </div>
+                            <div class="match-info">
+                                <div class="match-stage">World Cup 2030</div>
+                                <div class="status-badge status-{{ $game->status }}">{{ ucfirst($game->status) }}</div>
+                            </div>
+                            <div class="match-actions">
+                                <button class="btn btn-sm btn-outline edit-match-btn" data-id="{{ $game->id }}"
+                                    data-start-date="{{ $game->start_date }}" data-start-hour="{{ $game->start_hour }}"
+                                    data-home-team="{{ $game->home_team_id }}" data-away-team="{{ $game->away_team_id }}"
+                                    data-stadium="{{ $game->stadium_id }}" data-status="{{ $game->status }}"
+                                    data-home-goals="{{ $game->home_team_goals }}"
+                                    data-away-goals="{{ $game->away_team_goals }}" data-image="{{ $game->image }}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-match-btn" data-id="{{ $game->id }}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
             </div>
 
             <!-- Table View (hidden by default) -->
@@ -121,34 +427,79 @@
                         <tr>
                             <th>Date & Time</th>
                             <th>Teams</th>
-                            <th>Venue</th>
-                            <th>Stage</th>
+                            <th>Stadium</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="match-table-body">
-                        <!-- Table rows will be dynamically generated here -->
+                        @forelse ($games as $game)
+                            <tr data-team-home="{{ $game->home_team_id }}" data-team-away="{{ $game->away_team_id }}"
+                                data-stadium="{{ $game->stadium_id }}" data-status="{{ $game->status }}">
+                                <td>
+                                    {{ date('M j, Y', strtotime($game->start_date)) }}<br>
+                                    <span
+                                        style="color: var(--gray-600);">{{ date('g:i A', strtotime($game->start_hour)) }}</span>
+                                </td>
+                                <td>
+                                    <div class="table-teams">
+                                        <div class="table-team">
+                                            <div class="table-flag"
+                                                style="background-image: url('{{ asset($game->homeTeam->flag) }}')"></div>
+                                            <span>{{ $game->homeTeam->name }}</span>
+                                        </div>
+                                        @if ($game->status === 'completed' || $game->status === 'live')
+                                            <div style="margin: 0 10px; font-weight: 600;">{{ $game->home_team_goals }} -
+                                                {{ $game->away_team_goals }}</div>
+                                        @else
+                                            <div style="margin: 0 10px;">vs</div>
+                                        @endif
+                                        <div class="table-team">
+                                            <div class="table-flag"
+                                                style="background-image: url('{{ asset($game->awayTeam->flag) }}')"></div>
+                                            <span>{{ $game->awayTeam->name }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ $game->stadium->name }}, {{ $game->stadium->city }}</td>
+                                <td><span
+                                        class="status-badge status-{{ $game->status }}">{{ ucfirst($game->status) }}</span>
+                                </td>
+                                <td>
+                                    <div class="match-actions">
+                                        <button class="btn btn-sm btn-outline edit-match-btn"
+                                            data-id="{{ $game->id }}" data-start-date="{{ $game->start_date }}"
+                                            data-start-hour="{{ $game->start_hour }}"
+                                            data-home-team="{{ $game->home_team_id }}"
+                                            data-away-team="{{ $game->away_team_id }}"
+                                            data-stadium="{{ $game->stadium_id }}" data-status="{{ $game->status }}"
+                                            data-home-goals="{{ $game->home_team_goals }}"
+                                            data-away-goals="{{ $game->away_team_goals }}"
+                                            data-image="{{ $game->image }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger delete-match-btn"
+                                            data-id="{{ $game->id }}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px;">
+                                    No matches found. Try adjusting your filters.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-
-            <!-- Pagination -->
-            <div class="pagination">
-                <button class="pagination-btn" id="prev-page" disabled>
-                    <i class="fas fa-chevron-left"></i> Previous
-                </button>
-                <div class="pagination-info">
-                    Page <span id="current-page">1</span> of <span id="total-pages">1</span>
-                </div>
-                <button class="pagination-btn" id="next-page">
-                    Next <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
         </div>
     </main>
+@endsection
 
-
+@section('modal')
     <!-- Add/Edit Match Modal -->
     <div class="modal" id="match-modal">
         <div class="modal-content">
@@ -159,89 +510,57 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="match-form">
-                    <input type="hidden" id="match-id">
+                <form id="match-form" method="POST" action="{{ route('admin.games.store') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="_method" id="form-method" value="POST">
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="match-date">Date</label>
-                            <input type="date" id="match-date" class="form-control" required>
+                            <label for="start_date">Date</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label for="match-time">Time (GMT)</label>
-                            <input type="time" id="match-time" class="form-control" required>
+                            <label for="start_hour">Time</label>
+                            <input type="time" id="start_hour" name="start_hour" class="form-control" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="team1">Team 1</label>
-                            <select id="team1" class="form-control" required>
+                            <label for="home_team_id">Home Team</label>
+                            <select id="home_team_id" name="home_team_id" class="form-control" required>
                                 <option value="">Select Team</option>
-                                <option value="brazil">Brazil</option>
-                                <option value="germany">Germany</option>
-                                <option value="spain">Spain</option>
-                                <option value="france">France</option>
-                                <option value="england">England</option>
-                                <option value="argentina">Argentina</option>
-                                <option value="portugal">Portugal</option>
-                                <option value="netherlands">Netherlands</option>
-                                <option value="italy">Italy</option>
-                                <option value="belgium">Belgium</option>
-                                <option value="croatia">Croatia</option>
-                                <option value="uruguay">Uruguay</option>
+                                @foreach ($teams as $team)
+                                    <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="team2">Team 2</label>
-                            <select id="team2" class="form-control" required>
+                            <label for="away_team_id">Away Team</label>
+                            <select id="away_team_id" name="away_team_id" class="form-control" required>
                                 <option value="">Select Team</option>
-                                <option value="brazil">Brazil</option>
-                                <option value="germany">Germany</option>
-                                <option value="spain">Spain</option>
-                                <option value="france">France</option>
-                                <option value="england">England</option>
-                                <option value="argentina">Argentina</option>
-                                <option value="portugal">Portugal</option>
-                                <option value="netherlands">Netherlands</option>
-                                <option value="italy">Italy</option>
-                                <option value="belgium">Belgium</option>
-                                <option value="croatia">Croatia</option>
-                                <option value="uruguay">Uruguay</option>
+                                @foreach ($teams as $team)
+                                    <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="venue">Venue</label>
-                        <select id="venue" class="form-control" required>
-                            <option value="">Select Venue</option>
-                            <option value="rio">Rio Stadium, Brazil</option>
-                            <option value="madrid">Madrid Stadium, Spain</option>
-                            <option value="paris">Paris Stadium, France</option>
-                            <option value="london">London Stadium, England</option>
-                            <option value="berlin">Berlin Stadium, Germany</option>
-                            <option value="rome">Rome Stadium, Italy</option>
-                            <option value="buenos">Buenos Aires Stadium, Argentina</option>
-                            <option value="montevideo">Montevideo Stadium, Uruguay</option>
+                        <label for="stadium_id">Stadium</label>
+                        <select id="stadium_id" name="stadium_id" class="form-control" required>
+                            <option value="">Select Stadium</option>
+                            @foreach ($stadiums as $stadium)
+                                <option value="{{ $stadium->id }}">{{ $stadium->name }}, {{ $stadium->city }}</option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="stage">Stage</label>
-                            <select id="stage" class="form-control" required>
-                                <option value="">Select Stage</option>
-                                <option value="group">Group Stage</option>
-                                <option value="round16">Round of 16</option>
-                                <option value="quarter">Quarter Finals</option>
-                                <option value="semi">Semi Finals</option>
-                                <option value="final">Final</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label for="status">Status</label>
-                            <select id="status" class="form-control" required>
+                            <select id="status" name="status" class="form-control" required>
                                 <option value="scheduled">Scheduled</option>
                                 <option value="live">Live</option>
                                 <option value="completed">Completed</option>
@@ -253,24 +572,30 @@
 
                     <div class="form-row score-inputs" style="display: none;">
                         <div class="form-group">
-                            <label for="team1-score">Team 1 Score</label>
-                            <input type="number" id="team1-score" class="form-control" min="0" value="0">
+                            <label for="home_team_goals">Home Team Score</label>
+                            <input type="number" id="home_team_goals" name="home_team_goals" class="form-control"
+                                min="0" value="0">
                         </div>
                         <div class="form-group">
-                            <label for="team2-score">Team 2 Score</label>
-                            <input type="number" id="team2-score" class="form-control" min="0" value="0">
+                            <label for="away_team_goals">Away Team Score</label>
+                            <input type="number" id="away_team_goals" name="away_team_goals" class="form-control"
+                                min="0" value="0">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="notes">Notes</label>
-                        <textarea id="notes" class="form-control" rows="3"></textarea>
+                        <label for="image">Match Image</label>
+                        <input type="file" id="image" name="image" class="form-control" accept="image/*">
+                        <div class="form-text" id="image-help-text">Upload an image for the match (optional)</div>
+                        <img id="image-preview" src="#" alt="Image Preview"
+                            style="display: none; max-width: 100%; margin-top: 10px;">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Match</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancel-btn">Cancel</button>
-                <button class="btn btn-primary" id="save-match-btn">Save Match</button>
             </div>
         </div>
     </div>
@@ -286,75 +611,59 @@
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete this match? This action cannot be undone.</p>
-                <input type="hidden" id="delete-match-id">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancel-delete-btn">Cancel</button>
-                <button class="btn btn-danger" id="confirm-delete-btn">Delete Match</button>
+                <form id="delete-form" method="POST" action="">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline" id="cancel-delete-btn">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Delete Match</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 @endsection
 
 @section('js')
-
-    <!-- JavaScript -->
-    <script src="js/match-management.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.getElementById('sidebar');
             const addMatchBtn = document.getElementById('add-match-btn');
             const matchModal = document.getElementById('match-modal');
             const modalClose = document.getElementById('modal-close');
             const cancelBtn = document.getElementById('cancel-btn');
-            const saveMatchBtn = document.getElementById('save-match-btn');
+            const matchForm = document.getElementById('match-form');
             const deleteModal = document.getElementById('delete-modal');
             const deleteModalClose = document.getElementById('delete-modal-close');
             const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-            const matchForm = document.getElementById('match-form');
+            const deleteForm = document.getElementById('delete-form');
             const matchCardsView = document.getElementById('match-cards-view');
             const matchTableView = document.getElementById('match-table-view');
             const matchTableBody = document.getElementById('match-table-body');
             const viewBtns = document.querySelectorAll('.view-btn');
             const statusSelect = document.getElementById('status');
             const scoreInputs = document.querySelector('.score-inputs');
-            const filterStage = document.getElementById('filter-stage');
             const filterTeam = document.getElementById('filter-team');
-            const filterVenue = document.getElementById('filter-venue');
+            const filterStadium = document.getElementById('filter-stadium');
             const filterStatus = document.getElementById('filter-status');
             const resetFiltersBtn = document.getElementById('reset-filters');
-            const prevPageBtn = document.getElementById('prev-page');
-            const nextPageBtn = document.getElementById('next-page');
-            const currentPageSpan = document.getElementById('current-page');
-            const totalPagesSpan = document.getElementById('total-pages');
-            const searchInput = document.querySelector('.search-input');
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('image-preview');
 
-            // State
-            let matches = [];
-            let currentPage = 1;
-            let itemsPerPage = 8;
-            let currentView = 'card';
-            let currentFilters = {
-                stage: 'all',
-                team: 'all',
-                venue: 'all',
-                status: 'all',
-                search: ''
-            };
-
-            // Initialize with sample data
-            initSampleData();
-
-            // Event Listeners
-            if (menuToggle) {
-                menuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
+            // Add event listeners for all edit buttons
+            document.querySelectorAll('.edit-match-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const gameId = this.getAttribute('data-id');
+                    openEditMatchModal(this);
                 });
-            }
+            });
+
+            // Add event listeners for all delete buttons
+            document.querySelectorAll('.delete-match-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const gameId = this.getAttribute('data-id');
+                    openDeleteModal(gameId);
+                });
+            });
 
             addMatchBtn.addEventListener('click', function() {
                 openAddMatchModal();
@@ -376,14 +685,6 @@
                 closeDeleteModal();
             });
 
-            saveMatchBtn.addEventListener('click', function() {
-                saveMatch();
-            });
-
-            confirmDeleteBtn.addEventListener('click', function() {
-                deleteMatch();
-            });
-
             viewBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const view = this.getAttribute('data-view');
@@ -395,410 +696,28 @@
                 toggleScoreInputs();
             });
 
-            filterStage.addEventListener('change', function() {
-                currentFilters.stage = this.value;
-                currentPage = 1;
-                renderMatches();
-            });
-
             filterTeam.addEventListener('change', function() {
-                currentFilters.team = this.value;
-                currentPage = 1;
-                renderMatches();
+                filterMatches();
             });
 
-            filterVenue.addEventListener('change', function() {
-                currentFilters.venue = this.value;
-                currentPage = 1;
-                renderMatches();
+            filterStadium.addEventListener('change', function() {
+                filterMatches();
             });
 
             filterStatus.addEventListener('change', function() {
-                currentFilters.status = this.value;
-                currentPage = 1;
-                renderMatches();
+                filterMatches();
             });
 
             resetFiltersBtn.addEventListener('click', function() {
                 resetFilters();
             });
 
-            prevPageBtn.addEventListener('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderMatches();
-                }
-            });
-
-            nextPageBtn.addEventListener('click', function() {
-                const totalPages = Math.ceil(getFilteredMatches().length / itemsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderMatches();
-                }
-            });
-
-            searchInput.addEventListener('input', function() {
-                currentFilters.search = this.value.toLowerCase();
-                currentPage = 1;
-                renderMatches();
+            imageInput.addEventListener('change', function() {
+                previewImage(this);
             });
 
             // Functions
-            function initSampleData() {
-                // Check if we already have data in localStorage
-                const storedMatches = localStorage.getItem('worldCupMatches');
-                if (storedMatches) {
-                    matches = JSON.parse(storedMatches);
-                    renderMatches();
-                    return;
-                }
-
-                // Sample match data
-                matches = [{
-                        id: 1,
-                        date: '2030-06-12',
-                        time: '15:00',
-                        team1: 'brazil',
-                        team2: 'germany',
-                        venue: 'rio',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: 'Opening match of Group A'
-                    },
-                    {
-                        id: 2,
-                        date: '2030-06-13',
-                        time: '12:00',
-                        team1: 'spain',
-                        team2: 'portugal',
-                        venue: 'madrid',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: 'Iberian derby'
-                    },
-                    {
-                        id: 3,
-                        date: '2030-06-13',
-                        time: '18:00',
-                        team1: 'france',
-                        team2: 'netherlands',
-                        venue: 'paris',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: ''
-                    },
-                    {
-                        id: 4,
-                        date: '2030-06-14',
-                        time: '15:00',
-                        team1: 'argentina',
-                        team2: 'england',
-                        venue: 'buenos',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: ''
-                    },
-                    {
-                        id: 5,
-                        date: '2030-06-15',
-                        time: '12:00',
-                        team1: 'italy',
-                        team2: 'belgium',
-                        venue: 'rome',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: ''
-                    },
-                    {
-                        id: 6,
-                        date: '2030-06-15',
-                        time: '18:00',
-                        team1: 'uruguay',
-                        team2: 'croatia',
-                        venue: 'montevideo',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: ''
-                    },
-                    {
-                        id: 7,
-                        date: '2030-06-16',
-                        time: '15:00',
-                        team1: 'germany',
-                        team2: 'spain',
-                        venue: 'berlin',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: ''
-                    },
-                    {
-                        id: 8,
-                        date: '2030-06-17',
-                        time: '12:00',
-                        team1: 'brazil',
-                        team2: 'argentina',
-                        venue: 'rio',
-                        stage: 'group',
-                        status: 'scheduled',
-                        team1Score: 0,
-                        team2Score: 0,
-                        notes: 'South American classic'
-                    }
-                ];
-
-                // Save to localStorage
-                saveMatchesToStorage();
-                renderMatches();
-            }
-
-            function saveMatchesToStorage() {
-                localStorage.setItem('worldCupMatches', JSON.stringify(matches));
-            }
-
-            function renderMatches() {
-                const filteredMatches = getFilteredMatches();
-                const totalPages = Math.ceil(filteredMatches.length / itemsPerPage);
-
-                // Update pagination info
-                currentPageSpan.textContent = currentPage;
-                totalPagesSpan.textContent = totalPages;
-
-                // Enable/disable pagination buttons
-                prevPageBtn.disabled = currentPage <= 1;
-                nextPageBtn.disabled = currentPage >= totalPages;
-
-                // Get current page matches
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                const currentMatches = filteredMatches.slice(startIndex, endIndex);
-
-                // Render based on current view
-                if (currentView === 'card') {
-                    renderCardView(currentMatches);
-                } else {
-                    renderTableView(currentMatches);
-                }
-            }
-
-            function getFilteredMatches() {
-                return matches.filter(match => {
-                    // Apply filters
-                    if (currentFilters.stage !== 'all' && match.stage !== currentFilters.stage)
-                        return false;
-                    if (currentFilters.venue !== 'all' && match.venue !== currentFilters.venue)
-                        return false;
-                    if (currentFilters.status !== 'all' && match.status !== currentFilters.status)
-                        return false;
-
-                    // Team filter (check both teams)
-                    if (currentFilters.team !== 'all' && match.team1 !== currentFilters.team && match
-                        .team2 !== currentFilters.team) return false;
-
-                    // Search filter
-                    if (currentFilters.search) {
-                        const searchTerm = currentFilters.search.toLowerCase();
-                        const team1Name = getTeamName(match.team1).toLowerCase();
-                        const team2Name = getTeamName(match.team2).toLowerCase();
-                        const venueName = getVenueName(match.venue).toLowerCase();
-
-                        if (!team1Name.includes(searchTerm) &&
-                            !team2Name.includes(searchTerm) &&
-                            !venueName.includes(searchTerm) &&
-                            !match.date.includes(searchTerm)) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                });
-            }
-
-            function renderCardView(matches) {
-                matchCardsView.innerHTML = '';
-
-                if (matches.length === 0) {
-                    matchCardsView.innerHTML =
-                        '<div class="no-matches">No matches found. Try adjusting your filters.</div>';
-                    return;
-                }
-
-                matches.forEach(match => {
-                    const matchCard = document.createElement('div');
-                    matchCard.className = 'match-card';
-
-                    const matchDate = new Date(`${match.date}T${match.time}:00`);
-                    const formattedDate = matchDate.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-                    const formattedTime = matchDate.toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
-                    });
-
-                    matchCard.innerHTML = `
-                <div class="match-date">
-                    <i class="far fa-calendar-alt"></i> ${formattedDate} - ${formattedTime}
-                </div>
-                <div class="match-teams">
-                    <div class="match-team">
-                        <div class="team-flag" style="background-image: url('https://via.placeholder.com/40x30/${getTeamColor(match.team1)}/ffffff?text=${match.team1.substring(0, 3).toUpperCase()}')"></div>
-                        <div class="team-name">${getTeamName(match.team1)}</div>
-                    </div>
-                    ${match.status === 'completed' || match.status === 'live' ? 
-                        `<div class="match-score">
-                                                                  <span>${match.team1Score}</span>
-                                                                  <span>-</span>
-                                                                  <span>${match.team2Score}</span>
-                                                              </div>` : 
-                        `<div class="match-vs">VS</div>`
-                    }
-                    <div class="match-team">
-                        <div class="team-flag" style="background-image: url('https://via.placeholder.com/40x30/${getTeamColor(match.team2)}/ffffff?text=${match.team2.substring(0, 3).toUpperCase()}')"></div>
-                        <div class="team-name">${getTeamName(match.team2)}</div>
-                    </div>
-                </div>
-                <div class="match-venue">
-                    <i class="fas fa-map-marker-alt"></i> ${getVenueName(match.venue)}
-                </div>
-                <div class="match-info">
-                    <div class="match-stage">${getStageName(match.stage)}</div>
-                    <div class="status-badge status-${match.status}">${getStatusName(match.status)}</div>
-                </div>
-                ${match.notes ? `<div class="match-notes">${match.notes}</div>` : ''}
-                <div class="match-actions">
-                    <button class="btn btn-sm btn-outline edit-match-btn" data-id="${match.id}">
-                        <i class="fas fa-edit"></i> Edit
-                    </button>
-                    <button class="btn btn-sm btn-danger delete-match-btn" data-id="${match.id}">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                </div>
-            `;
-
-                    matchCardsView.appendChild(matchCard);
-
-                    // Add event listeners to the buttons
-                    const editBtn = matchCard.querySelector('.edit-match-btn');
-                    const deleteBtn = matchCard.querySelector('.delete-match-btn');
-
-                    editBtn.addEventListener('click', function() {
-                        const matchId = parseInt(this.getAttribute('data-id'));
-                        openEditMatchModal(matchId);
-                    });
-
-                    deleteBtn.addEventListener('click', function() {
-                        const matchId = parseInt(this.getAttribute('data-id'));
-                        openDeleteModal(matchId);
-                    });
-                });
-            }
-
-            function renderTableView(matches) {
-                matchTableBody.innerHTML = '';
-
-                if (matches.length === 0) {
-                    matchTableBody.innerHTML = `
-                <tr>
-                    <td colspan="6" style="text-align: center; padding: 30px;">
-                        No matches found. Try adjusting your filters.
-                    </td>
-                </tr>
-            `;
-                    return;
-                }
-
-                matches.forEach(match => {
-                    const matchRow = document.createElement('tr');
-
-                    const matchDate = new Date(`${match.date}T${match.time}:00`);
-                    const formattedDate = matchDate.toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric'
-                    });
-                    const formattedTime = matchDate.toLocaleTimeString('en-US', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
-                    });
-
-                    matchRow.innerHTML = `
-                <td>
-                    ${formattedDate}<br>
-                    <span style="color: var(--gray-600);">${formattedTime}</span>
-                </td>
-                <td>
-                    <div class="table-teams">
-                        <div class="table-team">
-                            <div class="table-flag" style="background-image: url('https://via.placeholder.com/24x16/${getTeamColor(match.team1)}/ffffff?text=${match.team1.substring(0, 3).toUpperCase()}')"></div>
-                            <span>${getTeamName(match.team1)}</span>
-                        </div>
-                        ${match.status === 'completed' || match.status === 'live' ? 
-                            `<div style="margin: 0 10px; font-weight: 600;">${match.team1Score} - ${match.team2Score}</div>` : 
-                            `<div style="margin: 0 10px;">vs</div>`
-                        }
-                        <div class="table-team">
-                            <div class="table-flag" style="background-image: url('https://via.placeholder.com/24x16/${getTeamColor(match.team2)}/ffffff?text=${match.team2.substring(0, 3).toUpperCase()}')"></div>
-                            <span>${getTeamName(match.team2)}</span>
-                        </div>
-                    </div>
-                </td>
-                <td>${getVenueName(match.venue)}</td>
-                <td>${getStageName(match.stage)}</td>
-                <td><span class="status-badge status-${match.status}">${getStatusName(match.status)}</span></td>
-                <td>
-                    <div class="match-actions">
-                        <button class="btn btn-sm btn-outline edit-match-btn" data-id="${match.id}">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button class="btn btn-sm btn-danger delete-match-btn" data-id="${match.id}">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </td>
-            `;
-
-                    matchTableBody.appendChild(matchRow);
-
-                    // Add event listeners to the buttons
-                    const editBtn = matchRow.querySelector('.edit-match-btn');
-                    const deleteBtn = matchRow.querySelector('.delete-match-btn');
-
-                    editBtn.addEventListener('click', function() {
-                        const matchId = parseInt(this.getAttribute('data-id'));
-                        openEditMatchModal(matchId);
-                    });
-
-                    deleteBtn.addEventListener('click', function() {
-                        const matchId = parseInt(this.getAttribute('data-id'));
-                        openDeleteModal(matchId);
-                    });
-                });
-            }
-
             function changeView(view) {
-                currentView = view;
-
-                // Update active button
                 viewBtns.forEach(btn => {
                     if (btn.getAttribute('data-view') === view) {
                         btn.classList.add('active');
@@ -807,7 +726,6 @@
                     }
                 });
 
-                // Show/hide views
                 if (view === 'card') {
                     matchCardsView.style.display = 'grid';
                     matchTableView.style.display = 'none';
@@ -815,52 +733,59 @@
                     matchCardsView.style.display = 'none';
                     matchTableView.style.display = 'block';
                 }
-
-                renderMatches();
             }
 
             function openAddMatchModal() {
-                // Reset form
                 matchForm.reset();
-                document.getElementById('match-id').value = '';
+                document.getElementById('form-method').value = 'POST';
                 document.getElementById('modal-title').textContent = 'Add New Match';
+                matchForm.action = "{{ route('admin.games.store') }}";
 
-                // Set default date to tomorrow
                 const tomorrow = new Date();
                 tomorrow.setDate(tomorrow.getDate() + 1);
-                document.getElementById('match-date').value = tomorrow.toISOString().split('T')[0];
+                document.getElementById('start_date').value = tomorrow.toISOString().split('T')[0];
 
-                // Hide score inputs for new matches
                 scoreInputs.style.display = 'none';
+                imagePreview.style.display = 'none';
 
-                // Show modal
                 matchModal.classList.add('show');
             }
 
-            function openEditMatchModal(matchId) {
-                const match = matches.find(m => m.id === matchId);
-                if (!match) return;
+            function openEditMatchModal(button) {
+                const gameId = button.getAttribute('data-id');
+                const startDate = button.getAttribute('data-start-date');
+                const startHour = button.getAttribute('data-start-hour');
+                const homeTeam = button.getAttribute('data-home-team');
+                const awayTeam = button.getAttribute('data-away-team');
+                const stadium = button.getAttribute('data-stadium');
+                const status = button.getAttribute('data-status');
+                const homeGoals = button.getAttribute('data-home-goals');
+                const awayGoals = button.getAttribute('data-away-goals');
+                const image = button.getAttribute('data-image');
 
-                // Set form values
-                document.getElementById('match-id').value = match.id;
-                document.getElementById('match-date').value = match.date;
-                document.getElementById('match-time').value = match.time;
-                document.getElementById('team1').value = match.team1;
-                document.getElementById('team2').value = match.team2;
-                document.getElementById('venue').value = match.venue;
-                document.getElementById('stage').value = match.stage;
-                document.getElementById('status').value = match.status;
-                document.getElementById('team1-score').value = match.team1Score;
-                document.getElementById('team2-score').value = match.team2Score;
-                document.getElementById('notes').value = match.notes || '';
+                document.getElementById('form-method').value = 'PUT';
+                document.getElementById('modal-title').textContent = 'Edit Match';
+                matchForm.action = "{{ url('admin/games') }}/" + gameId;
+
+                document.getElementById('start_date').value = startDate;
+                document.getElementById('start_hour').value = startHour;
+                document.getElementById('home_team_id').value = homeTeam;
+                document.getElementById('away_team_id').value = awayTeam;
+                document.getElementById('stadium_id').value = stadium;
+                document.getElementById('status').value = status;
+                document.getElementById('home_team_goals').value = homeGoals;
+                document.getElementById('away_team_goals').value = awayGoals;
 
                 // Show/hide score inputs based on status
                 toggleScoreInputs();
 
-                // Update modal title
-                document.getElementById('modal-title').textContent = 'Edit Match';
+                if (image && image !== 'null') {
+                    imagePreview.src = "{{ asset('') }}" + image;
+                    imagePreview.style.display = 'block';
+                } else {
+                    imagePreview.style.display = 'none';
+                }
 
-                // Show modal
                 matchModal.classList.add('show');
             }
 
@@ -868,8 +793,8 @@
                 matchModal.classList.remove('show');
             }
 
-            function openDeleteModal(matchId) {
-                document.getElementById('delete-match-id').value = matchId;
+            function openDeleteModal(gameId) {
+                deleteForm.action = "{{ url('admin/games') }}/" + gameId;
                 deleteModal.classList.add('show');
             }
 
@@ -886,174 +811,127 @@
                 }
             }
 
-            function saveMatch() {
-                // Validate form
-                if (!matchForm.checkValidity()) {
-                    matchForm.reportValidity();
-                    return;
-                }
+            function filterMatches() {
+                const teamFilter = filterTeam.value;
+                const stadiumFilter = filterStadium.value;
+                const statusFilter = filterStatus.value;
 
-                // Get form values
-                const matchId = document.getElementById('match-id').value;
-                const date = document.getElementById('match-date').value;
-                const time = document.getElementById('match-time').value;
-                const team1 = document.getElementById('team1').value;
-                const team2 = document.getElementById('team2').value;
-                const venue = document.getElementById('venue').value;
-                const stage = document.getElementById('stage').value;
-                const status = document.getElementById('status').value;
-                const team1Score = parseInt(document.getElementById('team1-score').value) || 0;
-                const team2Score = parseInt(document.getElementById('team2-score').value) || 0;
-                const notes = document.getElementById('notes').value;
+                // Filter card view
+                const cards = document.querySelectorAll('#match-cards-view .match-card');
+                cards.forEach(card => {
+                    const homeTeamId = card.getAttribute('data-team-home');
+                    const awayTeamId = card.getAttribute('data-team-away');
+                    const stadiumId = card.getAttribute('data-stadium');
+                    const status = card.getAttribute('data-status');
 
-                // Validate teams are different
-                if (team1 === team2) {
-                    alert('Teams cannot be the same');
-                    return;
-                }
+                    const teamMatch = teamFilter === 'all' || homeTeamId === teamFilter || awayTeamId ===
+                        teamFilter;
+                    const stadiumMatch = stadiumFilter === 'all' || stadiumId === stadiumFilter;
+                    const statusMatch = statusFilter === 'all' || status === statusFilter;
 
-                if (matchId) {
-                    // Update existing match
-                    const index = matches.findIndex(m => m.id === parseInt(matchId));
-                    if (index !== -1) {
-                        matches[index] = {
-                            ...matches[index],
-                            date,
-                            time,
-                            team1,
-                            team2,
-                            venue,
-                            stage,
-                            status,
-                            team1Score,
-                            team2Score,
-                            notes
-                        };
+                    if (teamMatch && stadiumMatch && statusMatch) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
                     }
-                } else {
-                    // Add new match
-                    const newId = matches.length > 0 ? Math.max(...matches.map(m => m.id)) + 1 : 1;
-                    matches.push({
-                        id: newId,
-                        date,
-                        time,
-                        team1,
-                        team2,
-                        venue,
-                        stage,
-                        status,
-                        team1Score,
-                        team2Score,
-                        notes
-                    });
-                }
+                });
 
-                // Save to localStorage and render
-                saveMatchesToStorage();
-                renderMatches();
-                closeMatchModal();
-            }
+                // Filter table view
+                const rows = document.querySelectorAll('#match-table-body tr');
+                rows.forEach(row => {
+                    const homeTeamId = row.getAttribute('data-team-home');
+                    const awayTeamId = row.getAttribute('data-team-away');
+                    const stadiumId = row.getAttribute('data-stadium');
+                    const status = row.getAttribute('data-status');
 
-            function deleteMatch() {
-                const matchId = parseInt(document.getElementById('delete-match-id').value);
-                matches = matches.filter(m => m.id !== matchId);
+                    const teamMatch = teamFilter === 'all' || homeTeamId === teamFilter || awayTeamId ===
+                        teamFilter;
+                    const stadiumMatch = stadiumFilter === 'all' || stadiumId === stadiumFilter;
+                    const statusMatch = statusFilter === 'all' || status === statusFilter;
 
-                // Save to localStorage and render
-                saveMatchesToStorage();
-                renderMatches();
-                closeDeleteModal();
+                    if (teamMatch && stadiumMatch && statusMatch) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Check if no matches are visible
+                checkNoMatches();
             }
 
             function resetFilters() {
-                filterStage.value = 'all';
                 filterTeam.value = 'all';
-                filterVenue.value = 'all';
+                filterStadium.value = 'all';
                 filterStatus.value = 'all';
-                searchInput.value = '';
 
-                currentFilters = {
-                    stage: 'all',
-                    team: 'all',
-                    venue: 'all',
-                    status: 'all',
-                    search: ''
-                };
+                // Show all matches
+                const cards = document.querySelectorAll('#match-cards-view .match-card');
+                cards.forEach(card => {
+                    card.style.display = '';
+                });
 
-                currentPage = 1;
-                renderMatches();
+                const rows = document.querySelectorAll('#match-table-body tr');
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+
+                // Remove no matches message if it exists
+                const noMatchesCard = document.querySelector('.no-matches');
+                if (noMatchesCard) {
+                    noMatchesCard.remove();
+                }
+
+                const noMatchesTable = document.querySelector('#match-table-body .no-matches-row');
+                if (noMatchesTable) {
+                    noMatchesTable.remove();
+                }
             }
 
-            // Helper functions
-            function getTeamName(teamCode) {
-                const teams = {
-                    'brazil': 'Brazil',
-                    'germany': 'Germany',
-                    'spain': 'Spain',
-                    'france': 'France',
-                    'england': 'England',
-                    'argentina': 'Argentina',
-                    'portugal': 'Portugal',
-                    'netherlands': 'Netherlands',
-                    'italy': 'Italy',
-                    'belgium': 'Belgium',
-                    'croatia': 'Croatia',
-                    'uruguay': 'Uruguay'
-                };
-                return teams[teamCode] || teamCode;
+            function checkNoMatches() {
+                // Check card view
+                const visibleCards = Array.from(document.querySelectorAll('#match-cards-view .match-card')).filter(
+                    card => card.style.display !== 'none');
+                if (visibleCards.length === 0 && !document.querySelector('#match-cards-view .no-matches')) {
+                    const noMatches = document.createElement('div');
+                    noMatches.className = 'no-matches';
+                    noMatches.textContent = 'No matches found. Try adjusting your filters.';
+                    matchCardsView.appendChild(noMatches);
+                } else if (visibleCards.length > 0) {
+                    const noMatches = document.querySelector('#match-cards-view .no-matches');
+                    if (noMatches) {
+                        noMatches.remove();
+                    }
+                }
+
+                // Check table view
+                const visibleRows = Array.from(document.querySelectorAll('#match-table-body tr')).filter(row => row
+                    .style.display !== 'none');
+                if (visibleRows.length === 0 && !document.querySelector('#match-table-body .no-matches-row')) {
+                    const noMatchesRow = document.createElement('tr');
+                    noMatchesRow.className = 'no-matches-row';
+                    noMatchesRow.innerHTML =
+                        '<td colspan="5" style="text-align: center; padding: 30px;">No matches found. Try adjusting your filters.</td>';
+                    matchTableBody.appendChild(noMatchesRow);
+                } else if (visibleRows.length > 0) {
+                    const noMatchesRow = document.querySelector('#match-table-body .no-matches-row');
+                    if (noMatchesRow) {
+                        noMatchesRow.remove();
+                    }
+                }
             }
 
-            function getTeamColor(teamCode) {
-                const colors = {
-                    'brazil': '3498db',
-                    'germany': 'e74c3c',
-                    'spain': 'f39c12',
-                    'france': '9b59b6',
-                    'england': '34495e',
-                    'argentina': '1abc9c',
-                    'portugal': '2ecc71',
-                    'netherlands': 'e67e22',
-                    'italy': '3498db',
-                    'belgium': 'e74c3c',
-                    'croatia': 'c0392b',
-                    'uruguay': '2980b9'
-                };
-                return colors[teamCode] || '7f8c8d';
-            }
+            function previewImage(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
 
-            function getVenueName(venueCode) {
-                const venues = {
-                    'rio': 'Rio Stadium, Brazil',
-                    'madrid': 'Madrid Stadium, Spain',
-                    'paris': 'Paris Stadium, France',
-                    'london': 'London Stadium, England',
-                    'berlin': 'Berlin Stadium, Germany',
-                    'rome': 'Rome Stadium, Italy',
-                    'buenos': 'Buenos Aires Stadium, Argentina',
-                    'montevideo': 'Montevideo Stadium, Uruguay'
-                };
-                return venues[venueCode] || venueCode;
-            }
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    }
 
-            function getStageName(stageCode) {
-                const stages = {
-                    'group': 'Group Stage',
-                    'round16': 'Round of 16',
-                    'quarter': 'Quarter Finals',
-                    'semi': 'Semi Finals',
-                    'final': 'Final'
-                };
-                return stages[stageCode] || stageCode;
-            }
-
-            function getStatusName(statusCode) {
-                const statuses = {
-                    'scheduled': 'Scheduled',
-                    'live': 'Live',
-                    'completed': 'Completed',
-                    'postponed': 'Postponed',
-                    'cancelled': 'Cancelled'
-                };
-                return statuses[statusCode] || statusCode;
+                    reader.readAsDataURL(input.files[0]);
+                }
             }
         });
     </script>

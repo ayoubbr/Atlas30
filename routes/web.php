@@ -99,7 +99,7 @@ Route::prefix('admin')->group(function () {
     Route::post('games', [GameController::class, 'store'])->name('admin.games.store');
     Route::put('games/{id}', [GameController::class, 'update'])->name('admin.games.update');
     Route::delete('games/{id}', [GameController::class, 'destroy'])->name('admin.games.destroy');
-
+    Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
 
     Route::get('dashboard', function () {
         return view('admin.dashboard');
