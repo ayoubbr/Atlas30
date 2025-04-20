@@ -189,5 +189,29 @@ class ForumController extends Controller
     }
 
 
+    public function destroyPost($id)
+    {
+        $post = Post::findOrFail($id);
+
+        $post->comments()->delete();
+        $post->likes()->delete();
+
+        $post->delete();
+
+        return redirect()->route('admin.forum.index')
+            ->with('success', 'Post and all associated content deleted successfully.');
+    }
+
+
+    public function destroyComment($id)
+    {
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+
+        return redirect()->route('admin.forum.index')
+            ->with('success', 'Comment deleted successfully.');
+    }
+
+
   
 }
