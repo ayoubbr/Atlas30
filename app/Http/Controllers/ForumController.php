@@ -102,5 +102,92 @@ class ForumController extends Controller
     }
 
 
-   
+    public function storeGroup(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        Group::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'created_by' => auth()->id(),
+        ]);
+
+        return redirect()->route('admin.forum.index')
+            ->with('success', 'Group created successfully.');
+    }
+
+
+    public function updateGroup(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        $group = Group::findOrFail($id);
+
+        $group->update([
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('admin.forum.index')
+            ->with('success', 'Group updated successfully.');
+    }
+
+
+    public function destroyGroup($id)
+    {
+        $group = Group::findOrFail($id);
+
+        $posts = $group->posts;
+        foreach ($posts as $post) {
+            $post->comments()->delete();
+            $post->likes()->delete();
+
+            $post->delete();
+        }
+
+        $group->delete();
+
+        return redirect()->route('admin.forum.index')
+            ->with('success', 'Group and all associated content deleted successfully.');
+    }
+
+
+    public function getGroup($id)
+    {
+        $group = Group::with(['createdBy', 'posts' => function ($query) {
+            $query->with('user')->latest()->take(5);
+        }])
+            ->withCount(['posts'])
+            ->findOrFail($id);
+
+        $commentCount = Comment::whereHas('post', function ($query) use ($id) {
+            $query->where('group_id', $id);
+        })
+            ->count();
+
+        $lastActivity = Post::where('group_id', $id)
+            ->latest()
+            ->first();
+
+        if (!$lastActivity) {
+            $lastActivity = $group->created_at;
+        } else {
+            $lastActivity = $lastActivity->created_at;
+        }
+
+        return response()->json([
+            'group' => $group,
+            'commentCount' => $commentCount,
+            'lastActivity' => $lastActivity->diffForHumans(),
+        ]);
+    }
+
+
+  
 }
