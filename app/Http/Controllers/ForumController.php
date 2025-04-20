@@ -213,5 +213,74 @@ class ForumController extends Controller
     }
 
 
-  
+    public function createAnnouncement(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string',
+            'user_ids' => 'nullable|array',
+            'user_ids.*' => 'exists:users,id',
+        ]);
+
+        // Create notifications for specific users
+        if ($request->has('user_ids') && !empty($request->user_ids)) {
+            foreach ($request->user_ids as $userId) {
+                Notification::create([
+                    'content' => $request->content,
+                    'status' => 'unread',
+                    'user_id' => $userId,
+                ]);
+            }
+        } else {
+            // Create notification for all users
+            $users = User::all();
+            foreach ($users as $user) {
+                Notification::create([
+                    'content' => $request->content,
+                    'status' => 'unread',
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.forum.index')
+            ->with('success', 'Announcement created and notifications sent successfully.');
+    }
+
+
+    public function getGroupPosts($groupId)
+    {
+        $posts = Post::with(['user', 'comments' => function ($query) {
+            $query->with('user')->latest();
+        }])
+            ->withCount(['comments', 'likes'])
+            ->where('group_id', $groupId)
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($posts);
+    }
+
+
+    public function getTopPosts()
+    {
+        $topPosts = Post::with(['user', 'group'])
+            ->withCount(['comments', 'likes'])
+            ->orderBy('likes_count', 'desc')
+            ->orderBy('comments_count', 'desc')
+            ->take(10)
+            ->get();
+
+        return response()->json($topPosts);
+    }
+
+
+    public function getMostActiveUsers()
+    {
+        $activeUsers = User::withCount(['posts', 'comments'])
+            ->orderByRaw('posts_count + comments_count DESC')
+            ->take(10)
+            ->get();
+
+        return response()->json($activeUsers);
+    }
 }
