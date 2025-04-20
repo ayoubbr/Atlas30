@@ -31,9 +31,10 @@ class ForumController extends Controller
             ->count();
 
         // Get top groups by post count
-        $topGroups = Group::withCount(['posts', 'posts as comments_count' => function ($query) {
-            $query->withCount('comments')->get();
-        }])
+        $topGroups = Group::withCount('posts')
+            ->with(['posts' => function ($query) {
+                $query->withCount('comments');
+            }])
             ->orderBy('posts_count', 'desc')
             ->take(10)
             ->get();
@@ -44,6 +45,11 @@ class ForumController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
+
+        // Calculate comments count for each group
+        foreach ($topGroups as $group) {
+            $group->comments_count = $group->posts->sum('comments_count');
+        }
 
         // Get recent comments with their posts and users
         $recentComments = Comment::with(['user', 'post.group'])

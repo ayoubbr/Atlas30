@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -120,7 +121,6 @@ Route::prefix('admin')->group(function () {
 
 
 
-    
     Route::get('dashboard', function () {
         return view('admin.dashboard');
     })->name("admin");
@@ -133,9 +133,9 @@ Route::prefix('admin')->group(function () {
     //     return view('admin.users');
     // });
 
-    Route::get('forums', function () {
-        return view('admin.forums');
-    });
+    // Route::get('forums', function () {
+    //     return view('admin.forums');
+    // });
 
     Route::get('settings', function () {
         return view('admin.settings');
