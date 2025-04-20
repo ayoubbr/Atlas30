@@ -108,7 +108,19 @@ Route::prefix('admin')->group(function () {
     Route::put('tickets/{id}', [TicketController::class, 'update'])->name('admin.tickets.update');
     Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
 
+    // USER
+    Route::get('users', [UserController::class, 'adminIndex'])->name('admin.users.index');
+    Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::get('users/{id}', [UserController::class, 'show'])->name('admin.users.show');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    // Admin profile routes
+    Route::get('profile', [UserController::class, 'adminProfile'])->name('admin.profile');
+    Route::post('profile', [UserController::class, 'updateProfile'])->name('admin.profile.update');
 
+
+
+    
     Route::get('dashboard', function () {
         return view('admin.dashboard');
     })->name("admin");
@@ -117,9 +129,9 @@ Route::prefix('admin')->group(function () {
         return view('admin.analytics');
     });
 
-    Route::get('users', function () {
-        return view('admin.users');
-    });
+    // Route::get('users', function () {
+    //     return view('admin.users');
+    // });
 
     Route::get('forums', function () {
         return view('admin.forums');
