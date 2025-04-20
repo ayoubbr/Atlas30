@@ -120,6 +120,25 @@ Route::prefix('admin')->group(function () {
     Route::post('profile', [UserController::class, 'updateProfile'])->name('admin.profile.update');
 
 
+    // Forum dashboard
+    Route::get('forum', [ForumController::class, 'index'])->name('admin.forum.index');
+    // Group management
+    Route::post('forum/groups', [ForumController::class, 'storeGroup'])->name('admin.forum.store-group');
+    Route::get('forum/groups/{id}', [ForumController::class, 'getGroup'])->name('admin.forum.get-group');
+    Route::put('forum/groups/{id}', [ForumController::class, 'updateGroup'])->name('admin.forum.update-group');
+    Route::delete('forum/groups/{id}', [ForumController::class, 'destroyGroup'])->name('admin.forum.destroy-group');
+    // Post management
+    Route::get('forum/groups/{id}/posts', [ForumController::class, 'getGroupPosts'])->name('admin.forum.get-group-posts');
+    Route::delete('forum/posts/{id}', [ForumController::class, 'destroyPost'])->name('admin.forum.destroy-post');
+    Route::get('forum/top-posts', [ForumController::class, 'getTopPosts'])->name('admin.forum.get-top-posts');
+    // Comment management
+    Route::delete('forum/comments/{id}', [ForumController::class, 'destroyComment'])->name('admin.forum.destroy-comment');
+    // Announcement management
+    Route::post('forum/announcements', [ForumController::class, 'createAnnouncement'])->name('admin.forum.create-announcement');
+    // User list for announcements
+    Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
+
+
 
     Route::get('dashboard', function () {
         return view('admin.dashboard');

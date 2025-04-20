@@ -89,10 +89,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url('/admin/forums') }}"
-                        class="nav-link {{ request()->is('admin/forums') ? 'active' : '' }}">
+                    <a href="{{ url('/admin/forum') }}"
+                        class="nav-link {{ request()->is('admin/forum') ? 'active' : '' }}">
                         <i class="fas fa-comments nav-icon"></i>
-                        <span class="nav-text">Forums</span>
+                        <span class="nav-text">Forum</span>
                         <span class="nav-badge">12</span>
                     </a>
                 </li>
