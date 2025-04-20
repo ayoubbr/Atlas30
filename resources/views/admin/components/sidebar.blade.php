@@ -109,12 +109,6 @@
                         <span class="nav-text">Settings</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/settings') }}#security" class="nav-link">
-                        <i class="fas fa-user-shield nav-icon"></i>
-                        <span class="nav-text">Permissions</span>
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
