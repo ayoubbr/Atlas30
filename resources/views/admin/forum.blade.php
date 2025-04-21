@@ -651,48 +651,9 @@
 @endsection
 
 @section('content')
-    <!-- Header -->
-    <header class="admin-header">
-        <div class="header-left">
-            <div class="menu-toggle" id="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </div>
-            <h1 class="page-title">Forum Management</h1>
-        </div>
-
-        <div class="header-right">
-            <div class="header-search">
-                <input type="text" class="search-input" placeholder="Search forums...">
-                <i class="fas fa-search search-icon"></i>
-            </div>
-
-            <div class="header-actions">
-                <div class="action-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">5</span>
-                </div>
-                <div class="action-btn">
-                    <i class="fas fa-envelope"></i>
-                    <span class="notification-badge">3</span>
-                </div>
-            </div>
-
-            <div class="user-profile">
-                <div class="user-avatar">
-                    <img src="{{ Auth::user()->avatar ?? 'https://cdn-icons-png.flaticon.com/128/6024/6024190.png' }}"
-                        alt="Admin Avatar">
-                </div>
-                <div class="user-info">
-                    <div class="user-name">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>
-                    <div class="user-role">{{ Auth::user()->role->name }}</div>
-                </div>
-            </div>
-        </div>
-    </header>
-
     <!-- Main Content -->
+    @section('header-title', 'Forum Management')
     <main class="admin-main">
-        <!-- Page Header -->
         <div class="page-header">
             <div>
                 <h2 class="page-header-title">Forum Management</h2>
@@ -851,7 +812,7 @@
                                     <div class="post-header">
                                         <div class="post-author">
                                             <div class="post-avatar">
-                                                <img src="{{ $post->user->avatar ?? 'https://via.placeholder.com/40x40' }}"
+                                                <img src="{{ $post->user->image ?? 'https://via.placeholder.com/40x40' }}"
                                                     alt="User Avatar">
                                             </div>
                                             <div class="post-author-info">
@@ -912,7 +873,7 @@
                                     <div class="post-header">
                                         <div class="post-author">
                                             <div class="post-avatar">
-                                                <img src="{{ $comment->user->avatar ?? 'https://via.placeholder.com/40x40' }}"
+                                                <img src="{{ $comment->user->image ?? 'https://via.placeholder.com/40x40' }}"
                                                     alt="User Avatar">
                                             </div>
                                             <div class="post-author-info">
@@ -965,7 +926,7 @@
                                     <div class="post-header">
                                         <div class="post-author">
                                             <div class="post-avatar">
-                                                <img src="{{ $post->user->avatar ?? 'https://via.placeholder.com/40x40' }}"
+                                                <img src="{{ $post->user->image ?? 'https://via.placeholder.com/40x40' }}"
                                                     alt="User Avatar">
                                             </div>
                                             <div class="post-author-info">
@@ -1163,19 +1124,19 @@
                                 <input type="radio" id="send_all" name="send_to" value="all" checked>
                                 <label for="send_all">All Users</label>
                             </div>
-                            <div class="radio-item">
+                            {{-- <div class="radio-item">
                                 <input type="radio" id="send_specific" name="send_to" value="specific">
                                 <label for="send_specific">Specific Users</label>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
 
-                    <div class="forum-form-group" id="specific_users_container" style="display: none;">
+                    {{-- <div class="forum-form-group" id="specific_users_container" style="display: none;">
                         <label class="forum-form-label" for="user_ids">Select Users</label>
                         <select class="forum-form-control" id="user_ids" name="user_ids[]" multiple>
                             <!-- Users will be loaded dynamically -->
                         </select>
-                    </div>
+                    </div> --}}
                 </form>
             </div>
             <div class="modal-footer">
@@ -1506,7 +1467,7 @@
                     btn.addEventListener('click', function() {
                         if (confirm(
                                 'Are you sure you want to delete this post? This will also delete all comments on this post.'
-                                )) {
+                            )) {
                             const postId = this.getAttribute('data-id');
 
                             // Create and submit a form to delete the post
@@ -1620,7 +1581,7 @@
                             .toLowerCase() || '';
 
                         if (commentContent.includes(searchTerm) || authorName.includes(
-                            searchTerm)) {
+                                searchTerm)) {
                             item.style.display = '';
                         } else {
                             item.style.display = 'none';

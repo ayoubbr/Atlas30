@@ -957,7 +957,6 @@
 @endsection
 
 @section('content')
-
     <!-- Main Content -->
     <main class="admin-main">
         <!-- Stadium Dashboard -->

@@ -505,378 +505,341 @@
 @endsection
 
 @section('content')
-    <!-- Header -->
-    <header class="admin-header">
-        <div class="header-left">
-            <div class="menu-toggle" id="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </div>
-            <h1 class="page-title">Team Management</h1>
+@section('header-title', 'Team Management')
+<!-- Main Content -->
+<main class="admin-main">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2 class="page-header-title">Team Management</h2>
+            <p class="page-header-description">Manage all participating teams in the World Cup 2030</p>
         </div>
-
-        <div class="header-right">
-            <div class="header-search">
-                <input type="text" class="search-input" placeholder="Search teams...">
-                <i class="fas fa-search search-icon"></i>
-            </div>
-
-            <div class="header-actions">
-                <div class="action-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">5</span>
-                </div>
-                <div class="action-btn">
-                    <i class="fas fa-envelope"></i>
-                    <span class="notification-badge">3</span>
-                </div>
-            </div>
-
-            <div class="user-profile">
-                <div class="user-avatar">
-                    <img src="https://cdn-icons-png.flaticon.com/128/6024/6024190.png" alt="Admin Avatar">
-                </div>
-                <div class="user-info">
-                    <div class="user-name">John Doe</div>
-                    <div class="user-role">Administrator</div>
-                </div>
-            </div>
+        <div class="page-header-actions">
+            <button type="button" class="btn btn-primary" id="addTeamBtn">
+                <i class="fas fa-plus"></i> Add Team
+            </button>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Content -->
-    <main class="admin-main">
-        <!-- Page Header -->
-        <div class="page-header">
-            <div>
-                <h2 class="page-header-title">Team Management</h2>
-                <p class="page-header-description">Manage all participating teams in the World Cup 2030</p>
+    <!-- Team Stats -->
+    <div class="team-stats">
+        <div class="team-stats-card">
+            <div class="stats-icon stats-icon-teams">
+                <i class="fas fa-flag"></i>
             </div>
-            <div class="page-header-actions">
-                <button type="button" class="btn btn-primary" id="addTeamBtn">
-                    <i class="fas fa-plus"></i> Add Team
-                </button>
+            <div class="stats-content">
+                <div class="stats-value">32</div>
+                <div class="stats-label">Total Teams</div>
             </div>
         </div>
 
-        <!-- Team Stats -->
-        <div class="team-stats">
-            <div class="team-stats-card">
-                <div class="stats-icon stats-icon-teams">
-                    <i class="fas fa-flag"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">32</div>
-                    <div class="stats-label">Total Teams</div>
-                </div>
+        <div class="team-stats-card">
+            <div class="stats-icon stats-icon-matches">
+                <i class="fas fa-futbol"></i>
             </div>
-
-            <div class="team-stats-card">
-                <div class="stats-icon stats-icon-matches">
-                    <i class="fas fa-futbol"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">64</div>
-                    <div class="stats-label">Scheduled Matches</div>
-                </div>
+            <div class="stats-content">
+                <div class="stats-value">64</div>
+                <div class="stats-label">Scheduled Matches</div>
             </div>
-
         </div>
 
-        <!-- Team Table -->
-        <div class="team-table-container">
-            <div class="view-toggle">
-                <button class="view-btn active" type="button">
-                    <i class="fas fa-table"></i> Table View
-                </button>
-            </div>
+    </div>
 
-            <div class="table-responsive">
-                <table class="team-table">
-                    <thead>
+    <!-- Team Table -->
+    <div class="team-table-container">
+        <div class="view-toggle">
+            <button class="view-btn active" type="button">
+                <i class="fas fa-table"></i> Table View
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="team-table">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>flag</th>
+                        <th>code</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach ($teams as $team)
                         <tr>
-                            <th>Team</th>
-                            <th>flag</th>
-                            <th>code</th>
-                            <th>Actions</th>
+                            <td>
+                                <div class="team-table-name">
+                                    {{ $team->name }}
+                                </div>
+                            </td>
+                            <td>
+                                <img src="{{ asset($team->flag) }}" alt="{{ $team->name }} flag" width="40"
+                                    class="img-thumbnail">
+                            </td>
+                            <td>
+                                <span class="status-badge status-scheduled">{{ $team->code }}</span>
+                            </td>
+                            <td>
+                                <div class="team-table-actions">
+                                    <button type="button" class="btn btn-sm btn-outline edit-team-btn"
+                                        data-id="{{ $team->id }}" data-name="{{ $team->name }}"
+                                        data-code="{{ $team->code }}" data-flag="{{ asset($team->flag) }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline btn-danger delete-team-btn"
+                                        data-id="{{ $team->id }}" data-name="{{ $team->name }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($teams as $team)
-                            <tr>
-                                <td>
-                                    <div class="team-table-name">
-                                        {{ $team->name }}
-                                    </div>
-                                </td>
-                                <td>
-                                    <img src="{{ asset($team->flag) }}" alt="{{ $team->name }} flag" width="40"
-                                        class="img-thumbnail">
-                                </td>
-                                <td>
-                                    <span class="status-badge status-scheduled">{{ $team->code }}</span>
-                                </td>
-                                <td>
-                                    <div class="team-table-actions">
-                                        <button type="button" class="btn btn-sm btn-outline edit-team-btn"
-                                            data-id="{{ $team->id }}" data-name="{{ $team->name }}"
-                                            data-code="{{ $team->code }}" data-flag="{{ asset($team->flag) }}">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline btn-danger delete-team-btn"
-                                            data-id="{{ $team->id }}" data-name="{{ $team->name }}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <!-- Pagination -->
-            <div class="pagination">
-                @if ($teams->hasPages())
-                    <div class="pagination-container">
-                        <ul class="pagination">
-                            @if ($teams->onFirstPage())
-                                <li class="page-item disabled">
-                                    <span class="page-link">&laquo;</span>
-                                </li>
-                            @else
-                                <li class="page-item">
-                                    <a href="{{ $teams->previousPageUrl() }}" class="page-link">&laquo;</a>
-                                </li>
-                            @endif
-
-                            @foreach ($teams->getUrlRange(1, $teams->lastPage()) as $page => $url)
-                                @if ($page == $teams->currentPage())
-                                    <li class="page-item active">
-                                        <span class="page-link">{{ $page }}</span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a href="{{ $url }}" class="page-link">{{ $page }}</a>
-                                    </li>
-                                @endif
-                            @endforeach
-
-                            @if ($teams->hasMorePages())
-                                <li class="page-item">
-                                    <a href="{{ $teams->nextPageUrl() }}" class="page-link">&raquo;</a>
-                                </li>
-                            @else
-                                <li class="page-item disabled">
-                                    <span class="page-link">&raquo;</span>
-                                </li>
-                            @endif
-                        </ul>
-                    </div>
-                @endif
-            </div>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
-    </main>
+        <!-- Pagination -->
+        <div class="pagination">
+            @if ($teams->hasPages())
+                <div class="pagination-container">
+                    <ul class="pagination">
+                        @if ($teams->onFirstPage())
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo;</span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a href="{{ $teams->previousPageUrl() }}" class="page-link">&laquo;</a>
+                            </li>
+                        @endif
+
+                        @foreach ($teams->getUrlRange(1, $teams->lastPage()) as $page => $url)
+                            @if ($page == $teams->currentPage())
+                                <li class="page-item active">
+                                    <span class="page-link">{{ $page }}</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a href="{{ $url }}" class="page-link">{{ $page }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+
+                        @if ($teams->hasMorePages())
+                            <li class="page-item">
+                                <a href="{{ $teams->nextPageUrl() }}" class="page-link">&raquo;</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <span class="page-link">&raquo;</span>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+            @endif
+        </div>
+    </div>
+</main>
 @endsection
 
 @section('modal')
-    <!-- Add/Edit Team Modal -->
-    <div class="modal" id="teamModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="teamModalTitle">Add New Team</h3>
-                <button type="button" class="modal-close" id="closeTeamModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="teamForm" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="team-form-row">
-                        <div class="team-form-col">
-                            <div class="team-form-group">
-                                <label class="team-form-label" for="teamName">Team Name</label>
-                                <input type="text" class="team-form-control" id="teamName"
-                                    placeholder="Enter team name" name="name" required>
-                            </div>
-                        </div>
-                        <div class="team-form-col">
-                            <div class="team-form-group">
-                                <label class="team-form-label" for="teamCode">Team Code</label>
-                                <input type="text" class="team-form-control" id="teamCode"
-                                    placeholder="3-letter code (e.g. BRA)" name="code" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-form-group">
-                        <label class="team-form-label" for="teamFlag">Team Flag URL</label>
-                        <input type="file" class="team-form-control" id="teamFlag" name="flag" accept="image/*"
-                            required>
-                        <img id="flagPreview" src="#" alt="Flag Preview"
-                            style="display: none; width: 80px; margin-top: 10px;">
-
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit" id="saveTeamBtn">Save Team</button>
-                        <button class="btn btn-outline" type="button" id="cancelTeamBtn">Cancel</button>
-                    </div>
-                </form>
-            </div>
-
+<!-- Add/Edit Team Modal -->
+<div class="modal" id="teamModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="teamModalTitle">Add New Team</h3>
+            <button type="button" class="modal-close" id="closeTeamModal">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div class="modal" id="deleteTeamModal">
-        <div class="modal-content modal-sm">
-            <div class="modal-header">
-                <h3 class="modal-title">Confirm Delete</h3>
-                <button class="modal-close" type="button" id="closeDeleteModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this team? This action cannot be undone.</p>
-                <p><strong>Team: </strong><span id="deleteTeamName">Brazil</span></p>
-            </div>
-            <form id="deleteTeamForm" method="POST">
+        <div class="modal-body">
+            <form id="teamForm" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('DELETE')
+                <div class="team-form-row">
+                    <div class="team-form-col">
+                        <div class="team-form-group">
+                            <label class="team-form-label" for="teamName">Team Name</label>
+                            <input type="text" class="team-form-control" id="teamName" placeholder="Enter team name"
+                                name="name" required>
+                        </div>
+                    </div>
+                    <div class="team-form-col">
+                        <div class="team-form-group">
+                            <label class="team-form-label" for="teamCode">Team Code</label>
+                            <input type="text" class="team-form-control" id="teamCode"
+                                placeholder="3-letter code (e.g. BRA)" name="code" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-form-group">
+                    <label class="team-form-label" for="teamFlag">Team Flag URL</label>
+                    <input type="file" class="team-form-control" id="teamFlag" name="flag" accept="image/*"
+                        required>
+                    <img id="flagPreview" src="#" alt="Flag Preview"
+                        style="display: none; width: 80px; margin-top: 10px;">
+
+                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
-                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Delete Team</button>
+                    <button class="btn btn-primary" type="submit" id="saveTeamBtn">Save Team</button>
+                    <button class="btn btn-outline" type="button" id="cancelTeamBtn">Cancel</button>
                 </div>
             </form>
         </div>
+
     </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteTeamModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Delete</h3>
+            <button class="modal-close" type="button" id="closeDeleteModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this team? This action cannot be undone.</p>
+            <p><strong>Team: </strong><span id="deleteTeamName">Brazil</span></p>
+        </div>
+        <form id="deleteTeamForm" method="POST">
+            @csrf
+            @method('DELETE')
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+                <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Delete Team</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.querySelector('.admin-sidebar');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.admin-sidebar');
 
-            if (menuToggle && sidebar) {
-                menuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
-                });
-            }
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+            });
+        }
 
-            // Team Modal
-            const teamModal = document.getElementById('teamModal');
-            const addTeamBtn = document.getElementById('addTeamBtn');
-            const closeTeamModal = document.getElementById('closeTeamModal');
-            const cancelTeamBtn = document.getElementById('cancelTeamBtn');
-            const editTeamBtns = document.querySelectorAll('.edit-team-btn');
+        // Team Modal
+        const teamModal = document.getElementById('teamModal');
+        const addTeamBtn = document.getElementById('addTeamBtn');
+        const closeTeamModal = document.getElementById('closeTeamModal');
+        const cancelTeamBtn = document.getElementById('cancelTeamBtn');
+        const editTeamBtns = document.querySelectorAll('.edit-team-btn');
 
-            if (addTeamBtn && teamModal) {
-                addTeamBtn.addEventListener('click', function() {
-                    const form = document.getElementById('teamForm');
-                    document.getElementById('teamModalTitle').textContent = 'Add New Team';
-                    form.reset();
+        if (addTeamBtn && teamModal) {
+            addTeamBtn.addEventListener('click', function() {
+                const form = document.getElementById('teamForm');
+                document.getElementById('teamModalTitle').textContent = 'Add New Team';
+                form.reset();
 
-                    form.action = "{{ route('admin.teams.store') }}";
-                    const methodInput = form.querySelector('input[name="_method"]');
+                form.action = "{{ route('admin.teams.store') }}";
+                const methodInput = form.querySelector('input[name="_method"]');
 
-                    if (methodInput) methodInput.remove();
+                if (methodInput) methodInput.remove();
+                const flagPreview = document.getElementById('flagPreview');
+
+                if (flagPreview) {
+                    flagPreview.style.display = 'none';
+                    flagPreview.src = '#';
+                }
+
+                teamModal.classList.add('show');
+            });
+        }
+
+        if (closeTeamModal && teamModal) {
+            closeTeamModal.addEventListener('click', function() {
+                teamModal.classList.remove('show');
+            });
+        }
+
+        if (cancelTeamBtn && teamModal) {
+            cancelTeamBtn.addEventListener('click', function() {
+                teamModal.classList.remove('show');
+            });
+        }
+
+        if (editTeamBtns.length && teamModal) {
+            editTeamBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+
+                    const teamId = this.dataset.id;
+                    const teamName = this.dataset.name;
+                    const teamCode = this.dataset.code;
+                    const teamFlag = this.dataset.flag;
+                    document.getElementById('teamModalTitle').textContent = 'Edit Team';
+
+                    document.getElementById('teamName').value = teamName;
+                    document.getElementById('teamCode').value = teamCode;
                     const flagPreview = document.getElementById('flagPreview');
-
                     if (flagPreview) {
-                        flagPreview.style.display = 'none';
-                        flagPreview.src = '#';
+                        flagPreview.src = teamFlag;
+                        flagPreview.style.display = 'block';
                     }
+
+                    teamForm.action = `/admin/teams/${teamId}`;
+
+                    let methodInput = teamForm.querySelector('input[name="_method"]');
+                    if (!methodInput) {
+                        methodInput = document.createElement('input');
+                        methodInput.type = 'hidden';
+                        methodInput.name = '_method';
+                        teamForm.appendChild(methodInput);
+                    }
+                    methodInput.value = 'PUT';
 
                     teamModal.classList.add('show');
                 });
-            }
+            });
+        }
 
-            if (closeTeamModal && teamModal) {
-                closeTeamModal.addEventListener('click', function() {
-                    teamModal.classList.remove('show');
+        // Delete Team Modal
+        const deleteTeamModal = document.getElementById('deleteTeamModal');
+        const deleteTeamBtns = document.querySelectorAll('.delete-team-btn');
+        const closeDeleteModal = document.getElementById('closeDeleteModal');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const deleteTeamForm = document.getElementById('deleteTeamForm');
+
+        if (deleteTeamBtns.length && deleteTeamModal) {
+            deleteTeamBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+
+                    const teamId = this.getAttribute('data-id');
+                    const teamName = this.getAttribute('data-name');
+
+                    deleteTeamName.textContent = teamName;
+                    deleteTeamForm.action = `/admin/teams/${teamId}`;
+
+                    deleteTeamModal.classList.add('show');
                 });
-            }
+            });
+        }
 
-            if (cancelTeamBtn && teamModal) {
-                cancelTeamBtn.addEventListener('click', function() {
-                    teamModal.classList.remove('show');
-                });
-            }
+        if (closeDeleteModal && deleteTeamModal) {
+            closeDeleteModal.addEventListener('click', function() {
+                deleteTeamModal.classList.remove('show');
+            });
+        }
 
-            if (editTeamBtns.length && teamModal) {
-                editTeamBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
+        if (cancelDeleteBtn && deleteTeamModal) {
+            cancelDeleteBtn.addEventListener('click', function() {
+                deleteTeamModal.classList.remove('show');
+            });
+        }
 
-                        const teamId = this.dataset.id;
-                        const teamName = this.dataset.name;
-                        const teamCode = this.dataset.code;
-                        const teamFlag = this.dataset.flag;
-                        document.getElementById('teamModalTitle').textContent = 'Edit Team';
-
-                        document.getElementById('teamName').value = teamName;
-                        document.getElementById('teamCode').value = teamCode;
-                        const flagPreview = document.getElementById('flagPreview');
-                        if (flagPreview) {
-                            flagPreview.src = teamFlag;
-                            flagPreview.style.display = 'block';
-                        }
-
-                        teamForm.action = `/admin/teams/${teamId}`;
-
-                        let methodInput = teamForm.querySelector('input[name="_method"]');
-                        if (!methodInput) {
-                            methodInput = document.createElement('input');
-                            methodInput.type = 'hidden';
-                            methodInput.name = '_method';
-                            teamForm.appendChild(methodInput);
-                        }
-                        methodInput.value = 'PUT';
-
-                        teamModal.classList.add('show');
-                    });
-                });
-            }
-
-            // Delete Team Modal
-            const deleteTeamModal = document.getElementById('deleteTeamModal');
-            const deleteTeamBtns = document.querySelectorAll('.delete-team-btn');
-            const closeDeleteModal = document.getElementById('closeDeleteModal');
-            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-            const deleteTeamForm = document.getElementById('deleteTeamForm');
-
-            if (deleteTeamBtns.length && deleteTeamModal) {
-                deleteTeamBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-
-                        const teamId = this.getAttribute('data-id');
-                        const teamName = this.getAttribute('data-name');
-
-                        deleteTeamName.textContent = teamName;
-                        deleteTeamForm.action = `/admin/teams/${teamId}`;
-
-                        deleteTeamModal.classList.add('show');
-                    });
-                });
-            }
-
-            if (closeDeleteModal && deleteTeamModal) {
-                closeDeleteModal.addEventListener('click', function() {
-                    deleteTeamModal.classList.remove('show');
-                });
-            }
-
-            if (cancelDeleteBtn && deleteTeamModal) {
-                cancelDeleteBtn.addEventListener('click', function() {
-                    deleteTeamModal.classList.remove('show');
-                });
-            }
-
-            if (confirmDeleteBtn && deleteTeamModal) {
-                confirmDeleteBtn.addEventListener('click', function() {
-                    deleteTeamModal.classList.remove('show');
-                });
-            }
-        });
-    </script>
+        if (confirmDeleteBtn && deleteTeamModal) {
+            confirmDeleteBtn.addEventListener('click', function() {
+                deleteTeamModal.classList.remove('show');
+            });
+        }
+    });
+</script>
 @endsection

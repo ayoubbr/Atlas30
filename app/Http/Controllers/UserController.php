@@ -306,4 +306,23 @@ class UserController extends Controller
 
     //     return redirect()->route('user.profile')->with('success', 'Profile updated successfully!');
     // }
+
+
+    // public function getUsersList()
+    // {
+    //     dd('aa');
+    //     $users = User::all();
+    //     return response()->json($users);
+    // }
+
+
+    public function getUsersList()
+    {
+        $users = User::select('id', 'firstname', 'lastname', 'email')
+            ->orderBy('firstname')
+            ->get();
+        
+        return response()->json($users);
+    }
+
 }

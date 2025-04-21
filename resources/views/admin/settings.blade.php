@@ -498,42 +498,7 @@
 
 @section('content')
     <!-- Header -->
-    <header class="admin-header">
-        <div class="header-left">
-            <div class="menu-toggle" id="menu-toggle">
-                <i class="fas fa-bars"></i>
-            </div>
-            <h1 class="page-title">Settings</h1>
-        </div>
-
-        <div class="header-right">
-            <div class="header-search">
-                <input type="text" class="search-input" placeholder="Search settings...">
-                <i class="fas fa-search search-icon"></i>
-            </div>
-
-            <div class="header-actions">
-                <div class="action-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">5</span>
-                </div>
-                <div class="action-btn">
-                    <i class="fas fa-envelope"></i>
-                    <span class="notification-badge">3</span>
-                </div>
-            </div>
-
-            <div class="user-profile">
-                <div class="user-avatar">
-                    <img src="https://via.placeholder.com/40x40" alt="Admin Avatar">
-                </div>
-                <div class="user-info">
-                    <div class="user-name">John Doe</div>
-                    <div class="user-role">Administrator</div>
-                </div>
-            </div>
-        </div>
-    </header>
+    @section('header-title', 'Settings')
 
     <!-- Main Content -->
     <main class="admin-main">

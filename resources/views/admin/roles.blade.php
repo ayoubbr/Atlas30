@@ -135,6 +135,7 @@
 @endsection
 
 @section('content')
+@section('header-title', 'Roles Management')
     <main class="admin-main">
         <!-- Page Header -->
         <div class="page-header">
