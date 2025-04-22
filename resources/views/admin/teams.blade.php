@@ -141,6 +141,10 @@
             color: var(--gray-700);
         }
 
+        .team-table th:last-child{
+            width: 0px;
+        }
+
         .team-table tbody tr:hover {
             background-color: var(--gray-50);
         }
@@ -528,7 +532,7 @@
                 <i class="fas fa-flag"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">32</div>
+                <div class="stats-value">{{ $countTeams }}</div>
                 <div class="stats-label">Total Teams</div>
             </div>
         </div>
@@ -538,7 +542,7 @@
                 <i class="fas fa-futbol"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">64</div>
+                <div class="stats-value">{{ $countMatches }}</div>
                 <div class="stats-label">Scheduled Matches</div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
@@ -135,12 +136,10 @@ Route::prefix('admin')->group(function () {
     Route::delete('forum/comments/{id}', [ForumController::class, 'destroyComment'])->name('admin.forum.destroy-comment');
     // Announcement management
     Route::post('forum/announcements', [ForumController::class, 'createAnnouncement'])->name('admin.forum.create-announcement');
+    Route::delete('forum/announcements/{id}', [ForumController::class, 'destroyAnnouncement']);
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
 
 
-
-    Route::get('dashboard', function () {
-        return view('admin.dashboard');
-    })->name("admin");
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
 });

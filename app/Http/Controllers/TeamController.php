@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,9 @@ class TeamController extends Controller
     public function index()
     {
         $teams = Team::paginate(8);
-        return view('admin.teams', compact('teams'));
+        $countTeams = Team::count();
+        $countMatches = Game::count();
+        return view('admin.teams', compact('teams', 'countTeams', 'countMatches'));
     }
 
 

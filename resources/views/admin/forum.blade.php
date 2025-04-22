@@ -4,7 +4,6 @@
 
 @section('css')
     <style>
-        /* Forum-specific styles */
         .forum-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -647,640 +646,830 @@
         .top-posts-card {
             margin-top: 30px;
         }
+
+        /* Announcement styles */
+        .announcement-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: var(--transition);
+        }
+
+        .announcement-item:last-child {
+            border-bottom: none;
+        }
+
+        .announcement-item:hover {
+            background-color: var(--gray-100);
+        }
+
+        .announcement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .announcement-content {
+            flex: 1;
+        }
+
+        .announcement-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .announcement-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        .announcement-info {
+            display: flex;
+            gap: 15px;
+        }
+
+        .announcement-date,
+        .announcement-recipients {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content.modal-sm {
+            max-width: 400px;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
     </style>
 @endsection
 
 @section('content')
     <!-- Main Content -->
-    @section('header-title', 'Forum Management')
-    <main class="admin-main">
-        <div class="page-header">
-            <div>
-                <h2 class="page-header-title">Forum Management</h2>
-                <p class="page-header-description">Manage all forum groups, posts, and comments for the World Cup 2030
-                    community</p>
+@section('header-title', 'Forum Management')
+<main class="admin-main">
+    <div class="page-header">
+        <div>
+            <h2 class="page-header-title">Forum Management</h2>
+            <p class="page-header-description">Manage all forum groups, posts, and comments for the World Cup 2030
+                community</p>
+        </div>
+        <div class="page-header-actions">
+            <button class="btn btn-outline" id="createAnnouncementBtn">
+                <i class="fas fa-bullhorn"></i> Create Announcement
+            </button>
+            <button class="btn btn-primary" id="addGroupBtn">
+                <i class="fas fa-plus"></i> Add Group
+            </button>
+        </div>
+    </div>
+
+    <!-- Forum Stats -->
+    <div class="forum-stats">
+        <div class="forum-stats-card">
+            <div class="stats-icon stats-icon-categories">
+                <i class="fas fa-folder"></i>
             </div>
-            <div class="page-header-actions">
-                <button class="btn btn-outline" id="createAnnouncementBtn">
-                    <i class="fas fa-bullhorn"></i> Create Announcement
-                </button>
-                <button class="btn btn-primary" id="addGroupBtn">
-                    <i class="fas fa-plus"></i> Add Group
-                </button>
+            <div class="stats-content">
+                <div class="stats-value">{{ number_format($totalGroups) }}</div>
+                <div class="stats-label">Groups</div>
             </div>
         </div>
 
-        <!-- Forum Stats -->
-        <div class="forum-stats">
-            <div class="forum-stats-card">
-                <div class="stats-icon stats-icon-categories">
-                    <i class="fas fa-folder"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">{{ number_format($totalGroups) }}</div>
-                    <div class="stats-label">Groups</div>
-                </div>
+        <div class="forum-stats-card">
+            <div class="stats-icon stats-icon-threads">
+                <i class="fas fa-comments"></i>
             </div>
-
-            <div class="forum-stats-card">
-                <div class="stats-icon stats-icon-threads">
-                    <i class="fas fa-comments"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">{{ number_format($totalPosts) }}</div>
-                    <div class="stats-label">Total Posts</div>
-                </div>
-            </div>
-
-            <div class="forum-stats-card">
-                <div class="stats-icon stats-icon-posts">
-                    <i class="fas fa-comment-alt"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">{{ number_format($totalComments) }}</div>
-                    <div class="stats-label">Total Comments</div>
-                </div>
-            </div>
-
-            <div class="forum-stats-card">
-                <div class="stats-icon stats-icon-users">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stats-content">
-                    <div class="stats-value">{{ number_format($activeUsers) }}</div>
-                    <div class="stats-label">Active Users</div>
-                </div>
+            <div class="stats-content">
+                <div class="stats-value">{{ number_format($totalPosts) }}</div>
+                <div class="stats-label">Total Posts</div>
             </div>
         </div>
 
-        <!-- Forum Tabs -->
-        <div class="tab-container">
-            <div class="tab-nav">
-                <div class="tab-btn active" data-tab="groups">Groups</div>
-                <div class="tab-btn" data-tab="posts">Recent Posts</div>
-                <div class="tab-btn" data-tab="comments">Recent Comments</div>
-                <div class="tab-btn" data-tab="top-posts">Top Posts</div>
+        <div class="forum-stats-card">
+            <div class="stats-icon stats-icon-posts">
+                <i class="fas fa-comment-alt"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-value">{{ number_format($totalComments) }}</div>
+                <div class="stats-label">Total Comments</div>
+            </div>
+        </div>
+
+        <div class="forum-stats-card">
+            <div class="stats-icon stats-icon-users">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stats-content">
+                <div class="stats-value">{{ number_format($activeUsers) }}</div>
+                <div class="stats-label">Active Users</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forum Tabs -->
+    <div class="tab-container">
+        <div class="tab-nav">
+            <div class="tab-btn active" data-tab="groups">Groups</div>
+            <div class="tab-btn" data-tab="posts">Recent Posts</div>
+            <div class="tab-btn" data-tab="comments">Recent Comments</div>
+            <div class="tab-btn" data-tab="top-posts">Top Posts</div>
+            <div class="tab-btn" data-tab="announcements">Announcements</div>
+        </div>
+
+        <!-- Groups Tab -->
+        <div class="tab-content active" id="groups-tab">
+            <!-- Forum Search & Filters -->
+            <div class="forum-search">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="group-search" placeholder="Search groups...">
             </div>
 
-            <!-- Groups Tab -->
-            <div class="tab-content active" id="groups-tab">
-                <!-- Forum Search & Filters -->
-                <div class="forum-search">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="group-search" placeholder="Search groups...">
-                </div>
-
-                <!-- Groups Table -->
-                <div class="forum-table-container">
-                    <div class="table-responsive">
-                        <table class="forum-table">
-                            <thead>
+            <!-- Groups Table -->
+            <div class="forum-table-container">
+                <div class="table-responsive">
+                    <table class="forum-table">
+                        <thead>
+                            <tr>
+                                <th>Group</th>
+                                <th>Created By</th>
+                                <th>Posts</th>
+                                <th>Comments</th>
+                                <th>Last Activity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($topGroups as $group)
                                 <tr>
-                                    <th>Group</th>
-                                    <th>Created By</th>
-                                    <th>Posts</th>
-                                    <th>Comments</th>
-                                    <th>Last Activity</th>
-                                    <th>Actions</th>
+                                    <td>
+                                        <div class="forum-table-name">
+                                            <div class="forum-table-icon"
+                                                style="background-color: var(--primary-light); color: var(--primary);">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <div>
+                                                <div>{{ $group->name }}</div>
+                                                <div class="text-sm text-gray-500">
+                                                    {{ Str::limit($group->description, 50) }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ $group->createdBy->firstname }} {{ $group->createdBy->lastname }}</td>
+                                    <td>{{ $group->posts_count }}</td>
+                                    <td>{{ $group->comments_count ?? 0 }}</td>
+                                    <td>{{ $group->updated_at->diffForHumans() }}</td>
+                                    <td>
+                                        <div class="forum-table-actions">
+                                            <button class="btn btn-sm btn-outline view-group-btn"
+                                                data-id="{{ $group->id }}">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline edit-group-btn"
+                                                data-id="{{ $group->id }}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline btn-danger delete-group-btn"
+                                                data-id="{{ $group->id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($topGroups as $group)
-                                    <tr>
-                                        <td>
-                                            <div class="forum-table-name">
-                                                <div class="forum-table-icon"
-                                                    style="background-color: var(--primary-light); color: var(--primary);">
-                                                    <i class="fas fa-users"></i>
-                                                </div>
-                                                <div>
-                                                    <div>{{ $group->name }}</div>
-                                                    <div class="text-sm text-gray-500">
-                                                        {{ Str::limit($group->description, 50) }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>{{ $group->createdBy->firstname }} {{ $group->createdBy->lastname }}</td>
-                                        <td>{{ $group->posts_count }}</td>
-                                        <td>{{ $group->comments_count ?? 0 }}</td>
-                                        <td>{{ $group->updated_at->diffForHumans() }}</td>
-                                        <td>
-                                            <div class="forum-table-actions">
-                                                <button class="btn btn-sm btn-outline view-group-btn"
-                                                    data-id="{{ $group->id }}">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline edit-group-btn"
-                                                    data-id="{{ $group->id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline btn-danger delete-group-btn"
-                                                    data-id="{{ $group->id }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center py-4">No groups found</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">No groups found</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-            <!-- Posts Tab -->
-            <div class="tab-content" id="posts-tab">
-                <!-- Post Search & Filters -->
-                <div class="forum-search">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="post-search" placeholder="Search posts...">
+        <!-- Posts Tab -->
+        <div class="tab-content" id="posts-tab">
+            <!-- Post Search & Filters -->
+            <div class="forum-search">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="post-search" placeholder="Search posts...">
+            </div>
+
+            <!-- Posts List -->
+            <div class="forum-card">
+                <div class="forum-card-header">
+                    <h3>Recent Posts</h3>
                 </div>
-
-                <!-- Posts List -->
-                <div class="forum-card">
-                    <div class="forum-card-header">
-                        <h3>Recent Posts</h3>
-                    </div>
-                    <div class="forum-card-body">
-                        <div class="post-list">
-                            @forelse($recentPosts as $post)
-                                <div class="post-item">
-                                    <div class="post-header">
-                                        <div class="post-author">
-                                            <div class="post-avatar">
-                                                <img src="{{ $post->user->image ?? 'https://via.placeholder.com/40x40' }}"
-                                                    alt="User Avatar">
-                                            </div>
-                                            <div class="post-author-info">
-                                                <div class="post-author-name">{{ $post->user->firstname }}
-                                                    {{ $post->user->lastname }}</div>
-                                                <div class="post-date">{{ $post->created_at->diffForHumans() }}</div>
-                                            </div>
+                <div class="forum-card-body">
+                    <div class="post-list">
+                        @forelse($recentPosts as $post)
+                            <div class="post-item">
+                                <div class="post-header">
+                                    <div class="post-author">
+                                        <div class="post-avatar">
+                                            <img src="{{ $post->user->image ?? 'https://via.placeholder.com/40x40' }}"
+                                                alt="User Avatar">
                                         </div>
-                                        <div class="post-actions">
-                                            <button class="btn btn-sm btn-outline btn-danger delete-post-btn"
-                                                data-id="{{ $post->id }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                        <div class="post-author-info">
+                                            <div class="post-author-name">{{ $post->user->firstname }}
+                                                {{ $post->user->lastname }}</div>
+                                            <div class="post-date">{{ $post->created_at->diffForHumans() }}</div>
                                         </div>
                                     </div>
-                                    <div class="post-content">
-                                        {{ $post->content }}
+                                    <div class="post-actions">
+                                        <button class="btn btn-sm btn-outline btn-danger delete-post-btn"
+                                            data-id="{{ $post->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
-                                    <div class="post-footer">
-                                        <div class="post-meta">
-                                            <div class="post-likes">
-                                                <i class="fas fa-thumbs-up"></i> {{ $post->likes_count }} Likes
-                                            </div>
-                                            <div class="post-comments">
-                                                <i class="fas fa-comment"></i> {{ $post->comments_count }} Comments
-                                            </div>
-                                            <div class="post-group">
-                                                <i class="fas fa-folder"></i> {{ $post->group->name }}
-                                            </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ $post->content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="post-meta">
+                                        <div class="post-likes">
+                                            <i class="fas fa-thumbs-up"></i> {{ $post->likes_count }} Likes
+                                        </div>
+                                        <div class="post-comments">
+                                            <i class="fas fa-comment"></i> {{ $post->comments_count }} Comments
+                                        </div>
+                                        <div class="post-group">
+                                            <i class="fas fa-folder"></i> {{ $post->group->name }}
                                         </div>
                                     </div>
                                 </div>
-                            @empty
-                                <div class="text-center py-4">No posts found</div>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Comments Tab -->
-            <div class="tab-content" id="comments-tab">
-                <!-- Comment Search & Filters -->
-                <div class="forum-search">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="comment-search" placeholder="Search comments...">
-                </div>
-
-                <!-- Comments List -->
-                <div class="forum-card">
-                    <div class="forum-card-header">
-                        <h3>Recent Comments</h3>
-                    </div>
-                    <div class="forum-card-body">
-                        <div class="post-list">
-                            @forelse($recentComments as $comment)
-                                <div class="post-item">
-                                    <div class="post-header">
-                                        <div class="post-author">
-                                            <div class="post-avatar">
-                                                <img src="{{ $comment->user->image ?? 'https://via.placeholder.com/40x40' }}"
-                                                    alt="User Avatar">
-                                            </div>
-                                            <div class="post-author-info">
-                                                <div class="post-author-name">{{ $comment->user->firstname }}
-                                                    {{ $comment->user->lastname }}</div>
-                                                <div class="post-date">{{ $comment->created_at->diffForHumans() }}</div>
-                                            </div>
-                                        </div>
-                                        <div class="post-actions">
-                                            <button class="btn btn-sm btn-outline btn-danger delete-comment-btn"
-                                                data-id="{{ $comment->id }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="post-content">
-                                        {{ $comment->content }}
-                                    </div>
-                                    <div class="post-footer">
-                                        <div class="post-meta">
-                                            <div class="post-on">
-                                                <i class="fas fa-reply"></i> Comment on:
-                                                {{ Str::limit($comment->post->content, 50) }}
-                                            </div>
-                                            <div class="post-group">
-                                                <i class="fas fa-folder"></i> {{ $comment->post->group->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-4">No comments found</div>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Posts Tab -->
-            <div class="tab-content" id="top-posts-tab">
-                <!-- Top Posts List -->
-                <div class="forum-card">
-                    <div class="forum-card-header">
-                        <h3>Top Posts by Engagement</h3>
-                    </div>
-                    <div class="forum-card-body">
-                        <div class="post-list">
-                            @forelse($topPosts as $post)
-                                <div class="post-item">
-                                    <div class="post-header">
-                                        <div class="post-author">
-                                            <div class="post-avatar">
-                                                <img src="{{ $post->user->image ?? 'https://via.placeholder.com/40x40' }}"
-                                                    alt="User Avatar">
-                                            </div>
-                                            <div class="post-author-info">
-                                                <div class="post-author-name">{{ $post->user->firstname }}
-                                                    {{ $post->user->lastname }}</div>
-                                                <div class="post-date">{{ $post->created_at->diffForHumans() }}</div>
-                                            </div>
-                                        </div>
-                                        <div class="post-actions">
-                                            <button class="btn btn-sm btn-outline btn-danger delete-post-btn"
-                                                data-id="{{ $post->id }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="post-content">
-                                        {{ $post->content }}
-                                    </div>
-                                    <div class="post-footer">
-                                        <div class="post-meta">
-                                            <div class="post-likes">
-                                                <i class="fas fa-thumbs-up"></i> {{ $post->likes_count }} Likes
-                                            </div>
-                                            <div class="post-comments">
-                                                <i class="fas fa-comment"></i> {{ $post->comments_count }} Comments
-                                            </div>
-                                            <div class="post-group">
-                                                <i class="fas fa-folder"></i> {{ $post->group->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-4">No top posts found</div>
-                            @endforelse
-                        </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-4">No posts found</div>
+                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Forum Activity Chart -->
-        <div class="forum-card">
-            <div class="forum-card-header">
-                <h3>Forum Activity Trend</h3>
+        <!-- Comments Tab -->
+        <div class="tab-content" id="comments-tab">
+            <!-- Comment Search & Filters -->
+            <div class="forum-search">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="comment-search" placeholder="Search comments...">
             </div>
-            <div class="forum-card-body">
-                <div class="forum-activity-chart">
-                    <canvas id="forumActivityChart"></canvas>
+
+            <!-- Comments List -->
+            <div class="forum-card">
+                <div class="forum-card-header">
+                    <h3>Recent Comments</h3>
+                </div>
+                <div class="forum-card-body">
+                    <div class="post-list">
+                        @forelse($recentComments as $comment)
+                            <div class="post-item">
+                                <div class="post-header">
+                                    <div class="post-author">
+                                        <div class="post-avatar">
+                                            <img src="{{ $comment->user->image ?? 'https://via.placeholder.com/40x40' }}"
+                                                alt="User Avatar">
+                                        </div>
+                                        <div class="post-author-info">
+                                            <div class="post-author-name">{{ $comment->user->firstname }}
+                                                {{ $comment->user->lastname }}</div>
+                                            <div class="post-date">{{ $comment->created_at->diffForHumans() }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="post-actions">
+                                        <button class="btn btn-sm btn-outline btn-danger delete-comment-btn"
+                                            data-id="{{ $comment->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ $comment->content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="post-meta">
+                                        <div class="post-on">
+                                            <i class="fas fa-reply"></i> Comment on:
+                                            {{ Str::limit($comment->post->content, 50) }}
+                                        </div>
+                                        <div class="post-group">
+                                            <i class="fas fa-folder"></i> {{ $comment->post->group->name }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-4">No comments found</div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+
+        <!-- Top Posts Tab -->
+        <div class="tab-content" id="top-posts-tab">
+            <!-- Top Posts List -->
+            <div class="forum-card">
+                <div class="forum-card-header">
+                    <h3>Top Posts by Engagement</h3>
+                </div>
+                <div class="forum-card-body">
+                    <div class="post-list">
+                        @forelse($topPosts as $post)
+                            <div class="post-item">
+                                <div class="post-header">
+                                    <div class="post-author">
+                                        <div class="post-avatar">
+                                            <img src="{{ $post->user->image ?? 'https://via.placeholder.com/40x40' }}"
+                                                alt="User Avatar">
+                                        </div>
+                                        <div class="post-author-info">
+                                            <div class="post-author-name">{{ $post->user->firstname }}
+                                                {{ $post->user->lastname }}</div>
+                                            <div class="post-date">{{ $post->created_at->diffForHumans() }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="post-actions">
+                                        <button class="btn btn-sm btn-outline btn-danger delete-post-btn"
+                                            data-id="{{ $post->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="post-content">
+                                    {{ $post->content }}
+                                </div>
+                                <div class="post-footer">
+                                    <div class="post-meta">
+                                        <div class="post-likes">
+                                            <i class="fas fa-thumbs-up"></i> {{ $post->likes_count }} Likes
+                                        </div>
+                                        <div class="post-comments">
+                                            <i class="fas fa-comment"></i> {{ $post->comments_count }} Comments
+                                        </div>
+                                        <div class="post-group">
+                                            <i class="fas fa-folder"></i> {{ $post->group->name }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-4">No top posts found</div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="announcements-tab">
+            <div class="forum-card">
+                <div class="forum-card-header">
+                    <h3>Recent Announcements</h3>
+                </div>
+                <div class="forum-card-body">
+                    <div class="post-list">
+                        @forelse($announcements as $announcement)
+                            <div class="announcement-item">
+                                <div class="announcement-icon">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <div class="announcement-content">
+                                    <div class="announcement-text">
+                                        {{ $announcement->content }}
+                                    </div>
+                                    <div class="announcement-meta">
+                                        <div class="announcement-info">
+                                            <div class="announcement-date">
+                                                <i class="far fa-clock"></i>
+                                                {{ $announcement->created_at->diffForHumans() }}
+                                            </div>
+                                            <div class="announcement-recipients">
+                                                <i class="fas fa-users"></i>
+                                                {{ $announcement->user_id ? 'Specific User' : 'All Users' }}
+                                            </div>
+                                        </div>
+                                        <div class="announcement-actions">
+                                            <button class="btn btn-sm btn-outline btn-danger delete-announcement-btn"
+                                                data-id="{{ $announcement->id }}">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-center py-4">No announcements found</div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forum Activity Chart -->
+    <div class="forum-card">
+        <div class="forum-card-header">
+            <h3>Forum Activity Trend</h3>
+        </div>
+        <div class="forum-card-body">
+            <div class="forum-activity-chart">
+                <canvas id="forumActivityChart"></canvas>
+            </div>
+        </div>
+    </div>
+</main>
 @endsection
 
 @section('modal')
-    <!-- Add/Edit Group Modal -->
-    <div class="modal" id="groupModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="groupModalTitle">Add New Group</h3>
-                <button class="modal-close" id="closeGroupModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="groupForm" method="POST" action="{{ route('admin.forum.store-group') }}">
-                    @csrf
-                    <input type="hidden" name="_method" id="form-method" value="POST">
-                    <input type="hidden" name="group_id" id="group_id" value="">
+<!-- Add/Edit Group Modal -->
+<div class="modal" id="groupModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="groupModalTitle">Add New Group</h3>
+            <button class="modal-close" id="closeGroupModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="groupForm" method="POST" action="{{ route('admin.forum.store-group') }}">
+                @csrf
+                <input type="hidden" name="_method" id="form-method" value="POST">
+                <input type="hidden" name="group_id" id="group_id" value="">
 
-                    <div class="forum-form-group">
-                        <label class="forum-form-label" for="name">Group Name</label>
-                        <input type="text" class="forum-form-control" id="name" name="name"
-                            placeholder="Enter group name" required>
-                    </div>
+                <div class="forum-form-group">
+                    <label class="forum-form-label" for="name">Group Name</label>
+                    <input type="text" class="forum-form-control" id="name" name="name"
+                        placeholder="Enter group name" required>
+                </div>
 
-                    <div class="forum-form-group">
-                        <label class="forum-form-label" for="description">Description</label>
-                        <textarea class="forum-form-control" id="description" name="description" rows="3"
-                            placeholder="Enter group description" required></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancelGroupBtn">Cancel</button>
-                <button class="btn btn-primary" id="saveGroupBtn">Save Group</button>
-            </div>
+                <div class="forum-form-group">
+                    <label class="forum-form-label" for="description">Description</label>
+                    <textarea class="forum-form-control" id="description" name="description" rows="3"
+                        placeholder="Enter group description" required></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="cancelGroupBtn">Cancel</button>
+            <button class="btn btn-primary" id="saveGroupBtn">Save Group</button>
         </div>
     </div>
+</div>
 
-    <!-- View Group Modal -->
-    <div class="modal" id="viewGroupModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="viewGroupModalTitle">Group Details</h3>
-                <button class="modal-close" id="closeViewGroupModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="forum-card">
-                    <div class="forum-card-header">
-                        <div class="forum-icon" id="viewGroupIcon"
-                            style="background-color: var(--primary-light); color: var(--primary);">
-                            <i class="fas fa-users"></i>
+<!-- View Group Modal -->
+<div class="modal" id="viewGroupModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="viewGroupModalTitle">Group Details</h3>
+            <button class="modal-close" id="closeViewGroupModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="forum-card">
+                <div class="forum-card-header">
+                    <div class="forum-icon" id="viewGroupIcon"
+                        style="background-color: var(--primary-light); color: var(--primary);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="forum-info">
+                        <div class="forum-name" id="viewGroupName"></div>
+                        <div class="forum-description" id="viewGroupDescription"></div>
+                    </div>
+                </div>
+                <div class="forum-card-body">
+                    <div class="forum-details">
+                        <div class="forum-detail">
+                            <div class="detail-label">Created By</div>
+                            <div class="detail-value" id="viewGroupCreator"></div>
                         </div>
-                        <div class="forum-info">
-                            <div class="forum-name" id="viewGroupName"></div>
-                            <div class="forum-description" id="viewGroupDescription"></div>
+                        <div class="forum-detail">
+                            <div class="detail-label">Posts</div>
+                            <div class="detail-value" id="viewGroupPosts"></div>
+                        </div>
+                        <div class="forum-detail">
+                            <div class="detail-label">Comments</div>
+                            <div class="detail-value" id="viewGroupComments"></div>
+                        </div>
+                        <div class="forum-detail">
+                            <div class="detail-label">Last Activity</div>
+                            <div class="detail-value" id="viewGroupActivity"></div>
                         </div>
                     </div>
-                    <div class="forum-card-body">
-                        <div class="forum-details">
-                            <div class="forum-detail">
-                                <div class="detail-label">Created By</div>
-                                <div class="detail-value" id="viewGroupCreator"></div>
-                            </div>
-                            <div class="forum-detail">
-                                <div class="detail-label">Posts</div>
-                                <div class="detail-value" id="viewGroupPosts"></div>
-                            </div>
-                            <div class="forum-detail">
-                                <div class="detail-label">Comments</div>
-                                <div class="detail-value" id="viewGroupComments"></div>
-                            </div>
-                            <div class="forum-detail">
-                                <div class="detail-label">Last Activity</div>
-                                <div class="detail-value" id="viewGroupActivity"></div>
-                            </div>
-                        </div>
 
-                        <h4 class="mt-4 mb-2">Recent Posts</h4>
-                        <div class="thread-list" id="viewGroupPostsList">
-                            <!-- Posts will be loaded dynamically -->
-                        </div>
+                    <h4 class="mt-4 mb-2">Recent Posts</h4>
+                    <div class="thread-list" id="viewGroupPostsList">
+                        <!-- Posts will be loaded dynamically -->
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="closeViewGroupBtn">Close</button>
-                <button class="btn btn-primary edit-from-view-btn">Edit Group</button>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="closeViewGroupBtn">Close</button>
+            <button class="btn btn-primary edit-from-view-btn">Edit Group</button>
         </div>
     </div>
+</div>
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal" id="deleteGroupModal">
-        <div class="modal-content modal-sm">
-            <div class="modal-header">
-                <h3 class="modal-title">Confirm Delete</h3>
-                <button class="modal-close" id="closeDeleteModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this group? This action cannot be undone.</p>
-                <p><strong>Group: </strong><span id="deleteGroupName"></span></p>
-                <p class="text-danger"><strong>Warning:</strong> Deleting this group will also delete all posts and
-                    comments within it.</p>
-                <form id="delete-group-form" method="POST" action="">
-                    @csrf
-                    @method('DELETE')
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
-                <button class="btn btn-danger" id="confirmDeleteBtn">Delete Group</button>
-            </div>
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteGroupModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Delete</h3>
+            <button class="modal-close" id="closeDeleteModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this group? This action cannot be undone.</p>
+            <p><strong>Group: </strong><span id="deleteGroupName"></span></p>
+            <p class="text-danger"><strong>Warning:</strong> Deleting this group will also delete all posts and
+                comments within it.</p>
+            <form id="delete-group-form" method="POST" action="">
+                @csrf
+                @method('DELETE')
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="cancelDeleteBtn">Cancel</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Delete Group</button>
         </div>
     </div>
+</div>
 
-    <!-- Create Announcement Modal -->
-    <div class="modal" id="announcementModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create Announcement</h3>
-                <button class="modal-close" id="closeAnnouncementModal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="announcementForm" method="POST" action="{{ route('admin.forum.create-announcement') }}">
-                    @csrf
-                    <div class="forum-form-group">
-                        <label class="forum-form-label" for="announcement_content">Announcement Content</label>
-                        <textarea class="forum-form-control" id="announcement_content" name="content" rows="4"
-                            placeholder="Enter announcement content" required></textarea>
-                    </div>
+<!-- Create Announcement Modal -->
+<div class="modal" id="announcementModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Create Announcement</h3>
+            <button class="modal-close" id="closeAnnouncementModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="announcementForm" method="POST" action="{{ route('admin.forum.create-announcement') }}">
+                @csrf
+                <div class="forum-form-group">
+                    <label class="forum-form-label" for="announcement_content">Announcement Content</label>
+                    <textarea class="forum-form-control" id="announcement_content" name="content" rows="4"
+                        placeholder="Enter announcement content" required></textarea>
+                </div>
 
-                    <div class="forum-form-group">
-                        <label class="forum-form-label">Send To</label>
-                        <div class="radio-group">
-                            <div class="radio-item">
-                                <input type="radio" id="send_all" name="send_to" value="all" checked>
-                                <label for="send_all">All Users</label>
-                            </div>
-                            {{-- <div class="radio-item">
+                <div class="forum-form-group">
+                    <label class="forum-form-label">Send To</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="send_all" name="send_to" value="all" checked>
+                            <label for="send_all">All Users</label>
+                        </div>
+                        {{-- <div class="radio-item">
                                 <input type="radio" id="send_specific" name="send_to" value="specific">
                                 <label for="send_specific">Specific Users</label>
                             </div> --}}
-                        </div>
                     </div>
+                </div>
 
-                    {{-- <div class="forum-form-group" id="specific_users_container" style="display: none;">
+                {{-- <div class="forum-form-group" id="specific_users_container" style="display: none;">
                         <label class="forum-form-label" for="user_ids">Select Users</label>
                         <select class="forum-form-control" id="user_ids" name="user_ids[]" multiple>
                             <!-- Users will be loaded dynamically -->
                         </select>
                     </div> --}}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancelAnnouncementBtn">Cancel</button>
-                <button class="btn btn-primary" id="saveAnnouncementBtn">Send Announcement</button>
-            </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="cancelAnnouncementBtn">Cancel</button>
+            <button class="btn btn-primary" id="saveAnnouncementBtn">Send Announcement</button>
         </div>
     </div>
+</div>
+
+<!-- Delete Announcement Confirmation Modal -->
+<div class="modal" id="deleteAnnouncementModal">
+    <div class="modal-content modal-sm">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Delete</h3>
+            <button class="modal-close" id="closeDeleteAnnouncementModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this announcement? This action cannot be undone.</p>
+            <p class="text-danger"><strong>Warning:</strong> This will remove the announcement for all users.</p>
+            <form id="delete-announcement-form" method="POST" action="">
+                @csrf
+                @method('DELETE')
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" id="cancelDeleteAnnouncementBtn">Cancel</button>
+            <button class="btn btn-danger" id="confirmDeleteAnnouncementBtn">Delete Announcement</button>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.querySelector('.admin-sidebar');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.admin-sidebar');
 
-            if (menuToggle && sidebar) {
-                menuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+            });
+        }
+
+        // Tab Navigation
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        if (tabBtns.length) {
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+
+                    // Remove active class from all tabs
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to current tab
+                    this.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
                 });
-            }
+            });
+        }
 
-            // Tab Navigation
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
+        // Group Modal
+        const groupModal = document.getElementById('groupModal');
+        const addGroupBtn = document.getElementById('addGroupBtn');
+        const closeGroupModal = document.getElementById('closeGroupModal');
+        const cancelGroupBtn = document.getElementById('cancelGroupBtn');
+        const saveGroupBtn = document.getElementById('saveGroupBtn');
+        const editGroupBtns = document.querySelectorAll('.edit-group-btn');
+        const groupForm = document.getElementById('groupForm');
 
-            if (tabBtns.length) {
-                tabBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const tabId = this.getAttribute('data-tab');
+        if (addGroupBtn && groupModal) {
+            addGroupBtn.addEventListener('click', function() {
+                document.getElementById('groupModalTitle').textContent = 'Add New Group';
+                document.getElementById('form-method').value = 'POST';
+                document.getElementById('group_id').value = '';
+                groupForm.action = "{{ route('admin.forum.store-group') }}";
+                groupForm.reset();
+                groupModal.classList.add('show');
+            });
+        }
 
-                        // Remove active class from all tabs
-                        tabBtns.forEach(b => b.classList.remove('active'));
-                        tabContents.forEach(c => c.classList.remove('active'));
+        if (closeGroupModal && groupModal) {
+            closeGroupModal.addEventListener('click', function() {
+                groupModal.classList.remove('show');
+            });
+        }
 
-                        // Add active class to current tab
-                        this.classList.add('active');
-                        document.getElementById(`${tabId}-tab`).classList.add('active');
-                    });
+        if (cancelGroupBtn && groupModal) {
+            cancelGroupBtn.addEventListener('click', function() {
+                groupModal.classList.remove('show');
+            });
+        }
+
+        if (saveGroupBtn && groupForm) {
+            saveGroupBtn.addEventListener('click', function() {
+                groupForm.submit();
+            });
+        }
+
+        if (editGroupBtns.length && groupModal) {
+            editGroupBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const groupId = this.getAttribute('data-id');
+                    document.getElementById('groupModalTitle').textContent = 'Edit Group';
+                    document.getElementById('form-method').value = 'PUT';
+                    document.getElementById('group_id').value = groupId;
+                    groupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
+
+                    // Fetch group data and populate the form
+                    fetch("{{ url('admin/forum/groups') }}/" + groupId)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('name').value = data.group.name;
+                            document.getElementById('description').value = data.group
+                                .description;
+
+                            groupModal.classList.add('show');
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group data:', error);
+                        });
                 });
-            }
+            });
+        }
 
-            // Group Modal
-            const groupModal = document.getElementById('groupModal');
-            const addGroupBtn = document.getElementById('addGroupBtn');
-            const closeGroupModal = document.getElementById('closeGroupModal');
-            const cancelGroupBtn = document.getElementById('cancelGroupBtn');
-            const saveGroupBtn = document.getElementById('saveGroupBtn');
-            const editGroupBtns = document.querySelectorAll('.edit-group-btn');
-            const groupForm = document.getElementById('groupForm');
+        // View Group Modal
+        const viewGroupModal = document.getElementById('viewGroupModal');
+        const viewGroupBtns = document.querySelectorAll('.view-group-btn');
+        const closeViewGroupModal = document.getElementById('closeViewGroupModal');
+        const closeViewGroupBtn = document.getElementById('closeViewGroupBtn');
 
-            if (addGroupBtn && groupModal) {
-                addGroupBtn.addEventListener('click', function() {
-                    document.getElementById('groupModalTitle').textContent = 'Add New Group';
-                    document.getElementById('form-method').value = 'POST';
-                    document.getElementById('group_id').value = '';
-                    groupForm.action = "{{ route('admin.forum.store-group') }}";
-                    groupForm.reset();
-                    groupModal.classList.add('show');
-                });
-            }
+        if (viewGroupBtns.length && viewGroupModal) {
+            viewGroupBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const groupId = this.getAttribute('data-id');
 
-            if (closeGroupModal && groupModal) {
-                closeGroupModal.addEventListener('click', function() {
-                    groupModal.classList.remove('show');
-                });
-            }
+                    // Fetch group data and populate the modal
+                    fetch("{{ url('admin/forum/groups') }}/" + groupId)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('viewGroupName').textContent = data
+                                .group.name;
+                            document.getElementById('viewGroupDescription').textContent =
+                                data.group.description;
+                            document.getElementById('viewGroupCreator').textContent =
+                                `${data.group.created_by.firstname} ${data.group.created_by.lastname}`;
+                            document.getElementById('viewGroupPosts').textContent = data
+                                .group.posts_count;
+                            document.getElementById('viewGroupComments').textContent = data
+                                .commentCount;
+                            document.getElementById('viewGroupActivity').textContent = data
+                                .lastActivity;
 
-            if (cancelGroupBtn && groupModal) {
-                cancelGroupBtn.addEventListener('click', function() {
-                    groupModal.classList.remove('show');
-                });
-            }
+                            // Populate recent posts
+                            const postsList = document.getElementById('viewGroupPostsList');
+                            postsList.innerHTML = '';
 
-            if (saveGroupBtn && groupForm) {
-                saveGroupBtn.addEventListener('click', function() {
-                    groupForm.submit();
-                });
-            }
-
-            if (editGroupBtns.length && groupModal) {
-                editGroupBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const groupId = this.getAttribute('data-id');
-                        document.getElementById('groupModalTitle').textContent = 'Edit Group';
-                        document.getElementById('form-method').value = 'PUT';
-                        document.getElementById('group_id').value = groupId;
-                        groupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
-
-                        // Fetch group data and populate the form
-                        fetch("{{ url('admin/forum/groups') }}/" + groupId)
-                            .then(response => response.json())
-                            .then(data => {
-                                document.getElementById('name').value = data.group.name;
-                                document.getElementById('description').value = data.group
-                                    .description;
-
-                                groupModal.classList.add('show');
-                            })
-                            .catch(error => {
-                                console.error('Error fetching group data:', error);
-                            });
-                    });
-                });
-            }
-
-            // View Group Modal
-            const viewGroupModal = document.getElementById('viewGroupModal');
-            const viewGroupBtns = document.querySelectorAll('.view-group-btn');
-            const closeViewGroupModal = document.getElementById('closeViewGroupModal');
-            const closeViewGroupBtn = document.getElementById('closeViewGroupBtn');
-
-            if (viewGroupBtns.length && viewGroupModal) {
-                viewGroupBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const groupId = this.getAttribute('data-id');
-
-                        // Fetch group data and populate the modal
-                        fetch("{{ url('admin/forum/groups') }}/" + groupId)
-                            .then(response => response.json())
-                            .then(data => {
-                                document.getElementById('viewGroupName').textContent = data
-                                    .group.name;
-                                document.getElementById('viewGroupDescription').textContent =
-                                    data.group.description;
-                                document.getElementById('viewGroupCreator').textContent =
-                                    `${data.group.created_by.firstname} ${data.group.created_by.lastname}`;
-                                document.getElementById('viewGroupPosts').textContent = data
-                                    .group.posts_count;
-                                document.getElementById('viewGroupComments').textContent = data
-                                    .commentCount;
-                                document.getElementById('viewGroupActivity').textContent = data
-                                    .lastActivity;
-
-                                // Populate recent posts
-                                const postsList = document.getElementById('viewGroupPostsList');
-                                postsList.innerHTML = '';
-
-                                if (data.group.posts && data.group.posts.length > 0) {
-                                    data.group.posts.forEach(post => {
-                                        const postItem = document.createElement('div');
-                                        postItem.className = 'thread-item';
-                                        postItem.innerHTML = `
+                            if (data.group.posts && data.group.posts.length > 0) {
+                                data.group.posts.forEach(post => {
+                                    const postItem = document.createElement('div');
+                                    postItem.className = 'thread-item';
+                                    postItem.innerHTML = `
                                         <div class="thread-icon thread-icon-normal">
                                             <i class="fas fa-comment"></i>
                                         </div>
@@ -1296,365 +1485,407 @@
                                             </div>
                                         </div>
                                     `;
-                                        postsList.appendChild(postItem);
-                                    });
-                                } else {
-                                    postsList.innerHTML =
-                                        '<div class="text-center py-4">No posts found in this group</div>';
-                                }
+                                    postsList.appendChild(postItem);
+                                });
+                            } else {
+                                postsList.innerHTML =
+                                    '<div class="text-center py-4">No posts found in this group</div>';
+                            }
 
-                                viewGroupModal.classList.add('show');
+                            viewGroupModal.classList.add('show');
+                        })
+                        .catch(error => {
+                            console.error('Error fetching group data:', error);
+                        });
+                });
+            });
+        }
+
+        if (closeViewGroupModal && viewGroupModal) {
+            closeViewGroupModal.addEventListener('click', function() {
+                viewGroupModal.classList.remove('show');
+            });
+        }
+
+        if (closeViewGroupBtn && viewGroupModal) {
+            closeViewGroupBtn.addEventListener('click', function() {
+                viewGroupModal.classList.remove('show');
+            });
+        }
+
+        // Delete Group Modal
+        const deleteGroupModal = document.getElementById('deleteGroupModal');
+        const deleteGroupBtns = document.querySelectorAll('.delete-group-btn');
+        const closeDeleteModal = document.getElementById('closeDeleteModal');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const deleteGroupForm = document.getElementById('delete-group-form');
+
+        if (deleteGroupBtns.length && deleteGroupModal) {
+            deleteGroupBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const groupId = this.getAttribute('data-id');
+                    const groupName = this.closest('tr').querySelector(
+                        '.forum-table-name div:first-child').textContent.trim();
+
+                    document.getElementById('deleteGroupName').textContent = groupName;
+                    deleteGroupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
+
+                    deleteGroupModal.classList.add('show');
+                });
+            });
+        }
+
+        if (closeDeleteModal && deleteGroupModal) {
+            closeDeleteModal.addEventListener('click', function() {
+                deleteGroupModal.classList.remove('show');
+            });
+        }
+
+        if (cancelDeleteBtn && deleteGroupModal) {
+            cancelDeleteBtn.addEventListener('click', function() {
+                deleteGroupModal.classList.remove('show');
+            });
+        }
+
+        if (confirmDeleteBtn && deleteGroupForm) {
+            confirmDeleteBtn.addEventListener('click', function() {
+                deleteGroupForm.submit();
+            });
+        }
+
+        // Edit from view button
+        const editFromViewBtn = document.querySelector('.edit-from-view-btn');
+        if (editFromViewBtn && groupModal && viewGroupModal) {
+            editFromViewBtn.addEventListener('click', function() {
+                const groupName = document.getElementById('viewGroupName').textContent;
+                const groupDescription = document.getElementById('viewGroupDescription').textContent;
+                const groupId = document.querySelector('.view-group-btn[data-id]').getAttribute(
+                    'data-id');
+
+                viewGroupModal.classList.remove('show');
+
+                document.getElementById('groupModalTitle').textContent = 'Edit Group';
+                document.getElementById('form-method').value = 'PUT';
+                document.getElementById('group_id').value = groupId;
+                groupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
+
+                document.getElementById('name').value = groupName;
+                document.getElementById('description').value = groupDescription;
+
+                groupModal.classList.add('show');
+            });
+        }
+
+        // Announcement Modal
+        const announcementModal = document.getElementById('announcementModal');
+        const createAnnouncementBtn = document.getElementById('createAnnouncementBtn');
+        const closeAnnouncementModal = document.getElementById('closeAnnouncementModal');
+        const cancelAnnouncementBtn = document.getElementById('cancelAnnouncementBtn');
+        const saveAnnouncementBtn = document.getElementById('saveAnnouncementBtn');
+        const announcementForm = document.getElementById('announcementForm');
+        const sendAllRadio = document.getElementById('send_all');
+        const sendSpecificRadio = document.getElementById('send_specific');
+        const specificUsersContainer = document.getElementById('specific_users_container');
+
+        if (createAnnouncementBtn && announcementModal) {
+            createAnnouncementBtn.addEventListener('click', function() {
+                announcementForm.reset();
+                announcementModal.classList.add('show');
+            });
+        }
+
+        if (closeAnnouncementModal && announcementModal) {
+            closeAnnouncementModal.addEventListener('click', function() {
+                announcementModal.classList.remove('show');
+            });
+        }
+
+        if (cancelAnnouncementBtn && announcementModal) {
+            cancelAnnouncementBtn.addEventListener('click', function() {
+                announcementModal.classList.remove('show');
+            });
+        }
+
+        if (saveAnnouncementBtn && announcementForm) {
+            saveAnnouncementBtn.addEventListener('click', function() {
+                announcementForm.submit();
+            });
+        }
+
+        if (sendAllRadio && sendSpecificRadio && specificUsersContainer) {
+            sendAllRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    specificUsersContainer.style.display = 'none';
+                }
+            });
+
+            sendSpecificRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    specificUsersContainer.style.display = 'block';
+
+                    // Load users if not already loaded
+                    const userSelect = document.getElementById('user_ids');
+                    if (userSelect && userSelect.options.length <= 1) {
+                        fetch("{{ route('admin.users.list') }}")
+                            .then(response => response.json())
+                            .then(data => {
+                                userSelect.innerHTML = '';
+                                data.forEach(user => {
+                                    const option = document.createElement('option');
+                                    option.value = user.id;
+                                    option.textContent =
+                                        `${user.firstname} ${user.lastname} (${user.email})`;
+                                    userSelect.appendChild(option);
+                                });
                             })
                             .catch(error => {
-                                console.error('Error fetching group data:', error);
+                                console.error('Error fetching users:', error);
                             });
-                    });
-                });
-            }
+                    }
+                }
+            });
+        }
 
-            if (closeViewGroupModal && viewGroupModal) {
-                closeViewGroupModal.addEventListener('click', function() {
-                    viewGroupModal.classList.remove('show');
-                });
-            }
+        // Delete Post and Comment buttons
+        const deletePostBtns = document.querySelectorAll('.delete-post-btn');
+        const deleteCommentBtns = document.querySelectorAll('.delete-comment-btn');
 
-            if (closeViewGroupBtn && viewGroupModal) {
-                closeViewGroupBtn.addEventListener('click', function() {
-                    viewGroupModal.classList.remove('show');
-                });
-            }
+        if (deletePostBtns.length) {
+            deletePostBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm(
+                            'Are you sure you want to delete this post? This will also delete all comments on this post.'
+                        )) {
+                        const postId = this.getAttribute('data-id');
 
-            // Delete Group Modal
-            const deleteGroupModal = document.getElementById('deleteGroupModal');
-            const deleteGroupBtns = document.querySelectorAll('.delete-group-btn');
-            const closeDeleteModal = document.getElementById('closeDeleteModal');
-            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-            const deleteGroupForm = document.getElementById('delete-group-form');
+                        // Create and submit a form to delete the post
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = "{{ url('admin/forum/posts') }}/" + postId;
 
-            if (deleteGroupBtns.length && deleteGroupModal) {
-                deleteGroupBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const groupId = this.getAttribute('data-id');
-                        const groupName = this.closest('tr').querySelector(
-                            '.forum-table-name div:first-child').textContent.trim();
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = "{{ csrf_token() }}";
+                        form.appendChild(csrfToken);
 
-                        document.getElementById('deleteGroupName').textContent = groupName;
-                        deleteGroupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
+                        const method = document.createElement('input');
+                        method.type = 'hidden';
+                        method.name = '_method';
+                        method.value = 'DELETE';
+                        form.appendChild(method);
 
-                        deleteGroupModal.classList.add('show');
-                    });
-                });
-            }
-
-            if (closeDeleteModal && deleteGroupModal) {
-                closeDeleteModal.addEventListener('click', function() {
-                    deleteGroupModal.classList.remove('show');
-                });
-            }
-
-            if (cancelDeleteBtn && deleteGroupModal) {
-                cancelDeleteBtn.addEventListener('click', function() {
-                    deleteGroupModal.classList.remove('show');
-                });
-            }
-
-            if (confirmDeleteBtn && deleteGroupForm) {
-                confirmDeleteBtn.addEventListener('click', function() {
-                    deleteGroupForm.submit();
-                });
-            }
-
-            // Edit from view button
-            const editFromViewBtn = document.querySelector('.edit-from-view-btn');
-            if (editFromViewBtn && groupModal && viewGroupModal) {
-                editFromViewBtn.addEventListener('click', function() {
-                    const groupName = document.getElementById('viewGroupName').textContent;
-                    const groupDescription = document.getElementById('viewGroupDescription').textContent;
-                    const groupId = document.querySelector('.view-group-btn[data-id]').getAttribute(
-                        'data-id');
-
-                    viewGroupModal.classList.remove('show');
-
-                    document.getElementById('groupModalTitle').textContent = 'Edit Group';
-                    document.getElementById('form-method').value = 'PUT';
-                    document.getElementById('group_id').value = groupId;
-                    groupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
-
-                    document.getElementById('name').value = groupName;
-                    document.getElementById('description').value = groupDescription;
-
-                    groupModal.classList.add('show');
-                });
-            }
-
-            // Announcement Modal
-            const announcementModal = document.getElementById('announcementModal');
-            const createAnnouncementBtn = document.getElementById('createAnnouncementBtn');
-            const closeAnnouncementModal = document.getElementById('closeAnnouncementModal');
-            const cancelAnnouncementBtn = document.getElementById('cancelAnnouncementBtn');
-            const saveAnnouncementBtn = document.getElementById('saveAnnouncementBtn');
-            const announcementForm = document.getElementById('announcementForm');
-            const sendAllRadio = document.getElementById('send_all');
-            const sendSpecificRadio = document.getElementById('send_specific');
-            const specificUsersContainer = document.getElementById('specific_users_container');
-
-            if (createAnnouncementBtn && announcementModal) {
-                createAnnouncementBtn.addEventListener('click', function() {
-                    announcementForm.reset();
-                    announcementModal.classList.add('show');
-                });
-            }
-
-            if (closeAnnouncementModal && announcementModal) {
-                closeAnnouncementModal.addEventListener('click', function() {
-                    announcementModal.classList.remove('show');
-                });
-            }
-
-            if (cancelAnnouncementBtn && announcementModal) {
-                cancelAnnouncementBtn.addEventListener('click', function() {
-                    announcementModal.classList.remove('show');
-                });
-            }
-
-            if (saveAnnouncementBtn && announcementForm) {
-                saveAnnouncementBtn.addEventListener('click', function() {
-                    announcementForm.submit();
-                });
-            }
-
-            if (sendAllRadio && sendSpecificRadio && specificUsersContainer) {
-                sendAllRadio.addEventListener('change', function() {
-                    if (this.checked) {
-                        specificUsersContainer.style.display = 'none';
+                        document.body.appendChild(form);
+                        form.submit();
                     }
                 });
+            });
+        }
 
-                sendSpecificRadio.addEventListener('change', function() {
-                    if (this.checked) {
-                        specificUsersContainer.style.display = 'block';
+        if (deleteCommentBtns.length) {
+            deleteCommentBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to delete this comment?')) {
+                        const commentId = this.getAttribute('data-id');
 
-                        // Load users if not already loaded
-                        const userSelect = document.getElementById('user_ids');
-                        if (userSelect && userSelect.options.length <= 1) {
-                            fetch("{{ route('admin.users.list') }}")
-                                .then(response => response.json())
-                                .then(data => {
-                                    userSelect.innerHTML = '';
-                                    data.forEach(user => {
-                                        const option = document.createElement('option');
-                                        option.value = user.id;
-                                        option.textContent =
-                                            `${user.firstname} ${user.lastname} (${user.email})`;
-                                        userSelect.appendChild(option);
-                                    });
-                                })
-                                .catch(error => {
-                                    console.error('Error fetching users:', error);
-                                });
-                        }
+                        // Create and submit a form to delete the comment
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = "{{ url('admin/forum/comments') }}/" + commentId;
+
+                        const csrfToken = document.createElement('input');
+                        csrfToken.type = 'hidden';
+                        csrfToken.name = '_token';
+                        csrfToken.value = "{{ csrf_token() }}";
+                        form.appendChild(csrfToken);
+
+                        const method = document.createElement('input');
+                        method.type = 'hidden';
+                        method.name = '_method';
+                        method.value = 'DELETE';
+                        form.appendChild(method);
+
+                        document.body.appendChild(form);
+                        form.submit();
                     }
                 });
-            }
+            });
+        }
 
-            // Delete Post and Comment buttons
-            const deletePostBtns = document.querySelectorAll('.delete-post-btn');
-            const deleteCommentBtns = document.querySelectorAll('.delete-comment-btn');
+        // Delete Announcement buttons
+        const deleteAnnouncementBtns = document.querySelectorAll('.delete-announcement-btn');
 
-            if (deletePostBtns.length) {
-                deletePostBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        if (confirm(
-                                'Are you sure you want to delete this post? This will also delete all comments on this post.'
-                            )) {
-                            const postId = this.getAttribute('data-id');
 
-                            // Create and submit a form to delete the post
-                            const form = document.createElement('form');
-                            form.method = 'POST';
-                            form.action = "{{ url('admin/forum/posts') }}/" + postId;
+        // Delete Announcement Modal
+        const deleteAnnouncementModal = document.getElementById('deleteAnnouncementModal');
+        const closeDeleteAnnouncementModal = document.getElementById('closeDeleteAnnouncementModal');
+        const cancelDeleteAnnouncementBtn = document.getElementById('cancelDeleteAnnouncementBtn');
+        const confirmDeleteAnnouncementBtn = document.getElementById('confirmDeleteAnnouncementBtn');
+        const deleteAnnouncementForm = document.getElementById('delete-announcement-form');
 
-                            const csrfToken = document.createElement('input');
-                            csrfToken.type = 'hidden';
-                            csrfToken.name = '_token';
-                            csrfToken.value = "{{ csrf_token() }}";
-                            form.appendChild(csrfToken);
+        if (deleteAnnouncementBtns.length && deleteAnnouncementModal) {
+            deleteAnnouncementBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const announcementId = this.getAttribute('data-id');
+                    console.log(announcementId);
 
-                            const method = document.createElement('input');
-                            method.type = 'hidden';
-                            method.name = '_method';
-                            method.value = 'DELETE';
-                            form.appendChild(method);
-
-                            document.body.appendChild(form);
-                            form.submit();
-                        }
-                    });
+                    deleteAnnouncementForm.action = "{{ url('admin/forum/announcements') }}/" +
+                        announcementId;
+                    deleteAnnouncementModal.classList.add('show');
                 });
-            }
+            });
+        }
 
-            if (deleteCommentBtns.length) {
-                deleteCommentBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        if (confirm('Are you sure you want to delete this comment?')) {
-                            const commentId = this.getAttribute('data-id');
+        if (closeDeleteAnnouncementModal && deleteAnnouncementModal) {
+            closeDeleteAnnouncementModal.addEventListener('click', function() {
+                deleteAnnouncementModal.classList.remove('show');
+            });
+        }
 
-                            // Create and submit a form to delete the comment
-                            const form = document.createElement('form');
-                            form.method = 'POST';
-                            form.action = "{{ url('admin/forum/comments') }}/" + commentId;
+        if (cancelDeleteAnnouncementBtn && deleteAnnouncementModal) {
+            cancelDeleteAnnouncementBtn.addEventListener('click', function() {
+                deleteAnnouncementModal.classList.remove('show');
+            });
+        }
 
-                            const csrfToken = document.createElement('input');
-                            csrfToken.type = 'hidden';
-                            csrfToken.name = '_token';
-                            csrfToken.value = "{{ csrf_token() }}";
-                            form.appendChild(csrfToken);
+        if (confirmDeleteAnnouncementBtn && deleteAnnouncementForm) {
+            confirmDeleteAnnouncementBtn.addEventListener('click', function() {
+                deleteAnnouncementForm.submit();
+            });
+        }
 
-                            const method = document.createElement('input');
-                            method.type = 'hidden';
-                            method.name = '_method';
-                            method.value = 'DELETE';
-                            form.appendChild(method);
+        // Search functionality
+        const groupSearch = document.getElementById('group-search');
+        const postSearch = document.getElementById('post-search');
+        const commentSearch = document.getElementById('comment-search');
 
-                            document.body.appendChild(form);
-                            form.submit();
-                        }
-                    });
+        if (groupSearch) {
+            groupSearch.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('.forum-table tbody tr');
+
+                rows.forEach(row => {
+                    const groupName = row.querySelector('.forum-table-name div:first-child')
+                        ?.textContent.toLowerCase() || '';
+                    const groupDesc = row.querySelector('.forum-table-name .text-sm')
+                        ?.textContent.toLowerCase() || '';
+
+                    if (groupName.includes(searchTerm) || groupDesc.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 });
-            }
+            });
+        }
 
-            // Search functionality
-            const groupSearch = document.getElementById('group-search');
-            const postSearch = document.getElementById('post-search');
-            const commentSearch = document.getElementById('comment-search');
+        if (postSearch) {
+            postSearch.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                const postItems = document.querySelectorAll('#posts-tab .post-item');
 
-            if (groupSearch) {
-                groupSearch.addEventListener('keyup', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('.forum-table tbody tr');
+                postItems.forEach(item => {
+                    const postContent = item.querySelector('.post-content')?.textContent
+                        .toLowerCase() || '';
+                    const authorName = item.querySelector('.post-author-name')?.textContent
+                        .toLowerCase() || '';
 
-                    rows.forEach(row => {
-                        const groupName = row.querySelector('.forum-table-name div:first-child')
-                            ?.textContent.toLowerCase() || '';
-                        const groupDesc = row.querySelector('.forum-table-name .text-sm')
-                            ?.textContent.toLowerCase() || '';
-
-                        if (groupName.includes(searchTerm) || groupDesc.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
+                    if (postContent.includes(searchTerm) || authorName.includes(searchTerm)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
                 });
-            }
+            });
+        }
 
-            if (postSearch) {
-                postSearch.addEventListener('keyup', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const postItems = document.querySelectorAll('#posts-tab .post-item');
+        if (commentSearch) {
+            commentSearch.addEventListener('keyup', function() {
+                const searchTerm = this.value.toLowerCase();
+                const commentItems = document.querySelectorAll('#comments-tab .post-item');
 
-                    postItems.forEach(item => {
-                        const postContent = item.querySelector('.post-content')?.textContent
-                            .toLowerCase() || '';
-                        const authorName = item.querySelector('.post-author-name')?.textContent
-                            .toLowerCase() || '';
+                commentItems.forEach(item => {
+                    const commentContent = item.querySelector('.post-content')?.textContent
+                        .toLowerCase() || '';
+                    const authorName = item.querySelector('.post-author-name')?.textContent
+                        .toLowerCase() || '';
 
-                        if (postContent.includes(searchTerm) || authorName.includes(searchTerm)) {
-                            item.style.display = '';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
+                    if (commentContent.includes(searchTerm) || authorName.includes(
+                            searchTerm)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
                 });
-            }
+            });
+        }
 
-            if (commentSearch) {
-                commentSearch.addEventListener('keyup', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const commentItems = document.querySelectorAll('#comments-tab .post-item');
+        // Forum Activity Chart
+        const forumActivityCtx = document.getElementById('forumActivityChart');
+        if (forumActivityCtx) {
+            const monthlyPosts = @json($monthlyPosts);
+            const monthlyComments = @json($monthlyComments);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-                    commentItems.forEach(item => {
-                        const commentContent = item.querySelector('.post-content')?.textContent
-                            .toLowerCase() || '';
-                        const authorName = item.querySelector('.post-author-name')?.textContent
-                            .toLowerCase() || '';
-
-                        if (commentContent.includes(searchTerm) || authorName.includes(
-                                searchTerm)) {
-                            item.style.display = '';
-                        } else {
-                            item.style.display = 'none';
+            const forumActivityChart = new Chart(forumActivityCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                            label: 'New Posts',
+                            data: monthlyPosts,
+                            borderColor: '#e63946',
+                            backgroundColor: 'rgba(230, 57, 70, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'New Comments',
+                            data: monthlyComments,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y1'
                         }
-                    });
-                });
-            }
-
-            // Forum Activity Chart
-            const forumActivityCtx = document.getElementById('forumActivityChart');
-            if (forumActivityCtx) {
-                const monthlyPosts = @json($monthlyPosts);
-                const monthlyComments = @json($monthlyComments);
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-                const forumActivityChart = new Chart(forumActivityCtx, {
-                    type: 'line',
-                    data: {
-                        labels: months,
-                        datasets: [{
-                                label: 'New Posts',
-                                data: monthlyPosts,
-                                borderColor: '#e63946',
-                                backgroundColor: 'rgba(230, 57, 70, 0.1)',
-                                tension: 0.4,
-                                fill: true
-                            },
-                            {
-                                label: 'New Comments',
-                                data: monthlyComments,
-                                borderColor: '#3498db',
-                                backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                                tension: 0.4,
-                                fill: true,
-                                yAxisID: 'y1'
-                            }
-                        ]
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'top'
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Posts'
                             }
                         },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Posts'
-                                }
+                        y1: {
+                            position: 'right',
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Comments'
                             },
-                            y1: {
-                                position: 'right',
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Comments'
-                                },
-                                grid: {
-                                    drawOnChartArea: false
-                                }
+                            grid: {
+                                drawOnChartArea: false
                             }
                         }
                     }
-                });
-            }
-        });
-    </script>
+                }
+            });
+        }
+    });
+</script>
 @endsection

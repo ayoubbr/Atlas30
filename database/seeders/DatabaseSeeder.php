@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Roles
         $adminRole = Role::create(['name' => 'admin']);
         $userRole = Role::create(['name' => 'user']);
 
@@ -38,22 +37,16 @@ class DatabaseSeeder extends Seeder
             'role_id' => $adminRole->id,
         ]);
 
-        // Users
         User::factory()->count(5)->create(['role_id' => $userRole->id]);
 
-        // Teams
         $teams = Team::factory()->count(6)->create();
 
-        // Stadiums
         $stadiums = Stadium::factory()->count(5)->create();
 
-        // Categories
         $categories = Category::factory()->count(5)->create();
 
-        // Games
-        $games = Game::factory()->count(3)->create();
+        $games = Game::factory()->count(10)->create();
 
-        // Tickets
         $users = User::where('role_id', $userRole->id)->get();
         foreach ($games as $game) {
             Ticket::factory()->count(5)->create([
@@ -63,7 +56,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Payments
         $tickets = Ticket::all();
         foreach ($tickets as $ticket) {
             Payment::create([

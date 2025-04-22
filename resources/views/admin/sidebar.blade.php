@@ -95,8 +95,7 @@
             <div class="nav-section-title">Logout</div>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="{{ url('logout') }}"
-                        class="nav-link {{ request()->is('logout') ? 'active' : '' }}">
+                    <a href="{{ url('logout') }}" class="nav-link {{ request()->is('logout') ? 'active' : '' }}">
                         <i class="fa-solid fa-right-from-bracket nav-icon"></i>
                         <span class="nav-text">Logout</span>
                     </a>
@@ -119,22 +118,6 @@
     </div>
 
     <div class="header-right">
-        <div class="header-search">
-            <input type="text" class="search-input" placeholder="Search users...">
-            <i class="fas fa-search search-icon"></i>
-        </div>
-
-        <div class="header-actions">
-            <div class="action-btn">
-                <i class="fas fa-bell"></i>
-                {{-- <span class="notification-badge">5</span> --}}
-            </div>
-            <div class="action-btn">
-                <i class="fas fa-envelope"></i>
-                {{-- <span class="notification-badge">3</span> --}}
-            </div>
-        </div>
-
         @auth
             <div class="user-profile" id="admin-profile-link">
                 <div class="user-avatar">
