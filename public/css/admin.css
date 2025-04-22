@@ -724,6 +724,10 @@ a:hover {
     background-color: var(--gray-100);
 }
 
+.match-table th:last-child{
+    width: 0px;
+}
+
 .match-table tr:hover {
     background-color: var(--gray-50);
 }

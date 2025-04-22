@@ -163,7 +163,7 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            border-top: 1px solid var(--gray-200);
+            /* border-top: 1px solid var(--gray-200); */
         }
 
         /* Table View Styles */
@@ -224,6 +224,7 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
+            justify-content: end;
         }
 
         .filter-select {

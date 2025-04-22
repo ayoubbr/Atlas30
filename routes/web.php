@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
@@ -56,7 +57,7 @@ Route::prefix('/')->group(function () {
     // Authentication 
     Route::post('login', [UserController::class, 'login'])->name('login');
     Route::post('register', [UserController::class, 'register'])->name('register');
-    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+    Route::get('logout', [UserController::class, 'logout'])->name('logout');
     Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('forgot-password');
 });
 
@@ -135,28 +136,10 @@ Route::prefix('admin')->group(function () {
     Route::delete('forum/comments/{id}', [ForumController::class, 'destroyComment'])->name('admin.forum.destroy-comment');
     // Announcement management
     Route::post('forum/announcements', [ForumController::class, 'createAnnouncement'])->name('admin.forum.create-announcement');
+    Route::delete('forum/announcements/{id}', [ForumController::class, 'destroyAnnouncement']);
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
 
 
-
-    Route::get('dashboard', function () {
-        return view('admin.dashboard');
-    })->name("admin");
-
-    Route::get('analytics', function () {
-        return view('admin.analytics');
-    });
-
-    // Route::get('users', function () {
-    //     return view('admin.users');
-    // });
-
-    // Route::get('forums', function () {
-    //     return view('admin.forums');
-    // });
-
-    Route::get('settings', function () {
-        return view('admin.settings');
-    });
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
 });

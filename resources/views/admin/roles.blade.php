@@ -78,7 +78,7 @@
 
         .role-actions {
             padding: 15px 20px;
-            border-top: 1px solid var(--gray-200);
+            /* border-top: 1px solid var(--gray-200); */
             display: flex;
             justify-content: flex-end;
             gap: 10px;

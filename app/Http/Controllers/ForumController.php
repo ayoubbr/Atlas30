@@ -21,7 +21,6 @@ class ForumController extends Controller
         $totalComments = Comment::count();
         $totalLikes = Like::count();
 
-        // Get active users (users who have created posts or comments in the last 30 days)
         $activeUsers = User::whereHas('posts', function ($query) {
             $query->where('created_at', '>=', Carbon::now()->subDays(30));
         })
@@ -30,7 +29,6 @@ class ForumController extends Controller
             })
             ->count();
 
-        // Get top groups by post count
         $topGroups = Group::withCount('posts')
             ->with(['posts' => function ($query) {
                 $query->withCount('comments');
@@ -39,25 +37,21 @@ class ForumController extends Controller
             ->take(10)
             ->get();
 
-        // Get recent posts with their groups and users
         $recentPosts = Post::with(['user', 'group'])
             ->withCount(['comments', 'likes'])
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
 
-        // Calculate comments count for each group
         foreach ($topGroups as $group) {
             $group->comments_count = $group->posts->sum('comments_count');
         }
 
-        // Get recent comments with their posts and users
         $recentComments = Comment::with(['user', 'post.group'])
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
 
-        // Get top posts by likes and comments
         $topPosts = Post::with(['user', 'group'])
             ->withCount(['comments', 'likes'])
             ->orderBy('likes_count', 'desc')
@@ -65,9 +59,14 @@ class ForumController extends Controller
             ->take(5)
             ->get();
 
-        // Get monthly activity data for chart
         $monthlyPosts = $this->getMonthlyActivityData(Post::class);
         $monthlyComments = $this->getMonthlyActivityData(Comment::class);
+
+        $announcements = Notification::orderBy('created_at', 'desc')
+            ->get()
+            ->unique('content')
+            ->take(10)
+            ->values();
 
         return view('admin.forum', compact(
             'totalGroups',
@@ -80,7 +79,8 @@ class ForumController extends Controller
             'recentComments',
             'topPosts',
             'monthlyPosts',
-            'monthlyComments'
+            'monthlyComments',
+            'announcements'
         ));
     }
 
@@ -250,6 +250,16 @@ class ForumController extends Controller
 
         return redirect()->route('admin.forum.index')
             ->with('success', 'Announcement created and notifications sent successfully.');
+    }
+
+
+    public function destroyAnnouncement($id)
+    {
+        $announcement = Notification::findOrFail($id);
+        $announcement->delete();
+
+        return redirect()->route('admin.forum.index')
+            ->with('success', 'Announcement deleted successfully.');
     }
 
 

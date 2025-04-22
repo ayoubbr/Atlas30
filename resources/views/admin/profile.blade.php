@@ -238,22 +238,6 @@
             <div class="profile-card profile-form-card">
                 <h3 class="form-title">Edit Profile</h3>
 
-                @if (session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
                 <form action="{{ route('admin.profile.update') }}" method="POST">
                     @csrf
 
