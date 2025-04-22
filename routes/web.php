@@ -56,7 +56,7 @@ Route::prefix('/')->group(function () {
     // Authentication 
     Route::post('login', [UserController::class, 'login'])->name('login');
     Route::post('register', [UserController::class, 'register'])->name('register');
-    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+    Route::get('logout', [UserController::class, 'logout'])->name('logout');
     Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('forgot-password');
 });
 
@@ -143,20 +143,4 @@ Route::prefix('admin')->group(function () {
     Route::get('dashboard', function () {
         return view('admin.dashboard');
     })->name("admin");
-
-    Route::get('analytics', function () {
-        return view('admin.analytics');
-    });
-
-    // Route::get('users', function () {
-    //     return view('admin.users');
-    // });
-
-    // Route::get('forums', function () {
-    //     return view('admin.forums');
-    // });
-
-    Route::get('settings', function () {
-        return view('admin.settings');
-    });
 });

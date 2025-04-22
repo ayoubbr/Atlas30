@@ -204,7 +204,18 @@
 @section('content')
     <main class="admin-main">
         <!-- Page Header -->
-        @section('header-title', 'Stadiums Management')
+        @section('header-title', 'Stadium Management')
+        <div class="page-header">
+            <div class="page-header-content">
+                <h2 class="page-header-title">Stadium Management</h2>
+                <p class="page-header-description">Create, edit, and manage all World Cup 2030 stadiums</p>
+            </div>
+            <div class="page-header-actions">
+                <button class="btn btn-primary" id="add-venue-btn">
+                    <i class="fas fa-plus"></i> Add New Stadium
+                </button>
+            </div>
+        </div>
 
         <!-- Venue List -->
         <div class="match-list-container">
@@ -230,7 +241,6 @@
 
                             <div class="venue-content">
                                 <h3 class="venue-name">{{ $venue->name }}</h3>
-
                                 <div class="venue-location">
                                     <i class="fas fa-map-marker-alt"></i>
                                     {{ $venue->city }}

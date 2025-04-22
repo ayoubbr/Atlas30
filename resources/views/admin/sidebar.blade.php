@@ -20,13 +20,6 @@
                         <span class="nav-text">Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/analytics') }}"
-                        class="nav-link {{ request()->is('admin/analytics') ? 'active' : '' }}">
-                        <i class="fas fa-chart-line nav-icon"></i>
-                        <span class="nav-text">Analytics</span>
-                    </a>
-                </li>
             </ul>
         </div>
 
@@ -99,13 +92,13 @@
         </div>
 
         <div class="nav-section">
-            <div class="nav-section-title">Settings</div>
+            <div class="nav-section-title">Logout</div>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="{{ url('/admin/settings') }}"
-                        class="nav-link {{ request()->is('admin/settings') ? 'active' : '' }}">
-                        <i class="fas fa-cog nav-icon"></i>
-                        <span class="nav-text">Settings</span>
+                    <a href="{{ url('logout') }}"
+                        class="nav-link {{ request()->is('logout') ? 'active' : '' }}">
+                        <i class="fa-solid fa-right-from-bracket nav-icon"></i>
+                        <span class="nav-text">Logout</span>
                     </a>
                 </li>
             </ul>
