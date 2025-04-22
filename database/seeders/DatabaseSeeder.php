@@ -10,6 +10,11 @@ use App\Models\Category;
 use App\Models\Game;
 use App\Models\Ticket;
 use App\Models\Payment;
+use App\Models\Group;
+use App\Models\Comment;
+use App\Models\Like;
+use App\Models\Post;
+use App\Models\Notification;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -18,7 +23,6 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Roles
         $adminRole = Role::create(['name' => 'admin']);
         $userRole = Role::create(['name' => 'user']);
 
@@ -33,22 +37,16 @@ class DatabaseSeeder extends Seeder
             'role_id' => $adminRole->id,
         ]);
 
-        // Users
         User::factory()->count(5)->create(['role_id' => $userRole->id]);
 
-        // Teams
         $teams = Team::factory()->count(6)->create();
 
-        // Stadiums
         $stadiums = Stadium::factory()->count(5)->create();
 
-        // Categories
         $categories = Category::factory()->count(5)->create();
 
-        // Games
-        $games = Game::factory()->count(3)->create();
+        $games = Game::factory()->count(10)->create();
 
-        // Tickets
         $users = User::where('role_id', $userRole->id)->get();
         foreach ($games as $game) {
             Ticket::factory()->count(5)->create([
@@ -58,7 +56,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Payments
         $tickets = Ticket::all();
         foreach ($tickets as $ticket) {
             Payment::create([
@@ -66,5 +63,15 @@ class DatabaseSeeder extends Seeder
                 'status' => 'completed',
             ]);
         }
+
+        $groups = Group::factory()->count(5)->create();
+
+        $posts = Post::factory()->count(10)->create();
+
+        Comment::factory()->count(15)->create();
+
+        Like::factory()->count(20)->create();
+
+        Notification::factory()->count(10)->create();
     }
 }

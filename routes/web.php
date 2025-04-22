@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -55,7 +57,7 @@ Route::prefix('/')->group(function () {
     // Authentication 
     Route::post('login', [UserController::class, 'login'])->name('login');
     Route::post('register', [UserController::class, 'register'])->name('register');
-    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+    Route::get('logout', [UserController::class, 'logout'])->name('logout');
     Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('forgot-password');
 });
 
@@ -108,24 +110,36 @@ Route::prefix('admin')->group(function () {
     Route::put('tickets/{id}', [TicketController::class, 'update'])->name('admin.tickets.update');
     Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
 
+    // USER
+    Route::get('users', [UserController::class, 'adminIndex'])->name('admin.users.index');
+    Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
+    Route::get('users/{id}', [UserController::class, 'show'])->name('admin.users.show');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    // Admin profile routes
+    Route::get('profile', [UserController::class, 'adminProfile'])->name('admin.profile');
+    Route::post('profile', [UserController::class, 'updateProfile'])->name('admin.profile.update');
 
-    Route::get('dashboard', function () {
-        return view('admin.dashboard');
-    })->name("admin");
 
-    Route::get('analytics', function () {
-        return view('admin.analytics');
-    });
+    // Forum dashboard
+    Route::get('forum', [ForumController::class, 'index'])->name('admin.forum.index');
+    // Group management
+    Route::post('forum/groups', [ForumController::class, 'storeGroup'])->name('admin.forum.store-group');
+    Route::get('forum/groups/{id}', [ForumController::class, 'getGroup'])->name('admin.forum.get-group');
+    Route::put('forum/groups/{id}', [ForumController::class, 'updateGroup'])->name('admin.forum.update-group');
+    Route::delete('forum/groups/{id}', [ForumController::class, 'destroyGroup'])->name('admin.forum.destroy-group');
+    // Post management
+    Route::get('forum/groups/{id}/posts', [ForumController::class, 'getGroupPosts'])->name('admin.forum.get-group-posts');
+    Route::delete('forum/posts/{id}', [ForumController::class, 'destroyPost'])->name('admin.forum.destroy-post');
+    Route::get('forum/top-posts', [ForumController::class, 'getTopPosts'])->name('admin.forum.get-top-posts');
+    // Comment management
+    Route::delete('forum/comments/{id}', [ForumController::class, 'destroyComment'])->name('admin.forum.destroy-comment');
+    // Announcement management
+    Route::post('forum/announcements', [ForumController::class, 'createAnnouncement'])->name('admin.forum.create-announcement');
+    Route::delete('forum/announcements/{id}', [ForumController::class, 'destroyAnnouncement']);
+    // User list for announcements
+    Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
 
-    Route::get('users', function () {
-        return view('admin.users');
-    });
 
-    Route::get('forums', function () {
-        return view('admin.forums');
-    });
-
-    Route::get('settings', function () {
-        return view('admin.settings');
-    });
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
 });

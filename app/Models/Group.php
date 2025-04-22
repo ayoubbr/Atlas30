@@ -12,7 +12,7 @@ class Group extends Model
     protected $fillable = ['name', 'description', 'created_by'];
 
    
-    public function creator()
+    public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
     }

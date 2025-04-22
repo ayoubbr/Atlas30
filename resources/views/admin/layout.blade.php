@@ -33,11 +33,12 @@
 
 <body>
     <div class="admin-container">
-        @include('admin.components.sidebar')
+        @include('admin.sidebar')
         <div class="flash-messages-container">
             @include('partials.flash-messages')
         </div>
         @yield('content')
+      
     </div>
 
     @yield('modal')

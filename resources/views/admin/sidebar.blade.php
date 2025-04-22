@@ -20,13 +20,6 @@
                         <span class="nav-text">Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/analytics') }}"
-                        class="nav-link {{ request()->is('admin/analytics') ? 'active' : '' }}">
-                        <i class="fas fa-chart-line nav-icon"></i>
-                        <span class="nav-text">Analytics</span>
-                    </a>
-                </li>
             </ul>
         </div>
 
@@ -89,30 +82,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url('/admin/forums') }}"
-                        class="nav-link {{ request()->is('admin/forums') ? 'active' : '' }}">
+                    <a href="{{ url('/admin/forum') }}"
+                        class="nav-link {{ request()->is('admin/forum') ? 'active' : '' }}">
                         <i class="fas fa-comments nav-icon"></i>
-                        <span class="nav-text">Forums</span>
-                        <span class="nav-badge">12</span>
+                        <span class="nav-text">Forum</span>
                     </a>
                 </li>
             </ul>
         </div>
 
         <div class="nav-section">
-            <div class="nav-section-title">Settings</div>
+            <div class="nav-section-title">Logout</div>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="{{ url('/admin/settings') }}"
-                        class="nav-link {{ request()->is('admin/settings') ? 'active' : '' }}">
-                        <i class="fas fa-cog nav-icon"></i>
-                        <span class="nav-text">Settings</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/settings') }}#security" class="nav-link">
-                        <i class="fas fa-user-shield nav-icon"></i>
-                        <span class="nav-text">Permissions</span>
+                    <a href="{{ url('logout') }}" class="nav-link {{ request()->is('logout') ? 'active' : '' }}">
+                        <i class="fa-solid fa-right-from-bracket nav-icon"></i>
+                        <span class="nav-text">Logout</span>
                     </a>
                 </li>
             </ul>
@@ -123,43 +108,35 @@
         <div class="sidebar-footer-text">World Cup 2030 Admin v1.0</div>
     </div>
 </aside>
-
-<!-- Header -->
+{{-- header --}}
 <header class="admin-header">
     <div class="header-left">
         <div class="menu-toggle" id="menu-toggle">
             <i class="fas fa-bars"></i>
         </div>
-        <h1 class="page-title">
-            @yield('title', 'Dashboard')
-        </h1>
+        <h1 class="page-title"> @yield('header-title', 'Dashboard')</h1>
     </div>
 
     <div class="header-right">
-        <div class="header-search">
-            <input type="text" class="search-input" placeholder="Search...">
-            <i class="fas fa-search search-icon"></i>
-        </div>
-
-        <div class="header-actions">
-            <div class="action-btn">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">5</span>
+        @auth
+            <div class="user-profile" id="admin-profile-link">
+                <div class="user-avatar">
+                    <img src="{{ Auth::user()->image ?? 'https://via.placeholder.com/40x40' }}" alt="Admin Avatar">
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>
+                    <div class="user-role">{{ Auth::user()->role->name }}</div>
+                </div>
             </div>
-            <div class="action-btn">
-                <i class="fas fa-envelope"></i>
-                <span class="notification-badge">3</span>
-            </div>
-        </div>
-
-        <div class="user-profile">
-            <div class="user-avatar">
-                <img src="https://cdn-icons-png.flaticon.com/128/6024/6024190.png" alt="Admin Avatar">
-            </div>
-            <div class="user-info">
-                <div class="user-name">John Doe</div>
-                <div class="user-role">Administrator</div>
-            </div>
-        </div>
+        @endauth
     </div>
 </header>
+
+<script>
+    const adminProfileLink = document.getElementById('admin-profile-link');
+    if (adminProfileLink) {
+        adminProfileLink.addEventListener('click', function() {
+            window.location.href = "{{ route('admin.profile') }}";
+        });
+    }
+</script>

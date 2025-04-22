@@ -1065,6 +1065,8 @@
 @endsection
 
 @section('content')
+@section('header-title', 'Ticket Management')
+
     <main class="admin-main">
         <div class="tickets-dashboard">
             <div class="ticket-stats">

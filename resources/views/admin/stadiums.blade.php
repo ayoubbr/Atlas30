@@ -204,6 +204,7 @@
 @section('content')
     <main class="admin-main">
         <!-- Page Header -->
+        @section('header-title', 'Stadium Management')
         <div class="page-header">
             <div class="page-header-content">
                 <h2 class="page-header-title">Stadium Management</h2>
@@ -240,7 +241,6 @@
 
                             <div class="venue-content">
                                 <h3 class="venue-name">{{ $venue->name }}</h3>
-
                                 <div class="venue-location">
                                     <i class="fas fa-map-marker-alt"></i>
                                     {{ $venue->city }}
