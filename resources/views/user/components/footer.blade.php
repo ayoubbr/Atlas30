@@ -1,4 +1,4 @@
-<footer>
+<footer class="site-footer">
     <div class="container">
         <div class="footer-content">
             <div class="footer-column">
@@ -14,11 +14,11 @@
             <div class="footer-column">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Matches</a></li>
-                    <li><a href="#">Tickets</a></li>
-                    <li><a href="#">Community</a></li>
-                    <li><a href="#">News</a></li>
+                    <li><a href="{{ route('home') }}">Home</a></li>
+                    <li><a href="{{ route('games') }}">Games</a></li>
+                    <li><a href="{{ route('teams') }}">Teams</a></li>
+                    <li><a href="{{ route('forum') }}">Community</a></li>
+                    <li><a href="{{ route('stadiums') }}">Stadiums</a></li>
                 </ul>
             </div>
             <div class="footer-column">
@@ -28,12 +28,11 @@
                     <li><a href="#">Contact Us</a></li>
                     <li><a href="#">Terms of Service</a></li>
                     <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Refund Policy</a></li>
                 </ul>
             </div>
             <div class="footer-column">
                 <h3>Contact</h3>
-                <ul class="footer-links">
+                <ul class="footer-links contact-links">
                     <li><i class="fas fa-map-marker-alt"></i> 123 Football St, City</li>
                     <li><i class="fas fa-phone"></i> +1 234 567 890</li>
                     <li><i class="fas fa-envelope"></i> info@worldcup2030.com</li>
@@ -41,7 +40,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 World Cup 2030. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} World Cup 2030. All rights reserved.</p>
         </div>
     </div>
 </footer>

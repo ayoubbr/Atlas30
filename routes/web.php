@@ -34,9 +34,26 @@ Route::prefix('/')->group(function () {
         return view('user.auth');
     })->name('login');
 
-    Route::get('matches', function () {
-        return view('user.matches');
-    });
+
+    // GAMES
+    // Route::get('games', function () {
+    //     return view('user.games');
+    // })->name('games');
+    // Route::get('games', [GameController::class, 'userGames'])->name('user.games.index');
+    // Route::post('games', [GameController::class, 'store'])->name('user.games.store');
+    // Route::put('games/{id}', [GameController::class, 'update'])->name('user.games.update');
+    // Route::delete('games/{id}', [GameController::class, 'destroy'])->name('user.games.destroy');
+    // Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
+    // Visitor routes
+    Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
+    Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
+    Route::get('team/{id}/games', [GameController::class, 'teamGames']);
+
+    // API routes for widgets
+    Route::get('/api/games/upcoming/{limit?}', [GameController::class, 'upcomingGames']);
+    Route::get('/api/games/live', [GameController::class, 'liveGames']);
+    Route::get('/api/games/recent/{limit?}', [GameController::class, 'recentResults']);
+
 
     Route::get('match', function () {
         return view('user.match');
@@ -48,7 +65,15 @@ Route::prefix('/')->group(function () {
 
     Route::get('forum', function () {
         return view('user.forum');
-    });
+    })->name('forum');
+
+    Route::get('teams', function () {
+        return view('user.teams');
+    })->name('teams');
+
+    Route::get('stadiums', function () {
+        return view('user.stadiums');
+    })->name('stadiums');
 
     // Route::get('profile', function () {
     //     return view('user.profile');
@@ -139,7 +164,6 @@ Route::prefix('admin')->group(function () {
     Route::delete('forum/announcements/{id}', [ForumController::class, 'destroyAnnouncement']);
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
-
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
 });
