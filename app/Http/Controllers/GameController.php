@@ -233,42 +233,6 @@ class GameController extends Controller
     }
 
 
-    public function upcomingGames($limit = 5)
-    {
-        $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
-            ->where('status', 'scheduled')
-            ->orderBy('start_date', 'asc')
-            ->orderBy('start_hour', 'asc')
-            ->limit($limit)
-            ->get();
-
-        return response()->json($games);
-    }
-
-
-    public function liveGames()
-    {
-        $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
-            ->where('status', 'live')
-            ->get();
-
-        return response()->json($games);
-    }
-
-
-    public function recentResults($limit = 5)
-    {
-        $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
-            ->where('status', 'completed')
-            ->orderBy('start_date', 'desc')
-            ->orderBy('start_hour', 'desc')
-            ->limit($limit)
-            ->get();
-
-        return response()->json($games);
-    }
-
-
     public function teamGames($teamId)
     {
         $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
@@ -281,5 +245,10 @@ class GameController extends Controller
         $team = Team::findOrFail($teamId);
 
         return view('user.team-games', compact('games', 'team'));
+    }
+
+    public function gameTickets($gameId)
+    {
+        return view('user.tickets');
     }
 }

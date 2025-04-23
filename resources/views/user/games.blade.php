@@ -769,10 +769,8 @@
                                 <a href="{{ route('games.show', $game->id) }}"
                                     class="btn btn-sm btn-outline match-details-btn"
                                     data-match="{{ $game->id }}">Details</a>
-
-
                                 @if ($game->status != 'completed' && $game->status != 'cancelled')
-                                    <a href="{{ url('/tickets/buy/' . $game->id) }}" class="btn btn-sm">Buy Tickets</a>
+                                    <a href="{{ route('game.tickets', $game->id) }}" class="btn btn-sm">Buy Tickets</a>
                                 @endif
                             </div>
                         </div>
@@ -802,10 +800,8 @@
 @endsection
 
 @section('js')
-    <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
             const mobileMenuBtn = document.querySelector('.mobile-menu');
             const navLinks = document.querySelector('.nav-links');
 
@@ -816,7 +812,7 @@
                     });
                 });
             }
-            // Filters toggle
+
             const filtersToggle = document.querySelector('.filters-toggle');
             const filtersContent = document.querySelector('.filters-content');
 
@@ -824,54 +820,6 @@
                 filtersToggle.addEventListener('click', function() {
                     filtersContent.classList.toggle('show');
                     filtersToggle.classList.toggle('collapsed');
-                });
-            }
-
-            // Ticket category selection
-            const ticketCategories = document.querySelectorAll('.ticket-category');
-
-            if (ticketCategories.length > 0) {
-                ticketCategories.forEach(function(category) {
-                    category.addEventListener('click', function() {
-                        const parent = this.closest('.ticket-categories');
-
-                        if (parent) {
-                            parent.querySelectorAll('.ticket-category').forEach(
-                                function(cat) {
-                                    cat.classList.remove('selected');
-                                });
-
-                            this.classList.add('selected');
-                        }
-                    });
-                });
-            }
-
-            // Quantity buttons
-            const minusBtns = document.querySelectorAll('.quantity-btn.minus');
-            const plusBtns = document.querySelectorAll('.quantity-btn.plus');
-
-            if (minusBtns.length > 0 && plusBtns.length > 0) {
-                minusBtns.forEach(function(btn) {
-                    btn.addEventListener('click', function() {
-                        const input = this.nextElementSibling;
-                        let value = parseInt(input.value);
-
-                        if (value > parseInt(input.getAttribute('min'))) {
-                            input.value = value - 1;
-                        }
-                    });
-                });
-
-                plusBtns.forEach(function(btn) {
-                    btn.addEventListener('click', function() {
-                        const input = this.previousElementSibling;
-                        let value = parseInt(input.value);
-
-                        if (value < parseInt(input.getAttribute('max'))) {
-                            input.value = value + 1;
-                        }
-                    });
                 });
             }
         });

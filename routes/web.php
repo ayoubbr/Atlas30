@@ -23,6 +23,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// User profile 
+// Route::middleware(['auth'])->group(function () {
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+// });
+
+
+
 // User
 Route::prefix('/')->group(function () {
 
@@ -34,34 +45,16 @@ Route::prefix('/')->group(function () {
         return view('user.auth');
     })->name('login');
 
-
-    // GAMES
-    // Route::get('games', function () {
-    //     return view('user.games');
-    // })->name('games');
-    // Route::get('games', [GameController::class, 'userGames'])->name('user.games.index');
-    // Route::post('games', [GameController::class, 'store'])->name('user.games.store');
-    // Route::put('games/{id}', [GameController::class, 'update'])->name('user.games.update');
-    // Route::delete('games/{id}', [GameController::class, 'destroy'])->name('user.games.destroy');
-    // Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
     // Visitor routes
+    // GAMES
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
     Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
     Route::get('team/{id}/games', [GameController::class, 'teamGames']);
+    Route::get('games/{id}/tickets', [GameController::class, 'gameTickets'])->name('game.tickets');
 
-    // API routes for widgets
-    Route::get('/api/games/upcoming/{limit?}', [GameController::class, 'upcomingGames']);
-    Route::get('/api/games/live', [GameController::class, 'liveGames']);
-    Route::get('/api/games/recent/{limit?}', [GameController::class, 'recentResults']);
-
-
-    Route::get('match', function () {
-        return view('user.match');
-    });
-
-    Route::get('payment', function () {
-        return view('user.payment');
-    });
+    // Route::get('payment', function () {
+    //     return view('user.payment');
+    // });
 
     Route::get('forum', function () {
         return view('user.forum');
@@ -75,10 +68,6 @@ Route::prefix('/')->group(function () {
         return view('user.stadiums');
     })->name('stadiums');
 
-    // Route::get('profile', function () {
-    //     return view('user.profile');
-    // });
-
     // Authentication 
     Route::post('login', [UserController::class, 'login'])->name('login');
     Route::post('register', [UserController::class, 'register'])->name('register');
@@ -86,14 +75,7 @@ Route::prefix('/')->group(function () {
     Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('forgot-password');
 });
 
-// User profile 
-// Route::middleware(['auth'])->group(function () {
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
-// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
-// });
+
 
 // Admin
 // middleware(['auth', 'admin'])->
