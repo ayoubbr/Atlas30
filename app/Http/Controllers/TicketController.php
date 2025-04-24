@@ -94,9 +94,21 @@ class TicketController extends Controller
         return redirect()->route('admin.tickets.index')
             ->with('success', 'Ticket deleted successfully.');
     }
-    
-    public function checkout(){
-        return view('user.payment');
-    }
 
+
+    public function checkout(Request $request)
+    {
+        $ticketIds = explode(',', $request->query('tickets'));
+        $success = session('success');
+
+        $tickets = Ticket::whereIn('id', $ticketIds)
+            ->with(['game.homeTeam', 'game.awayTeam', 'game.stadium'])
+            ->get();
+
+        if ($tickets->isEmpty()) {
+            return redirect()->route('games')->with('error', 'No tickets found.');
+        }
+
+        return view('user.payment', compact('tickets', 'success'));
+    }
 }

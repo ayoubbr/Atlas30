@@ -36,38 +36,45 @@ class DatabaseSeeder extends Seeder
             'role_id' => $adminRole->id,
         ]);
 
-        User::factory()->count(5)->create(['role_id' => $userRole->id]);
+        User::factory()->count(3)->create(['role_id' => $userRole->id]);
 
-        $teams = Team::factory()->count(6)->create();
+        $teams = Team::factory()->count(3)->create();
 
-        $stadiums = Stadium::factory()->count(5)->create();
+        $stadiums = Stadium::factory()->count(3)->create();
 
-        $games = Game::factory()->count(10)->create();
+        $games = Game::factory()->count(3)->create();
 
         $users = User::where('role_id', $userRole->id)->get();
-        foreach ($games as $game) {
-            Ticket::factory()->count(5)->create([
-                'game_id' => $game->id,
-                'user_id' => $users->random()->id
-            ]);
-        }
 
-        $tickets = Ticket::all();
-        foreach ($tickets as $ticket) {
+        foreach ($users as $user) {
             Payment::create([
-                'ticket_id' => $ticket->id,
+                'payment_id' => Str::random(10),
+                'user_id' => $user->id,
                 'status' => 'completed',
+                'amount' => $user->id * 100,
+                'payment_method' => 'stripe',
+                'status' => 'pending'
             ]);
         }
 
-        $groups = Group::factory()->count(5)->create();
+        $payments = Payment::all();
+        foreach ($payments as $payment) {
+            Ticket::factory()->count(2)->create([
+                'game_id' => $games->random()->id,
+                'user_id' => $users->random()->id,
+                'payment_id' => $payment->id,
+            ]);
+        }
 
-        $posts = Post::factory()->count(10)->create();
 
-        Comment::factory()->count(15)->create();
+        $groups = Group::factory()->count(3)->create();
 
-        Like::factory()->count(20)->create();
+        $posts = Post::factory()->count(3)->create();
 
-        Notification::factory()->count(10)->create();
+        Comment::factory()->count(3)->create();
+
+        Like::factory()->count(3)->create();
+
+        Notification::factory()->count(3)->create();
     }
 }

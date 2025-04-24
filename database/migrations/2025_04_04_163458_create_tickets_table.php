@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('game_id')->constrained();
             $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('payment_id')->nullable()->constrained();
             $table->integer('price');
             $table->integer('place_number');
             $table->string('status')->default('pending');

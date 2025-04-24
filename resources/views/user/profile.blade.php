@@ -361,7 +361,7 @@
                 <a href="#account-tab" class="btn btn-outline tab-link" data-tab="account">
                     <i class="fas fa-cog"></i> Settings
                 </a>
-                <a href="" class="btn btn-primary">
+                <a href="{{route('games')}}" class="btn btn-primary">
                     <i class="fas fa-ticket-alt"></i> Buy Tickets
                 </a>
             </div>
@@ -379,9 +379,6 @@
             <div class="profile-section">
                 <div class="section-header">
                     <div class="section-title">My Tickets</div>
-                    <button class="btn btn-sm btn-outline">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
                 </div>
                 <div class="section-content">
                     @if ($tickets->isEmpty())
@@ -404,13 +401,13 @@
                                         {{ $ticket->game->stadium->city }}</div>
                                     <div class="ticket-details">
                                         <div class="ticket-detail">
-                                            <i class="far fa-calendar-alt"></i> {{ $ticket->game->date->format('F j, Y') }}
+                                            <i class="far fa-calendar-alt"></i> {{ $ticket->game->date }}
                                         </div>
                                         <div class="ticket-detail">
-                                            <i class="far fa-clock"></i> {{ $ticket->game->time->format('H:i') }}
+                                            <i class="far fa-clock"></i> {{ $ticket->game->time }}
                                         </div>
                                         <div class="ticket-detail">
-                                            <i class="fas fa-ticket-alt"></i> {{ $ticket->category->name }}
+                                            <i class="fas fa-ticket-alt"></i> {{ $ticket->section }}
                                         </div>
                                         <div class="ticket-detail">
                                             <i class="fas fa-chair"></i> Seat: {{ $ticket->seat_number }}
@@ -418,7 +415,7 @@
                                     </div>
                                 </div>
                                 <div class="ticket-actions">
-                                    <a href="{{ route('tickets.download', $ticket->id) }}" class="btn btn-sm btn-outline">
+                                    <a href="{{ route('user.ticket.download', $ticket->id) }}" class="btn btn-sm btn-outline">
                                         <i class="fas fa-download"></i> Download
                                     </a>
                                 </div>
@@ -480,62 +477,6 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="country">Country</label>
-                                <select id="country" name="country"
-                                    class="form-control @error('country') is-invalid @enderror">
-                                    <option value="">Select a country</option>
-                                    <option value="us" {{ old('country', $user->country) == 'us' ? 'selected' : '' }}>
-                                        United States</option>
-                                    <option value="ca" {{ old('country', $user->country) == 'ca' ? 'selected' : '' }}>
-                                        Canada</option>
-                                    <option value="uk" {{ old('country', $user->country) == 'uk' ? 'selected' : '' }}>
-                                        United Kingdom</option>
-                                    <option value="au" {{ old('country', $user->country) == 'au' ? 'selected' : '' }}>
-                                        Australia</option>
-                                    <option value="br" {{ old('country', $user->country) == 'br' ? 'selected' : '' }}>
-                                        Brazil</option>
-                                    <option value="fr" {{ old('country', $user->country) == 'fr' ? 'selected' : '' }}>
-                                        France</option>
-                                    <option value="de" {{ old('country', $user->country) == 'de' ? 'selected' : '' }}>
-                                        Germany</option>
-                                    <option value="es" {{ old('country', $user->country) == 'es' ? 'selected' : '' }}>
-                                        Spain</option>
-                                </select>
-                                @error('country')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="language">Preferred Language</label>
-                                <select id="language" name="language"
-                                    class="form-control @error('language') is-invalid @enderror">
-                                    <option value="">Select a language</option>
-                                    <option value="en"
-                                        {{ old('language', $user->language) == 'en' ? 'selected' : '' }}>English</option>
-                                    <option value="es"
-                                        {{ old('language', $user->language) == 'es' ? 'selected' : '' }}>Spanish</option>
-                                    <option value="fr"
-                                        {{ old('language', $user->language) == 'fr' ? 'selected' : '' }}>French</option>
-                                    <option value="de"
-                                        {{ old('language', $user->language) == 'de' ? 'selected' : '' }}>German</option>
-                                    <option value="pt"
-                                        {{ old('language', $user->language) == 'pt' ? 'selected' : '' }}>Portuguese
-                                    </option>
-                                </select>
-                                @error('language')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="bio">Bio</label>
-                            <textarea id="bio" name="bio" class="form-control @error('bio') is-invalid @enderror" rows="4">{{ old('bio', $user->bio) }}</textarea>
-                            @error('bio')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
                         <div class="form-actions" style="text-align: right; margin-top: 20px;">
                             <button type="button" class="btn btn-outline"
                                 onclick="resetForm('profile-form')">Cancel</button>
@@ -579,85 +520,6 @@
                             <button type="button" class="btn btn-outline"
                                 onclick="resetForm('password-form')">Cancel</button>
                             <button type="submit" class="btn btn-primary">Update Password</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="profile-section">
-                <div class="section-header">
-                    <div class="section-title">Notification Settings</div>
-                </div>
-                <div class="section-content">
-                    <form id="notification-form" action="{{ route('profile.notifications') }}" method="POST">
-                        @csrf
-                        <div class="notification-settings">
-                            <div class="notification-item"
-                                style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
-                                <div>
-                                    <h4 style="margin: 0 0 5px 0;">Email Notifications</h4>
-                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Receive updates about
-                                        matches, tickets, and special offers</p>
-                                </div>
-                                <label class="switch"
-                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                    <input type="checkbox" name="email_notifications"
-                                        {{ $user->email_notifications ? 'checked' : '' }}
-                                        style="opacity: 0; width: 0; height: 0;">
-                                    <span
-                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->email_notifications ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
-                                </label>
-                            </div>
-                            <div class="notification-item"
-                                style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
-                                <div>
-                                    <h4 style="margin: 0 0 5px 0;">SMS Notifications</h4>
-                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Receive text messages
-                                        for important updates</p>
-                                </div>
-                                <label class="switch"
-                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                    <input type="checkbox" name="sms_notifications"
-                                        {{ $user->sms_notifications ? 'checked' : '' }}
-                                        style="opacity: 0; width: 0; height: 0;">
-                                    <span
-                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->sms_notifications ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
-                                </label>
-                            </div>
-                            <div class="notification-item"
-                                style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200);">
-                                <div>
-                                    <h4 style="margin: 0 0 5px 0;">Match Reminders</h4>
-                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Get notified before
-                                        matches of your favorite teams</p>
-                                </div>
-                                <label class="switch"
-                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                    <input type="checkbox" name="match_reminders"
-                                        {{ $user->match_reminders ? 'checked' : '' }}
-                                        style="opacity: 0; width: 0; height: 0;">
-                                    <span
-                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->match_reminders ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
-                                </label>
-                            </div>
-                            <div class="notification-item" style="display: flex; justify-content: space-between;">
-                                <div>
-                                    <h4 style="margin: 0 0 5px 0;">Forum Activity</h4>
-                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Get notified about
-                                        replies to your posts</p>
-                                </div>
-                                <label class="switch"
-                                    style="position: relative; display: inline-block; width: 50px; height: 24px;">
-                                    <input type="checkbox" name="forum_notifications"
-                                        {{ $user->forum_notifications ? 'checked' : '' }}
-                                        style="opacity: 0; width: 0; height: 0;">
-                                    <span
-                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: {{ $user->forum_notifications ? 'var(--primary)' : 'var(--gray-300)' }}; border-radius: 34px; transition: .4s;"></span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-actions" style="text-align: right; margin-top: 20px;">
-                            <button type="submit" class="btn btn-primary">Save Notification Settings</button>
                         </div>
                     </form>
                 </div>

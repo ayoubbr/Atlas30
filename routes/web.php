@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StadiumController;
@@ -49,12 +50,15 @@ Route::prefix('/')->group(function () {
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
     Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
     Route::get('team/{id}/games', [GameController::class, 'teamGames']);
-    // Route::get('game/{id}/tickets', [GameController::class, 'gameTickets'])->name('game.tickets');
     Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
     Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
-    // Route::get('payment', function () {
-    //     return view('user.payment');
-    // });
+    // to be confirmed
+    Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
+    Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
+    Route::get('user/tickets/', [TicketController::class, 'userTickets'])->name('user.tickets');
+    Route::get('user/tickets/{id}/download', [TicketController::class, 'userTicketsDownload'])->name('user.ticket.download');
+    Route::get('user/tickets/show', [TicketController::class, 'userTicketsShow'])->name('user.ticket.view');
+
 
     Route::get('forum', function () {
         return view('user.forum');

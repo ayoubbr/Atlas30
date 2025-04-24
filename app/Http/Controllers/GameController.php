@@ -264,11 +264,9 @@ class GameController extends Controller
         $quantity = $request->quantity;
         $price = $request->price;
 
-        // $userId = auth()->id();
-        $userId = 5;
+        $userId = auth()->id();
         $tickets = [];
 
-        // Create tickets for the requested quantity
         for ($i = 0; $i < $quantity; $i++) {
             $placeNumber = rand(1, 100) + ($i * 3); // different seat numbers
 
@@ -284,9 +282,7 @@ class GameController extends Controller
             $tickets[] = $ticket;
         }
 
-        // dd($tickets);
-
-        return redirect()->route('tickets.checkout', ['tickets' => array_column($tickets, 'id')])
+        return redirect()->route('tickets.checkout', ['tickets' => implode(',', array_column($tickets, 'id'))])
             ->with('success', 'Tickets reserved successfully. Please complete your payment.');
     }
 
