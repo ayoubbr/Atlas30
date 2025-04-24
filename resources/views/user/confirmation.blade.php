@@ -196,7 +196,7 @@
             </p>
 
             <div class="confirmation-actions">
-                <a href="{{ route('user.tickets') }}" class="btn btn-lg btn-primary">
+                <a href="{{ route('profile') }}" class="btn btn-lg btn-primary">
                     <i class="fas fa-ticket-alt"></i> View My Tickets
                 </a>
                 <a href="{{ route('games') }}" class="btn btn-lg btn-outline">
