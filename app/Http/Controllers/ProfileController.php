@@ -16,7 +16,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $tickets = Ticket::where('user_id', $user->id)
-            ->with(['game.homeTeam', 'game.awayTeam', 'game.stadium', 'category'])
+            ->with(['game.homeTeam', 'game.awayTeam', 'game.stadium'])
             ->get();
 
 

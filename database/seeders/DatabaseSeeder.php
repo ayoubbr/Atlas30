@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Stadium;
 use App\Models\Team;
-use App\Models\Category;
 use App\Models\Game;
 use App\Models\Ticket;
 use App\Models\Payment;
@@ -43,16 +42,13 @@ class DatabaseSeeder extends Seeder
 
         $stadiums = Stadium::factory()->count(5)->create();
 
-        $categories = Category::factory()->count(5)->create();
-
         $games = Game::factory()->count(10)->create();
 
         $users = User::where('role_id', $userRole->id)->get();
         foreach ($games as $game) {
             Ticket::factory()->count(5)->create([
                 'game_id' => $game->id,
-                'user_id' => $users->random()->id,
-                'category_id' => $categories->random()->id,
+                'user_id' => $users->random()->id
             ]);
         }
 

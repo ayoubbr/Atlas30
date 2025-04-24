@@ -768,10 +768,7 @@
 
                                 <a href="{{ route('games.show', $game->id) }}"
                                     class="btn btn-sm btn-outline match-details-btn"
-                                    data-match="{{ $game->id }}">Details</a>
-                                @if ($game->status != 'completed' && $game->status != 'cancelled')
-                                    <a href="{{ route('game.tickets', $game->id) }}" class="btn btn-sm">Buy Tickets</a>
-                                @endif
+                                    data-match="{{ $game->id }}">Details or Buy Ticket</a>
                             </div>
                         </div>
                     </div>

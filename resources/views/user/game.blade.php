@@ -1,9 +1,17 @@
 @extends('user.layout')
 
-@section('title', 'Seat Selection - World Cup 2030')
+@section('title', $game->homeTeam->name . ' vs ' . $game->awayTeam->name . ' - World Cup 2030')
 
 @section('css')
     <style>
+        :root {
+            --section-premium: #e63946;
+            --section-standard: #3498db;
+            --section-economy: #2ecc71;
+            --section-vip: #9b59b6;
+            --section-disabled: #7f8c8d;
+        }
+
         /* Match Info */
         .match-info {
             background-color: white;
@@ -246,8 +254,8 @@
             margin-right: 8px;
         }
 
-        /* Seat Selection Panel */
-        .seat-selection-panel {
+        /* Ticket Selection Panel */
+        .ticket-selection-panel {
             flex: 1;
             min-width: 300px;
             background-color: white;
@@ -256,16 +264,16 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
-        .seat-selection-header {
+        .ticket-selection-header {
             margin-bottom: 20px;
         }
 
-        .seat-selection-header h3 {
+        .ticket-selection-header h3 {
             font-size: 1.3rem;
             margin-bottom: 5px;
         }
 
-        .seat-selection-subtitle {
+        .ticket-selection-subtitle {
             color: var(--gray-600);
             font-size: 0.9rem;
         }
@@ -303,142 +311,92 @@
             color: var(--primary);
         }
 
-        .seat-grid-container {
+        .ticket-quantity-container {
             margin-bottom: 30px;
         }
 
-        .seat-grid-title {
-            font-size: 1rem;
+        .ticket-quantity-title {
+            font-size: 1.1rem;
             margin-bottom: 15px;
         }
 
-        .seat-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 5px;
+        .ticket-quantity-control {
+            display: flex;
+            align-items: center;
             margin-bottom: 15px;
         }
 
-        .seat {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 4px;
-            background-color: var(--seat-available);
-            border: 1px solid var(--gray-400);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            background-color: var(--gray-200);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background-color: var(--gray-300);
+        }
+
+        .quantity-input {
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid var(--gray-300);
+            margin: 0 10px;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: var(--gray-700);
         }
 
-        .seat:hover {
-            transform: scale(1.1);
-            z-index: 1;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .seat.selected {
-            background-color: var(--seat-selected);
-            border-color: var(--accent);
-            color: var(--dark);
-        }
-
-        .seat.reserved {
-            background-color: var(--seat-reserved);
-            cursor: not-allowed;
-            pointer-events: none;
-            color: var(--gray-500);
-        }
-
-        .seat.disabled {
-            background-color: var(--category-disabled);
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        .seat-grid-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .seat-legend-item {
-            display: flex;
-            align-items: center;
-            font-size: 0.8rem;
-        }
-
-        .seat-legend-color {
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-            margin-right: 5px;
-            border: 1px solid var(--gray-400);
-        }
-
-        .selected-seats {
+        .selected-tickets {
             margin-bottom: 30px;
         }
 
-        .selected-seats-title {
+        .selected-tickets-title {
             font-size: 1.1rem;
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--gray-300);
         }
 
-        .selected-seats-list {
-            max-height: 200px;
-            overflow-y: auto;
+        .selected-tickets-list {
             margin-bottom: 20px;
         }
 
-        .selected-seat-item {
+        .selected-ticket-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 15px;
             background-color: var(--gray-100);
             border-radius: 4px;
             margin-bottom: 10px;
         }
 
-        .selected-seat-info {
+        .selected-ticket-info {
             flex: 1;
         }
 
-        .selected-seat-location {
+        .selected-ticket-section {
             font-weight: 600;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
         }
 
-        .selected-seat-category {
-            font-size: 0.8rem;
+        .selected-ticket-quantity {
+            font-size: 0.9rem;
             color: var(--gray-600);
         }
 
-        .selected-seat-price {
+        .selected-ticket-price {
             font-weight: 600;
             color: var(--primary);
-            margin-right: 10px;
-        }
-
-        .remove-seat-btn {
-            background: none;
-            border: none;
-            color: var(--gray-600);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .remove-seat-btn:hover {
-            color: var(--danger);
+            font-size: 1.1rem;
         }
 
         .order-summary {
@@ -522,10 +480,6 @@
             .stadium-map-wrapper {
                 height: 350px;
             }
-
-            .seat-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
         }
 
         @media (max-width: 576px) {
@@ -552,10 +506,10 @@
             .stadium-map-wrapper {
                 height: 300px;
             }
+        }
 
-            .seat-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
+        .hide-tickets-number {
+            display: none
         }
     </style>
 @endsection
@@ -564,12 +518,11 @@
     <!-- Page Header -->
     <section class="page-header">
         <div class="container">
-            <h1>Select Your Seats</h1>
+            <h1>{{ $game->homeTeam->name }} vs {{ $game->awayTeam->name }}</h1>
             <ul class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Matches</a></li>
-                <li><a href="#">Tickets</a></li>
-                <li><a href="#">Seat Selection</a></li>
+                <li><a href="{{ url('/') }}">Home</a></li>
+                <li><a href="{{ route('games') }}">Games</a></li>
+                <li>Match Details</li>
             </ul>
         </div>
     </section>
@@ -580,293 +533,248 @@
         <section class="match-info">
             <div class="match-info-header">
                 <div class="match-info-title">
-                    <h2>Brazil vs France</h2>
-                    <div class="match-info-subtitle">Group A - Match 1</div>
+                    <h2>{{ $game->homeTeam->name }} vs {{ $game->awayTeam->name }}</h2>
                 </div>
-                <div class="match-stage-badge">Group Stage</div>
+                <div class="match-stage-badge">{{ ucfirst($game->status) }}</div>
             </div>
             <div class="match-details">
                 <div class="match-teams">
                     <div class="match-team">
                         <div class="team-flag"
-                            style="background-image: url('https://via.placeholder.com/60x40/3498db/ffffff?text=BRA')">
+                            style="background-image: url('{{ $game->homeTeam->flag ?? 'https://via.placeholder.com/60x40/3498db/ffffff?text=' . substr($game->homeTeam->name, 0, 3) }}')">
                         </div>
-                        <div class="team-name">Brazil</div>
+                        <div class="team-name">{{ $game->homeTeam->name }}</div>
                     </div>
-                    <div class="match-vs">VS</div>
+                    <div class="match-vs">
+                        @if ($game->status == 'completed' || $game->status == 'live')
+                            {{ $game->home_team_goals }} - {{ $game->away_team_goals }}
+                        @else
+                            VS
+                        @endif
+                    </div>
                     <div class="match-team">
                         <div class="team-flag"
-                            style="background-image: url('https://via.placeholder.com/60x40/e74c3c/ffffff?text=FRA')">
+                            style="background-image: url('{{ $game->awayTeam->flag ?? 'https://via.placeholder.com/60x40/e74c3c/ffffff?text=' . substr($game->awayTeam->name, 0, 3) }}')">
                         </div>
-                        <div class="team-name">France</div>
+                        <div class="team-name">{{ $game->awayTeam->name }}</div>
                     </div>
                 </div>
                 <div class="match-info-details">
                     <div class="match-info-item">
                         <i class="far fa-calendar-alt"></i>
-                        <span>June 15, 2030</span>
+                        <span>{{ $game->start_date }}</span>
                     </div>
                     <div class="match-info-item">
                         <i class="far fa-clock"></i>
-                        <span>18:00 GMT</span>
+                        <span>{{ $game->start_hour }}</span>
                     </div>
                     <div class="match-info-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>Rio Stadium, Brazil</span>
+                        <span>{{ $game->stadium->name }}, {{ $game->stadium->city }}</span>
                     </div>
                     <div class="match-info-item">
                         <i class="fas fa-users"></i>
-                        <span>Capacity: 75,000</span>
+                        <span>Capacity: {{ number_format($game->stadium->capacity) }}</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Seat Selection Container -->
-        <div class="seat-selection-container">
-            <!-- Stadium Map -->
-            <section class="stadium-map-container">
-                <div class="stadium-map-header">
-                    <div class="stadium-map-title">
-                        <h3>Stadium Map</h3>
-                        <div class="stadium-map-subtitle">Click on a section to select seats</div>
+        @if ($game->status != 'completed' && $game->status != 'cancelled')
+            <!-- Seat Selection Container -->
+            <div class="seat-selection-container">
+                <!-- Stadium Map -->
+                <section class="stadium-map-container">
+                    <div class="stadium-map-header">
+                        <div class="stadium-map-title">
+                            <h3>Stadium Map</h3>
+                            <div class="stadium-map-subtitle">Click on a section to select tickets</div>
+                        </div>
+                        <div class="stadium-controls">
+                            <div class="zoom-control">
+                                <button class="zoom-btn" id="zoom-out">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button class="zoom-btn" id="zoom-in">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <button class="reset-view-btn" id="reset-view">
+                                <i class="fas fa-sync-alt"></i> Reset
+                            </button>
+                        </div>
                     </div>
-                    <div class="stadium-controls">
-                        <div class="zoom-control">
-                            <button class="zoom-btn" id="zoom-out">
+                    <div class="stadium-map-wrapper">
+                        <div class="stadium-map" id="stadium-map">
+                            <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Field -->
+                                <rect x="250" y="200" width="300" height="200" fill="#27ae60" stroke="#1d8348"
+                                    stroke-width="2" />
+
+                                <!-- Field Lines -->
+                                <circle cx="400" cy="300" r="50" fill="none" stroke="white"
+                                    stroke-width="2" />
+                                <line x1="400" y1="200" x2="400" y2="400" stroke="white"
+                                    stroke-width="2" />
+                                <rect x="325" y="200" width="150" height="50" fill="none" stroke="white"
+                                    stroke-width="2" />
+                                <rect x="325" y="350" width="150" height="50" fill="none" stroke="white"
+                                    stroke-width="2" />
+
+                                <!-- Premium Section (North Stand) -->
+                                <path id="section-premium" class="stadium-section" d="M250,150 L550,150 L550,200 L250,200 Z"
+                                    fill="var(--section-premium)" stroke="#333" stroke-width="1" data-section="Premium"
+                                    data-price="250" data-available="50" />
+                                <text x="400" y="175" text-anchor="middle" class="stadium-section-label" fill="white">
+                                    Premium
+                                </text>
+
+                                <!-- Standard Section (South Stand) -->
+                                <path id="section-standard" class="stadium-section"
+                                    d="M250,400 L550,400 L550,450 L250,450 Z" fill="var(--section-standard)" stroke="#333"
+                                    stroke-width="1" data-section="Standard" data-price="180" data-available="80" />
+                                <text x="400" y="425" text-anchor="middle" class="stadium-section-label" fill="white">
+                                    Standard
+                                </text>
+
+                                <!-- Economy Section (East Stand) -->
+                                <path id="section-economy" class="stadium-section"
+                                    d="M550,200 L600,150 L600,450 L550,400 Z" fill="var(--section-economy)" stroke="#333"
+                                    stroke-width="1" data-section="Economy" data-price="120" data-available="100" />
+                                <text x="575" y="300" text-anchor="middle" class="stadium-section-label" fill="white">
+                                    Economy
+                                </text>
+
+                                <!-- Economy Section (West Stand) -->
+                                <path id="section-economy-west" class="stadium-section"
+                                    d="M250,200 L200,150 L200,450 L250,400 Z" fill="var(--section-economy)" stroke="#333"
+                                    stroke-width="1" data-section="Economy" data-price="120" data-available="100" />
+                                <text x="225" y="300" text-anchor="middle" class="stadium-section-label" fill="white">
+                                    Economy
+                                </text>
+
+                                <!-- VIP Section -->
+                                <rect id="section-vip" class="stadium-section" x="350" y="120" width="100"
+                                    height="30" fill="var(--section-vip)" stroke="#333" stroke-width="1"
+                                    data-section="VIP" data-price="350" data-available="20" />
+                                <text x="400" y="140" text-anchor="middle" class="stadium-section-label" fill="white">
+                                    VIP
+                                </text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stadium-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--section-premium);"></div>
+                            <span>Premium ($250)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--section-standard);"></div>
+                            <span>Standard ($180)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--section-economy);"></div>
+                            <span>Economy ($120)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--section-vip);"></div>
+                            <span>VIP ($350)</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ticket Selection Panel -->
+                <section class="ticket-selection-panel">
+                    <div class="ticket-selection-header">
+                        <h3>Select Tickets</h3>
+                        <div class="ticket-selection-subtitle">Choose a section and number of tickets</div>
+                    </div>
+
+                    <div class="section-details">
+                        <h4 class="section-title">Section Information</h4>
+                        <div class="section-info">
+                            <div class="section-info-item">
+                                <div class="section-info-label">Section:</div>
+                                <div class="section-info-value" id="selected-section-name">Select a section</div>
+                            </div>
+                            <div class="section-info-item">
+                                <div class="section-info-label">Price per ticket:</div>
+                                <div class="section-info-value highlight" id="selected-section-price">$0</div>
+                            </div>
+                            <div class="section-info-item">
+                                <div class="section-info-label">Available tickets:</div>
+                                <div class="section-info-value" id="selected-section-availability">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ticket-quantity-container hide-tickets-number" id="tickets-number">
+                        <h4 class="ticket-quantity-title">Number of Tickets</h4>
+                        <div class="ticket-quantity-control">
+                            <button class="quantity-btn" id="decrease-quantity">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <button class="zoom-btn" id="zoom-in">
+                            <input type="number" class="quantity-input" id="ticket-quantity" value="1"
+                                min="1" max="10">
+                            <button class="quantity-btn" id="increase-quantity">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
-                        <button class="reset-view-btn" id="reset-view">
-                            <i class="fas fa-sync-alt"></i> Reset
-                        </button>
+                        <p class="text-sm text-gray-600">Maximum 10 tickets per order</p>
                     </div>
-                </div>
-                <div class="stadium-map-wrapper">
-                    <div class="stadium-map" id="stadium-map">
-                        <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Field -->
-                            <rect x="250" y="200" width="300" height="200" fill="#27ae60" stroke="#1d8348"
-                                stroke-width="2" />
 
-                            <!-- Field Lines -->
-                            <circle cx="400" cy="300" r="50" fill="none" stroke="white" stroke-width="2" />
-                            <line x1="400" y1="200" x2="400" y2="400" stroke="white"
-                                stroke-width="2" />
-                            <rect x="325" y="200" width="150" height="50" fill="none" stroke="white"
-                                stroke-width="2" />
-                            <rect x="325" y="350" width="150" height="50" fill="none" stroke="white"
-                                stroke-width="2" />
-
-                            <!-- North Stand (Category 1) -->
-                            <path id="section-north" class="stadium-section" d="M250,150 L550,150 L550,200 L250,200 Z"
-                                fill="#e63946" stroke="#333" stroke-width="1" data-section="North Stand"
-                                data-category="Category 1" data-price="250" />
-                            <text x="400" y="175" text-anchor="middle" class="stadium-section-label" fill="white">North
-                                Stand</text>
-
-                            <!-- South Stand (Category 1) -->
-                            <path id="section-south" class="stadium-section" d="M250,400 L550,400 L550,450 L250,450 Z"
-                                fill="#e63946" stroke="#333" stroke-width="1" data-section="South Stand"
-                                data-category="Category 1" data-price="250" />
-                            <text x="400" y="425" text-anchor="middle" class="stadium-section-label" fill="white">South
-                                Stand</text>
-
-                            <!-- East Stand (Category 2) -->
-                            <path id="section-east" class="stadium-section" d="M550,200 L600,150 L600,450 L550,400 Z"
-                                fill="#3498db" stroke="#333" stroke-width="1" data-section="East Stand"
-                                data-category="Category 2" data-price="180" />
-                            <text x="575" y="300" text-anchor="middle" class="stadium-section-label" fill="white">East
-                                Stand</text>
-
-                            <!-- West Stand (Category 2) -->
-                            <path id="section-west" class="stadium-section" d="M250,200 L200,150 L200,450 L250,400 Z"
-                                fill="#3498db" stroke="#333" stroke-width="1" data-section="West Stand"
-                                data-category="Category 2" data-price="180" />
-                            <text x="225" y="300" text-anchor="middle" class="stadium-section-label" fill="white">West
-                                Stand</text>
-
-                            <!-- Northeast Corner (Category 3) -->
-                            <path id="section-northeast" class="stadium-section" d="M550,150 L600,150 L550,200 Z"
-                                fill="#2ecc71" stroke="#333" stroke-width="1" data-section="Northeast Corner"
-                                data-category="Category 3" data-price="120" />
-                            <text x="567" y="167" text-anchor="middle" class="stadium-section-label"
-                                fill="white">NE</text>
-
-                            <!-- Northwest Corner (Category 3) -->
-                            <path id="section-northwest" class="stadium-section" d="M250,150 L200,150 L250,200 Z"
-                                fill="#2ecc71" stroke="#333" stroke-width="1" data-section="Northwest Corner"
-                                data-category="Category 3" data-price="120" />
-                            <text x="233" y="167" text-anchor="middle" class="stadium-section-label"
-                                fill="white">NW</text>
-
-                            <!-- Southeast Corner (Category 3) -->
-                            <path id="section-southeast" class="stadium-section" d="M550,400 L600,450 L550,450 Z"
-                                fill="#2ecc71" stroke="#333" stroke-width="1" data-section="Southeast Corner"
-                                data-category="Category 3" data-price="120" />
-                            <text x="567" y="433" text-anchor="middle" class="stadium-section-label"
-                                fill="white">SE</text>
-
-                            <!-- Southwest Corner (Category 3) -->
-                            <path id="section-southwest" class="stadium-section" d="M250,400 L200,450 L250,450 Z"
-                                fill="#2ecc71" stroke="#333" stroke-width="1" data-section="Southwest Corner"
-                                data-category="Category 3" data-price="120" />
-                            <text x="233" y="433" text-anchor="middle" class="stadium-section-label"
-                                fill="white">SW</text>
-
-                            <!-- VIP Boxes (Category VIP) -->
-                            <rect id="section-vip-north" class="stadium-section" x="350" y="120" width="100"
-                                height="30" fill="#9b59b6" stroke="#333" stroke-width="1" data-section="VIP North"
-                                data-category="VIP" data-price="350" />
-                            <text x="400" y="140" text-anchor="middle" class="stadium-section-label" fill="white">VIP
-                                North</text>
-
-                            <rect id="section-vip-south" class="stadium-section" x="350" y="450" width="100"
-                                height="30" fill="#9b59b6" stroke="#333" stroke-width="1" data-section="VIP South"
-                                data-category="VIP" data-price="350" />
-                            <text x="400" y="470" text-anchor="middle" class="stadium-section-label" fill="white">VIP
-                                South</text>
-
-                            <!-- Disabled Access Areas -->
-                            <rect id="section-disabled-east" class="stadium-section" x="550" y="290" width="30"
-                                height="20" fill="#7f8c8d" stroke="#333" stroke-width="1"
-                                data-section="Disabled Access East" data-category="Disabled Access" data-price="120" />
-                            <text x="565" y="305" text-anchor="middle" class="stadium-section-label"
-                                fill="white">DA</text>
-
-                            <rect id="section-disabled-west" class="stadium-section" x="220" y="290" width="30"
-                                height="20" fill="#7f8c8d" stroke="#333" stroke-width="1"
-                                data-section="Disabled Access West" data-category="Disabled Access" data-price="120" />
-                            <text x="235" y="305" text-anchor="middle" class="stadium-section-label"
-                                fill="white">DA</text>
-                        </svg>
-                    </div>
-                </div>
-                <div class="stadium-legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: var(--category-1);"></div>
-                        <span>Category 1 ($250)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: var(--category-2);"></div>
-                        <span>Category 2 ($180)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: var(--category-3);"></div>
-                        <span>Category 3 ($120)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: var(--category-vip);"></div>
-                        <span>VIP ($350)</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: var(--category-disabled);"></div>
-                        <span>Disabled Access ($120)</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Seat Selection Panel -->
-            <section class="seat-selection-panel">
-                <div class="seat-selection-header">
-                    <h3>Select Your Seats</h3>
-                    <div class="seat-selection-subtitle">Choose seats from the selected section</div>
-                </div>
-
-                <div class="section-details">
-                    <h4 class="section-title">Section Information</h4>
-                    <div class="section-info">
-                        <div class="section-info-item">
-                            <div class="section-info-label">Section:</div>
-                            <div class="section-info-value" id="selected-section-name">North Stand</div>
-                        </div>
-                        <div class="section-info-item">
-                            <div class="section-info-label">Category:</div>
-                            <div class="section-info-value" id="selected-section-category">Category 1</div>
-                        </div>
-                        <div class="section-info-item">
-                            <div class="section-info-label">Price per seat:</div>
-                            <div class="section-info-value highlight" id="selected-section-price">$250</div>
-                        </div>
-                        <div class="section-info-item">
-                            <div class="section-info-label">Available seats:</div>
-                            <div class="section-info-value" id="selected-section-availability">42</div>
+                    <div class="selected-tickets">
+                        <h4 class="selected-tickets-title">Your Selected Tickets</h4>
+                        <div class="selected-tickets-list" id="selected-tickets-list">
+                            <!-- Selected tickets will be shown here -->
+                            <div class="text-center py-4 text-gray-500" id="no-tickets-message">
+                                No tickets selected yet. Please select a section from the stadium map.
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="seat-grid-container">
-                    <h4 class="seat-grid-title">Select seats from Row 12</h4>
-                    <div class="seat-grid" id="seat-grid">
-                        <div class="seat" data-seat="12-1">1</div>
-                        <div class="seat" data-seat="12-2">2</div>
-                        <div class="seat reserved" data-seat="12-3">3</div>
-                        <div class="seat reserved" data-seat="12-4">4</div>
-                        <div class="seat" data-seat="12-5">5</div>
-                        <div class="seat" data-seat="12-6">6</div>
-                        <div class="seat" data-seat="12-7">7</div>
-                        <div class="seat" data-seat="12-8">8</div>
-                        <div class="seat" data-seat="12-9">9</div>
-                        <div class="seat" data-seat="12-10">10</div>
-                        <div class="seat reserved" data-seat="12-11">11</div>
-                        <div class="seat" data-seat="12-12">12</div>
-                        <div class="seat" data-seat="12-13">13</div>
-                        <div class="seat" data-seat="12-14">14</div>
-                        <div class="seat" data-seat="12-15">15</div>
-                        <div class="seat" data-seat="12-16">16</div>
-                    </div>
-                    <div class="seat-grid-legend">
-                        <div class="seat-legend-item">
-                            <div class="seat-legend-color" style="background-color: var(--seat-available);"></div>
-                            <span>Available</span>
+                    <div class="order-summary">
+                        <h4 class="order-summary-title">Order Summary</h4>
+                        <div class="order-summary-item">
+                            <div class="order-summary-label">Tickets:</div>
+                            <div class="order-summary-value" id="summary-tickets">0</div>
                         </div>
-                        <div class="seat-legend-item">
-                            <div class="seat-legend-color" style="background-color: var(--seat-selected);"></div>
-                            <span>Selected</span>
+                        <div class="order-summary-item">
+                            <div class="order-summary-label">Subtotal:</div>
+                            <div class="order-summary-value" id="summary-subtotal">$0.00</div>
                         </div>
-                        <div class="seat-legend-item">
-                            <div class="seat-legend-color" style="background-color: var(--seat-reserved);"></div>
-                            <span>Reserved</span>
+                        <div class="order-summary-item">
+                            <div class="order-summary-label">Service Fee:</div>
+                            <div class="order-summary-value" id="summary-fee">$0.00</div>
+                        </div>
+                        <div class="order-total">
+                            <div class="order-total-label">Total:</div>
+                            <div class="order-total-value" id="summary-total">$0.00</div>
                         </div>
                     </div>
-                </div>
 
-                <div class="selected-seats">
-                    <h4 class="selected-seats-title">Your Selected Seats</h4>
-                    <div class="selected-seats-list" id="selected-seats-list">
-                        <!-- Selected seats will be added here dynamically -->
-                    </div>
-                </div>
-
-                <div class="order-summary">
-                    <h4 class="order-summary-title">Order Summary</h4>
-                    <div class="order-summary-item">
-                        <div class="order-summary-label">Tickets:</div>
-                        <div class="order-summary-value" id="summary-tickets">0</div>
-                    </div>
-                    <div class="order-summary-item">
-                        <div class="order-summary-label">Subtotal:</div>
-                        <div class="order-summary-value" id="summary-subtotal">$0.00</div>
-                    </div>
-                    <div class="order-summary-item">
-                        <div class="order-summary-label">Service Fee:</div>
-                        <div class="order-summary-value" id="summary-fee">$0.00</div>
-                    </div>
-                    <div class="order-total">
-                        <div class="order-total-label">Total:</div>
-                        <div class="order-total-value" id="summary-total">$0.00</div>
-                    </div>
-                </div>
-
-                <div class="checkout-actions">
-                    <button class="btn btn-lg btn-success" id="checkout-btn" disabled>Proceed to Checkout</button>
-                    <button class="btn btn-lg btn-outline" id="clear-selection-btn" disabled>Clear Selection</button>
-                </div>
-            </section>
-        </div>
+                    <form action="{{ route('tickets.buy', $game->id) }}" method="POST" id="checkout-form">
+                        @csrf
+                        <input type="hidden" name="game_id" value="{{ $game->id }}">
+                        <input type="hidden" name="section" id="section-input" value="">
+                        <input type="hidden" name="quantity" id="quantity-input" value="1">
+                        <input type="hidden" name="price" id="price-input" value="0">
+                        <div class="checkout-actions">
+                            <button type="submit" class="btn btn-lg btn-success" id="checkout-btn" disabled>Proceed to
+                                Checkout</button>
+                            <button type="button" class="btn btn-lg btn-outline" id="clear-selection-btn" disabled>Clear
+                                Selection</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        @else
+            <div class="alert alert-info">
+                <h4>Ticket Sales Closed</h4>
+                <p>Ticket sales for this match are no longer available as the match is {{ $game->status }}.</p>
+                <a href="{{ route('games') }}" class="btn btn-primary mt-3">View Other Matches</a>
+            </div>
+        @endif
     </main>
 @endsection
 
@@ -884,230 +792,253 @@
                 });
             }
 
-            // Stadium Map Zoom and Pan
-            const stadiumMap = document.getElementById('stadium-map');
-            const zoomInBtn = document.getElementById('zoom-in');
-            const zoomOutBtn = document.getElementById('zoom-out');
-            const resetViewBtn = document.getElementById('reset-view');
+            @if ($game->status != 'completed' && $game->status != 'cancelled')
+                // Stadium Map Zoom and Pan
+                const stadiumMap = document.getElementById('stadium-map');
+                const zoomInBtn = document.getElementById('zoom-in');
+                const zoomOutBtn = document.getElementById('zoom-out');
+                const resetViewBtn = document.getElementById('reset-view');
 
-            let scale = 1;
-            let translateX = 0;
-            let translateY = 0;
-            let isDragging = false;
-            let startX, startY;
+                let scale = 1;
+                let translateX = 0;
+                let translateY = 0;
+                let isDragging = false;
+                let startX, startY;
 
-            function updateMapTransform() {
-                stadiumMap.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-            }
-
-            zoomInBtn.addEventListener('click', function() {
-                if (scale < 2) {
-                    scale += 0.1;
-                    updateMapTransform();
+                function updateMapTransform() {
+                    stadiumMap.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
                 }
-            });
 
-            zoomOutBtn.addEventListener('click', function() {
-                if (scale > 0.5) {
-                    scale -= 0.1;
-                    updateMapTransform();
-                }
-            });
-
-            resetViewBtn.addEventListener('click', function() {
-                scale = 1;
-                translateX = 0;
-                translateY = 0;
-                updateMapTransform();
-            });
-
-            stadiumMap.addEventListener('mousedown', function(e) {
-                isDragging = true;
-                startX = e.clientX - translateX;
-                startY = e.clientY - translateY;
-                stadiumMap.classList.add('grabbing');
-            });
-
-            document.addEventListener('mousemove', function(e) {
-                if (isDragging) {
-                    translateX = e.clientX - startX;
-                    translateY = e.clientY - startY;
-                    updateMapTransform();
-                }
-            });
-
-            document.addEventListener('mouseup', function() {
-                isDragging = false;
-                stadiumMap.classList.remove('grabbing');
-            });
-
-            // Stadium Section Selection
-            const stadiumSections = document.querySelectorAll('.stadium-section');
-            const selectedSectionName = document.getElementById('selected-section-name');
-            const selectedSectionCategory = document.getElementById('selected-section-category');
-            const selectedSectionPrice = document.getElementById('selected-section-price');
-
-            stadiumSections.forEach(section => {
-                section.addEventListener('click', function() {
-                    // Remove selected class from all sections
-                    stadiumSections.forEach(s => s.classList.remove('selected'));
-
-                    // Add selected class to clicked section
-                    this.classList.add('selected');
-
-                    // Update section details
-                    const sectionName = this.getAttribute('data-section');
-                    const sectionCategory = this.getAttribute('data-category');
-                    const sectionPrice = this.getAttribute('data-price');
-
-                    selectedSectionName.textContent = sectionName;
-                    selectedSectionCategory.textContent = sectionCategory;
-                    selectedSectionPrice.textContent = '$' + sectionPrice;
-
-                    // Update seat grid title
-                    document.querySelector('.seat-grid-title').textContent =
-                        `Select seats from ${sectionName}`;
+                zoomInBtn.addEventListener('click', function() {
+                    if (scale < 2) {
+                        scale += 0.1;
+                        updateMapTransform();
+                    }
                 });
-            });
 
-            // Seat Selection
-            const seats = document.querySelectorAll('.seat:not(.reserved):not(.disabled)');
-            const selectedSeatsList = document.getElementById('selected-seats-list');
-            const summaryTickets = document.getElementById('summary-tickets');
-            const summarySubtotal = document.getElementById('summary-subtotal');
-            const summaryFee = document.getElementById('summary-fee');
-            const summaryTotal = document.getElementById('summary-total');
-            const checkoutBtn = document.getElementById('checkout-btn');
-            const clearSelectionBtn = document.getElementById('clear-selection-btn');
+                zoomOutBtn.addEventListener('click', function() {
+                    if (scale > 0.5) {
+                        scale -= 0.1;
+                        updateMapTransform();
+                    }
+                });
 
-            let selectedSeats = [];
+                resetViewBtn.addEventListener('click', function() {
+                    scale = 1;
+                    translateX = 0;
+                    translateY = 0;
+                    updateMapTransform();
+                });
 
-            seats.forEach(seat => {
-                seat.addEventListener('click', function() {
-                    const seatId = this.getAttribute('data-seat');
-                    const sectionName = selectedSectionName.textContent;
-                    const sectionCategory = selectedSectionCategory.textContent;
-                    const sectionPrice = parseFloat(selectedSectionPrice.textContent.replace('$',
-                        ''));
+                stadiumMap.addEventListener('mousedown', function(e) {
+                    isDragging = true;
+                    startX = e.clientX - translateX;
+                    startY = e.clientY - translateY;
+                    stadiumMap.classList.add('grabbing');
+                });
 
-                    if (this.classList.contains('selected')) {
-                        // Deselect seat
-                        this.classList.remove('selected');
+                document.addEventListener('mousemove', function(e) {
+                    if (isDragging) {
+                        translateX = e.clientX - startX;
+                        translateY = e.clientY - startY;
+                        updateMapTransform();
+                    }
+                });
 
-                        // Remove from selected seats array
-                        selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+                document.addEventListener('mouseup', function() {
+                    isDragging = false;
+                    stadiumMap.classList.remove('grabbing');
+                });
 
-                        // Remove from selected seats list
-                        const seatElement = document.getElementById(`selected-seat-${seatId}`);
-                        if (seatElement) {
-                            seatElement.remove();
-                        }
-                    } else {
-                        // Select seat
+                // Stadium Section Selection
+                const stadiumSections = document.querySelectorAll('.stadium-section');
+                const selectedSectionName = document.getElementById('selected-section-name');
+                const selectedSectionPrice = document.getElementById('selected-section-price');
+                const selectedSectionAvailability = document.getElementById('selected-section-availability');
+                const ticketQuantityInput = document.getElementById('ticket-quantity');
+                const decreaseQuantityBtn = document.getElementById('decrease-quantity');
+                const increaseQuantityBtn = document.getElementById('increase-quantity');
+                const selectedTicketsList = document.getElementById('selected-tickets-list');
+                const noTicketsMessage = document.getElementById('no-tickets-message');
+                const checkoutBtn = document.getElementById('checkout-btn');
+                const clearSelectionBtn = document.getElementById('clear-selection-btn');
+                const sectionInput = document.getElementById('section-input');
+                const quantityInput = document.getElementById('quantity-input');
+                const priceInput = document.getElementById('price-input');
+
+                let selectedSection = null;
+                let ticketPrice = 0;
+
+                // Quantity controls
+                decreaseQuantityBtn.addEventListener('click', function() {
+                    let quantity = parseInt(ticketQuantityInput.value);
+                    if (quantity > 1) {
+                        quantity--;
+                        ticketQuantityInput.value = quantity;
+                        quantityInput.value = quantity;
+                        updateOrderSummary();
+                    }
+                });
+
+                increaseQuantityBtn.addEventListener('click', function() {
+                    let quantity = parseInt(ticketQuantityInput.value);
+                    let maxAvailable = parseInt(selectedSectionAvailability.textContent);
+                    if (quantity < 10 && quantity < maxAvailable) {
+                        quantity++;
+                        ticketQuantityInput.value = quantity;
+                        quantityInput.value = quantity;
+                        updateOrderSummary();
+                    }
+                });
+
+                ticketQuantityInput.addEventListener('change', function() {
+                    let quantity = parseInt(this.value);
+                    let maxAvailable = parseInt(selectedSectionAvailability.textContent);
+
+                    if (isNaN(quantity) || quantity < 1) {
+                        quantity = 1;
+                    } else if (quantity > 10) {
+                        quantity = 10;
+                    } else if (quantity > maxAvailable) {
+                        quantity = maxAvailable;
+                    }
+
+                    this.value = quantity;
+                    quantityInput.value = quantity;
+                    updateOrderSummary();
+                });
+
+                stadiumSections.forEach(section => {
+                    section.addEventListener('click', function() {
+                        // Remove selected class from all sections
+                        stadiumSections.forEach(s => s.classList.remove('selected'));
+
+                        // Add selected class to clicked section
                         this.classList.add('selected');
 
-                        // Add to selected seats array
-                        selectedSeats.push({
-                            id: seatId,
-                            section: sectionName,
-                            category: sectionCategory,
-                            price: sectionPrice
-                        });
+                        // Update section details
+                        const sectionName = this.getAttribute('data-section');
+                        const sectionPrice = this.getAttribute('data-price');
+                        const availableSeats = this.getAttribute('data-available');
+                        const ticketsNumber = document.getElementById('tickets-number');
 
-                        // Add to selected seats list
-                        const seatElement = document.createElement('div');
-                        seatElement.id = `selected-seat-${seatId}`;
-                        seatElement.className = 'selected-seat-item';
-                        seatElement.innerHTML = `
-                            <div class="selected-seat-info">
-                                <div class="selected-seat-location">${sectionName}, Seat ${seatId}</div>
-                                <div class="selected-seat-category">${sectionCategory}</div>
-                            </div>
-                            <div class="selected-seat-price">$${sectionPrice}</div>
-                            <button class="remove-seat-btn" data-seat="${seatId}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        `;
-                        selectedSeatsList.appendChild(seatElement);
+                        selectedSection = sectionName;
+                        ticketPrice = parseFloat(sectionPrice);
 
-                        // Add event listener to remove button
-                        const removeBtn = seatElement.querySelector('.remove-seat-btn');
-                        removeBtn.addEventListener('click', function() {
-                            const seatId = this.getAttribute('data-seat');
-                            const seatElement = document.getElementById(
-                                `selected-seat-${seatId}`);
-                            const seat = document.querySelector(
-                                `.seat[data-seat="${seatId}"]`);
+                        selectedSectionName.textContent = sectionName;
+                        selectedSectionPrice.textContent = '$' + sectionPrice;
+                        selectedSectionAvailability.textContent = availableSeats;
 
-                            // Remove from selected seats array
-                            selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+                        // Update hidden inputs
+                        sectionInput.value = sectionName;
+                        priceInput.value = sectionPrice;
 
-                            // Remove from selected seats list
-                            if (seatElement) {
-                                seatElement.remove();
-                            }
+                        // Reset quantity to 1 when changing sections
+                        ticketQuantityInput.value = 1;
+                        quantityInput.value = 1;
 
-                            // Deselect seat in grid
-                            if (seat) {
-                                seat.classList.remove('selected');
-                            }
 
-                            // Update order summary
-                            updateOrderSummary();
-                        });
+                        ticketsNumber.classList.remove('hide-tickets-number');
+                        console.log(sectionPrice, ticketPrice, sectionName);
+
+
+
+                        // Update max attribute based on available tickets
+                        ticketQuantityInput.max = Math.min(10, availableSeats);
+
+                        // Update order summary
+                        updateOrderSummary();
+                    });
+                });
+
+                function updateOrderSummary() {
+                    const summaryTickets = document.getElementById('summary-tickets');
+                    const summarySubtotal = document.getElementById('summary-subtotal');
+                    const summaryFee = document.getElementById('summary-fee');
+                    const summaryTotal = document.getElementById('summary-total');
+
+                    if (!selectedSection) {
+                        return;
                     }
+
+                    const quantity = parseInt(ticketQuantityInput.value);
+                    const subtotal = quantity * ticketPrice;
+                    const serviceFee = subtotal * 0.1; // 10% service fee
+                    const total = subtotal + serviceFee;
+
+                    // Update summary
+                    summaryTickets.textContent = quantity;
+                    summarySubtotal.textContent = '$' + subtotal.toFixed(2);
+                    summaryFee.textContent = '$' + serviceFee.toFixed(2);
+                    summaryTotal.textContent = '$' + total.toFixed(2);
+
+                    // Update selected tickets display
+                    updateSelectedTicketsDisplay(quantity);
+
+                    // Enable/disable checkout and clear buttons
+                    if (selectedSection && quantity > 0) {
+                        checkoutBtn.disabled = false;
+                        clearSelectionBtn.disabled = false;
+                    } else {
+                        checkoutBtn.disabled = true;
+                        clearSelectionBtn.disabled = true;
+                    }
+                }
+
+                function updateSelectedTicketsDisplay(quantity) {
+                    if (!selectedSection) {
+                        noTicketsMessage.style.display = 'block';
+                        selectedTicketsList.innerHTML = noTicketsMessage.outerHTML;
+                        return;
+                    }
+
+                    noTicketsMessage.style.display = 'none';
+
+                    const ticketItem = document.createElement('div');
+                    ticketItem.className = 'selected-ticket-item';
+                    ticketItem.innerHTML = `
+                    <div class="selected-ticket-info">
+                        <div class="selected-ticket-section">${selectedSection} Section</div>
+                        <div class="selected-ticket-quantity">${quantity} ticket${quantity > 1 ? 's' : ''}</div>
+                    </div>
+                    <div class="selected-ticket-price">$${(ticketPrice * quantity).toFixed(2)}</div>
+                `;
+
+                    selectedTicketsList.innerHTML = '';
+                    selectedTicketsList.appendChild(ticketItem);
+                }
+
+                // Clear selection button
+                clearSelectionBtn.addEventListener('click', function() {
+                    // Clear selection
+                    stadiumSections.forEach(s => s.classList.remove('selected'));
+                    selectedSection = null;
+                    ticketPrice = 0;
+
+                    // Reset form fields
+                    selectedSectionName.textContent = 'Select a section';
+                    selectedSectionPrice.textContent = '$0';
+                    selectedSectionAvailability.textContent = '0';
+                    ticketQuantityInput.value = 1;
+
+                    // Reset hidden inputs
+                    sectionInput.value = '';
+                    quantityInput.value = 1;
+                    priceInput.value = 0;
+
+                    // Show no tickets message
+                    noTicketsMessage.style.display = 'block';
+                    selectedTicketsList.innerHTML = noTicketsMessage.outerHTML;
 
                     // Update order summary
                     updateOrderSummary();
                 });
-            });
 
-            function updateOrderSummary() {
-                const ticketCount = selectedSeats.length;
-                const subtotal = selectedSeats.reduce((total, seat) => total + seat.price, 0);
-                const serviceFee = subtotal * 0.1; // 10% service fee
-                const total = subtotal + serviceFee;
-
-                summaryTickets.textContent = ticketCount;
-                summarySubtotal.textContent = '$' + subtotal.toFixed(2);
-                summaryFee.textContent = '$' + serviceFee.toFixed(2);
-                summaryTotal.textContent = '$' + total.toFixed(2);
-
-                // Enable/disable checkout and clear buttons
-                if (ticketCount > 0) {
-                    checkoutBtn.disabled = false;
-                    clearSelectionBtn.disabled = false;
-                } else {
-                    checkoutBtn.disabled = true;
-                    clearSelectionBtn.disabled = true;
-                }
-            }
-
-            // Clear selection button
-            clearSelectionBtn.addEventListener('click', function() {
-                // Clear selected seats array
-                selectedSeats = [];
-
-                // Clear selected seats list
-                selectedSeatsList.innerHTML = '';
-
-                // Deselect all seats in grid
-                seats.forEach(seat => {
-                    seat.classList.remove('selected');
-                });
-
-                // Update order summary
-                updateOrderSummary();
-            });
-
-            // Checkout button
-            checkoutBtn.addEventListener('click', function() {
-                alert('Proceeding to checkout with ' + selectedSeats.length + ' tickets.');
-                // In a real application, this would redirect to a checkout page
-            });
-
-            // Initialize with North Stand selected
-            document.getElementById('section-north').click();
+                // Initialize with first section selected
+                // if (stadiumSections.length > 0) {
+                //     stadiumSections[0].click();
+                // }
+            @endif
         });
     </script>
 @endsection

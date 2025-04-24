@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('price');
             $table->integer('place_number');
             $table->string('status')->default('pending');
-            $table->foreignId('category_id')->constrained();
+            $table->string('section')->default('regular');
             $table->timestamps();
         });
     }

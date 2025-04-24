@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Team;
 use App\Models\Stadium;
-use Carbon\Carbon;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class GameController extends Controller
 {
-
     public function index()
     {
         $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])->get();
@@ -21,7 +21,6 @@ class GameController extends Controller
 
         return view('admin.games', compact('games', 'teams', 'stadiums'));
     }
-
 
     public function store(Request $request)
     {
@@ -56,7 +55,6 @@ class GameController extends Controller
         return redirect()->route('admin.games.index')
             ->with('success', 'Match created successfully.');
     }
-
 
     public function update(Request $request, $id)
     {
@@ -98,7 +96,6 @@ class GameController extends Controller
             ->with('success', 'Match updated successfully.');
     }
 
-
     public function updateScore(Request $request, $id)
     {
         $game = Game::findOrFail($id);
@@ -115,7 +112,6 @@ class GameController extends Controller
         return redirect()->route('admin.games.index')
             ->with('success', 'Match score updated successfully.');
     }
-
 
     public function destroy($id)
     {
@@ -136,19 +132,7 @@ class GameController extends Controller
             ->with('success', 'Match deleted successfully.');
     }
 
-    // public function userGames()
-    // {
-    //     $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
-    //         ->where('status', 'scheduled')
-    //         ->orderBy('start_date')
-    //         ->get();
 
-    //     return view('user.games', compact('games'));
-    // }
-
-    /**
-     * Visitor methods
-     */
     public function visitorIndex(Request $request)
     {
         $query = Game::with(['homeTeam', 'awayTeam', 'stadium']);
@@ -165,18 +149,24 @@ class GameController extends Controller
                     $query->whereDate('start_date', $today->addDay()->format('Y-m-d'));
                     break;
                 case 'this-week':
-                    $query->whereDate('start_date', '>=', $today->startOfWeek()->format('Y-m-d'))
-                        ->whereDate('start_date', '<=', $today->endOfWeek()->format('Y-m-d'));
+                    $query->whereBetween('start_date', [
+                        $today->startOfWeek()->format('Y-m-d'),
+                        $today->endOfWeek()->format('Y-m-d')
+                    ]);
                     break;
                 case 'next-week':
-                    $nextWeekStart = $today->addWeek()->startOfWeek();
-                    $nextWeekEnd = $nextWeekStart->copy()->endOfWeek();
-                    $query->whereDate('start_date', '>=', $nextWeekStart->format('Y-m-d'))
-                        ->whereDate('start_date', '<=', $nextWeekEnd->format('Y-m-d'));
+                    $nextWeekStart = Carbon::today()->addWeek()->startOfWeek();
+                    $nextWeekEnd = Carbon::today()->addWeek()->endOfWeek();
+                    $query->whereBetween('start_date', [
+                        $nextWeekStart->format('Y-m-d'),
+                        $nextWeekEnd->format('Y-m-d')
+                    ]);
                     break;
                 case 'this-month':
-                    $query->whereDate('start_date', '>=', $today->startOfMonth()->format('Y-m-d'))
-                        ->whereDate('start_date', '<=', $today->endOfMonth()->format('Y-m-d'));
+                    $query->whereBetween('start_date', [
+                        $today->startOfMonth()->format('Y-m-d'),
+                        $today->endOfMonth()->format('Y-m-d')
+                    ]);
                     break;
             }
         }
@@ -217,12 +207,38 @@ class GameController extends Controller
             });
         }
 
-        $games = $query->paginate(12);
-        $teams = Team::all();
-        $stadiums = Stadium::all();
+        // Sorting
+        if ($request->has('sort')) {
+            switch ($request->sort) {
+                case 'date-asc':
+                    $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
+                    break;
+                case 'date-desc':
+                    $query->orderBy('start_date', 'desc')->orderBy('start_hour', 'desc');
+                    break;
+                case 'status':
+                    $query->orderByRaw("FIELD(status, 'live', 'scheduled', 'completed', 'postponed', 'cancelled')")
+                        ->orderBy('start_date', 'asc');
+                    break;
+                default:
+                    $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
+            }
+        } else {
+            // Default sorting by date ascending
+            $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
+        }
+
+        // Paginate the results
+        $games = $query->paginate(12)->withQueryString();
+
+        // Get all teams and stadiums for filter dropdowns
+        $teams = Team::orderBy('name')->get();
+        $stadiums = Stadium::orderBy('name')->get();
+
 
         return view('user.games', compact('games', 'teams', 'stadiums'));
     }
+
 
 
     public function visitorShow($id)
@@ -233,22 +249,94 @@ class GameController extends Controller
     }
 
 
+    public function buyTickets(Request $request, $gameId)
+    {
+
+        $game = Game::findOrFail($gameId);
+
+        $request->validate([
+            'section' => 'required|string',
+            'quantity' => 'required|integer|min:1|max:10',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $section = $request->section;
+        $quantity = $request->quantity;
+        $price = $request->price;
+
+        // $userId = auth()->id();
+        $userId = 5;
+        $tickets = [];
+
+        // Create tickets for the requested quantity
+        for ($i = 0; $i < $quantity; $i++) {
+            $placeNumber = rand(1, 100) + ($i * 3); // different seat numbers
+
+            $ticket = new Ticket();
+            $ticket->game_id = $gameId;
+            $ticket->user_id = $userId;
+            $ticket->price = $price;
+            $ticket->place_number = $placeNumber;
+            $ticket->status = 'pending';
+            $ticket->section = $section;
+            $ticket->save();
+
+            $tickets[] = $ticket;
+        }
+
+        // dd($tickets);
+
+        return redirect()->route('tickets.checkout', ['tickets' => array_column($tickets, 'id')])
+            ->with('success', 'Tickets reserved successfully. Please complete your payment.');
+    }
+
     public function teamGames($teamId)
     {
+        $team = Team::findOrFail($teamId);
+
         $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
             ->where('home_team_id', $teamId)
             ->orWhere('away_team_id', $teamId)
             ->orderBy('start_date', 'asc')
             ->orderBy('start_hour', 'asc')
-            ->get();
-
-        $team = Team::findOrFail($teamId);
+            ->paginate(12);
 
         return view('user.team-games', compact('games', 'team'));
     }
 
-    public function gameTickets($gameId)
+
+    public function upcomingGames($limit = 5)
     {
-        return view('user.tickets');
+        $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
+            ->where('status', 'scheduled')
+            ->orderBy('start_date', 'asc')
+            ->orderBy('start_hour', 'asc')
+            ->limit($limit)
+            ->get();
+
+        return response()->json($games);
+    }
+
+
+    public function liveGames()
+    {
+        $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
+            ->where('status', 'live')
+            ->get();
+
+        return response()->json($games);
+    }
+
+
+    public function recentResults($limit = 5)
+    {
+        $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])
+            ->where('status', 'completed')
+            ->orderBy('start_date', 'desc')
+            ->orderBy('start_hour', 'desc')
+            ->limit($limit)
+            ->get();
+
+        return response()->json($games);
     }
 }

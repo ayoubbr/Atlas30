@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
@@ -50,8 +49,9 @@ Route::prefix('/')->group(function () {
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
     Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
     Route::get('team/{id}/games', [GameController::class, 'teamGames']);
-    Route::get('games/{id}/tickets', [GameController::class, 'gameTickets'])->name('game.tickets');
-
+    // Route::get('game/{id}/tickets', [GameController::class, 'gameTickets'])->name('game.tickets');
+    Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
+    Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
     // Route::get('payment', function () {
     //     return view('user.payment');
     // });
@@ -91,12 +91,6 @@ Route::prefix('admin')->group(function () {
     Route::post('stadiums', [StadiumController::class, 'store'])->name('admin.stadiums.store');
     Route::put('stadiums/{id}', [StadiumController::class, 'update'])->name('admin.stadiums.update');
     Route::delete('stadiums/{id}', [StadiumController::class, 'destroy'])->name('admin.stadiums.destroy');
-
-    // CATEGORY
-    Route::get('categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-    Route::post('categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-    Route::put('categories/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
-    Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
     // ROLE
     Route::get('roles', [RoleController::class, 'index'])->name('admin.roles.index');
