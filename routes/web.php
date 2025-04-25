@@ -147,3 +147,9 @@ Route::prefix('admin')->group(function () {
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
 });
+
+
+
+Route::fallback(function () {
+    return redirect('/')->with('error', 'The page you are looking for does not exist.');
+});
