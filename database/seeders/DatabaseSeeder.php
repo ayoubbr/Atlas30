@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
 
         $stadiums = Stadium::factory()->count(3)->create();
 
-        $games = Game::factory()->count(3)->create();
+        $games = Game::factory()->count(10)->create();
 
         $users = User::where('role_id', $userRole->id)->get();
 

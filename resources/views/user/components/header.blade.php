@@ -2,7 +2,7 @@
     <div class="container">
         <nav class="navbar">
             <a href="{{ url('/') }}" class="logo">
-                <i class="fas fa-futbol"></i> World Cup 2030
+                <i class="fas fa-futbol"></i> Atlas30
             </a>
             <ul class="nav-links">
                 <li><a href="{{ route('home') }}" class="{{ Request::routeIs('home') ? 'active' : '' }}">Home</a></li>

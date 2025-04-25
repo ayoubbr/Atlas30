@@ -515,7 +515,6 @@
 @endsection
 
 @section('content')
-    <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>{{ $game->homeTeam->name }} vs {{ $game->awayTeam->name }}</h1>
@@ -527,7 +526,6 @@
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="container">
         <!-- Match Info -->
         <section class="match-info">
@@ -580,10 +578,8 @@
             </div>
         </section>
 
-        @if ($game->status != 'completed' && $game->status != 'cancelled')
-            <!-- Seat Selection Container -->
+        @if ($game->status != 'finished' && $game->status != 'cancelled')
             <div class="seat-selection-container">
-                <!-- Stadium Map -->
                 <section class="stadium-map-container">
                     <div class="stadium-map-header">
                         <div class="stadium-map-title">
@@ -779,10 +775,8 @@
 @endsection
 
 @section('js')
-    <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
             const mobileMenuBtn = document.querySelector('.mobile-menu');
             const navLinks = document.querySelector('.nav-links');
 
@@ -850,7 +844,6 @@
                     stadiumMap.classList.remove('grabbing');
                 });
 
-                // Stadium Section Selection
                 const stadiumSections = document.querySelectorAll('.stadium-section');
                 const selectedSectionName = document.getElementById('selected-section-name');
                 const selectedSectionPrice = document.getElementById('selected-section-price');
@@ -869,7 +862,6 @@
                 let selectedSection = null;
                 let ticketPrice = 0;
 
-                // Quantity controls
                 decreaseQuantityBtn.addEventListener('click', function() {
                     let quantity = parseInt(ticketQuantityInput.value);
                     if (quantity > 1) {
@@ -910,13 +902,10 @@
 
                 stadiumSections.forEach(section => {
                     section.addEventListener('click', function() {
-                        // Remove selected class from all sections
                         stadiumSections.forEach(s => s.classList.remove('selected'));
 
-                        // Add selected class to clicked section
                         this.classList.add('selected');
 
-                        // Update section details
                         const sectionName = this.getAttribute('data-section');
                         const sectionPrice = this.getAttribute('data-price');
                         const availableSeats = this.getAttribute('data-available');
@@ -929,7 +918,6 @@
                         selectedSectionPrice.textContent = '$' + sectionPrice;
                         selectedSectionAvailability.textContent = availableSeats;
 
-                        // Update hidden inputs
                         sectionInput.value = sectionName;
                         priceInput.value = sectionPrice;
 
@@ -941,12 +929,9 @@
                         ticketsNumber.classList.remove('hide-tickets-number');
                         console.log(sectionPrice, ticketPrice, sectionName);
 
-
-
                         // Update max attribute based on available tickets
                         ticketQuantityInput.max = Math.min(10, availableSeats);
 
-                        // Update order summary
                         updateOrderSummary();
                     });
                 });
@@ -966,16 +951,13 @@
                     const serviceFee = subtotal * 0.1; // 10% service fee
                     const total = subtotal + serviceFee;
 
-                    // Update summary
                     summaryTickets.textContent = quantity;
                     summarySubtotal.textContent = '$' + subtotal.toFixed(2);
                     summaryFee.textContent = '$' + serviceFee.toFixed(2);
                     summaryTotal.textContent = '$' + total.toFixed(2);
 
-                    // Update selected tickets display
                     updateSelectedTicketsDisplay(quantity);
 
-                    // Enable/disable checkout and clear buttons
                     if (selectedSection && quantity > 0) {
                         checkoutBtn.disabled = false;
                         clearSelectionBtn.disabled = false;
@@ -1010,34 +992,24 @@
 
                 // Clear selection button
                 clearSelectionBtn.addEventListener('click', function() {
-                    // Clear selection
                     stadiumSections.forEach(s => s.classList.remove('selected'));
                     selectedSection = null;
                     ticketPrice = 0;
 
-                    // Reset form fields
                     selectedSectionName.textContent = 'Select a section';
                     selectedSectionPrice.textContent = '$0';
                     selectedSectionAvailability.textContent = '0';
                     ticketQuantityInput.value = 1;
 
-                    // Reset hidden inputs
                     sectionInput.value = '';
                     quantityInput.value = 1;
                     priceInput.value = 0;
 
-                    // Show no tickets message
                     noTicketsMessage.style.display = 'block';
                     selectedTicketsList.innerHTML = noTicketsMessage.outerHTML;
 
-                    // Update order summary
                     updateOrderSummary();
                 });
-
-                // Initialize with first section selected
-                // if (stadiumSections.length > 0) {
-                //     stadiumSections[0].click();
-                // }
             @endif
         });
     </script>

@@ -64,9 +64,9 @@ Route::prefix('/')->group(function () {
         return view('user.forum');
     })->name('forum');
 
-    Route::get('teams', function () {
-        return view('user.teams');
-    })->name('teams');
+    Route::get('teams', [TeamController::class, 'visitorIndex'])->name('teams');
+    Route::get('teams/{id}', [TeamController::class, 'visitorShow'])->name('teams.show');
+
 
     Route::get('stadiums', function () {
         return view('user.stadiums');
