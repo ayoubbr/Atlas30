@@ -26,6 +26,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function routeNotificationForMail()
+    {
+        return $this->email;
+    }
 
     public function role()
     {

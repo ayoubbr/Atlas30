@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Ticket;
+use App\Notifications\TicketPurchased;
 use Illuminate\Http\Request;
 use Stripe\PaymentIntent;
 use Stripe\Stripe;
@@ -115,6 +116,9 @@ class PaymentController extends Controller
             $ticket->payment_id = $payment->id;
             $ticket->save();
         }
+
+        $user = auth()->user();
+        $user->notify(new TicketPurchased($tickets, $totalAmount));
     }
 
 
