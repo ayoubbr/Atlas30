@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use App\Models\Game;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -110,5 +111,30 @@ class TicketController extends Controller
         }
 
         return view('user.payment', compact('tickets', 'success'));
+    }
+
+    public function downloadPdf($ticketId)
+    {
+        $ticket = Ticket::where('id', $ticketId)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $pdf = Pdf::loadView('user.ticket-pdf', compact('ticket'));
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOptions([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        return $pdf->download('ticket_' . $ticket->id . '.pdf');
+    }
+
+    public function verifyTicket($id)
+    {
+        $ticket = Ticket::with(['game.homeTeam', 'game.awayTeam', 'game.stadium', 'user'])->findOrFail($id);
+
+        return view('user.ticket-verify', compact('ticket'));
     }
 }

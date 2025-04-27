@@ -56,9 +56,10 @@ Route::prefix('/')->group(function () {
     Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
     Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
     // Route::get('user/tickets/', [TicketController::class, 'userTickets'])->name('user.tickets');
-    Route::get('user/tickets/{id}/download', [TicketController::class, 'userTicketsDownload'])->name('user.ticket.download');
+    Route::get('user/tickets/{id}/download', [TicketController::class, 'downloadPdf'])->name('user.ticket.download');
     Route::get('user/tickets/show', [TicketController::class, 'userTicketsShow'])->name('user.ticket.view');
-
+    // Route::get('tickets/{ticket}/download', [TicketController::class, 'downloadPdf'])->name('tickets.download');
+    Route::get('tickets/verify/{id}', [App\Http\Controllers\TicketController::class, 'verifyTicket'])->name('tickets.verify');
 
     Route::get('forum', function () {
         return view('user.forum');

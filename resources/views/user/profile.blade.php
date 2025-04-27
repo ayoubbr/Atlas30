@@ -361,7 +361,7 @@
                 <a href="#account-tab" class="btn btn-outline tab-link" data-tab="account">
                     <i class="fas fa-cog"></i> Settings
                 </a>
-                <a href="{{route('games')}}" class="btn btn-primary">
+                <a href="{{ route('games') }}" class="btn btn-primary">
                     <i class="fas fa-ticket-alt"></i> Buy Tickets
                 </a>
             </div>
@@ -415,7 +415,8 @@
                                     </div>
                                 </div>
                                 <div class="ticket-actions">
-                                    <a href="{{ route('user.ticket.download', $ticket->id) }}" class="btn btn-sm btn-outline">
+                                    <a href="{{ route('user.ticket.download', $ticket->id) }}"
+                                        class="btn btn-sm btn-outline">
                                         <i class="fas fa-download"></i> Download
                                     </a>
                                 </div>
