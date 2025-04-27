@@ -578,7 +578,7 @@
             </div>
         </section>
 
-        @if ($game->status != 'finished' && $game->status != 'cancelled')
+        @if ($game->status != 'completed' && $game->status != 'cancelled')
             <div class="seat-selection-container">
                 <section class="stadium-map-container">
                     <div class="stadium-map-header">
