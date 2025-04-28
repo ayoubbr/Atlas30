@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -68,6 +69,8 @@ Route::prefix('/')->group(function () {
     Route::get('teams', [TeamController::class, 'visitorIndex'])->name('teams');
     Route::get('teams/{id}', [TeamController::class, 'visitorShow'])->name('teams.show');
 
+
+    Route::get('users/notifications', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
     Route::get('stadiums', function () {
         return view('user.stadiums');

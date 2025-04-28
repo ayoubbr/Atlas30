@@ -16,40 +16,41 @@
             <div class="nav-actions">
                 @auth
                     <div class="notifications-dropdown">
-                        {{-- <button class="btn-icon notification-btn">
+                        <button class="btn-icon notification-btn">
                             <i class="fas fa-bell"></i>
-                            @if (auth()->user()->unreadNotifications->count() > 0)
-                                <span class="notification-badge">{{ auth()->user()->unreadNotifications->count() }}</span>
+                            @php
+                                $notif = auth()->user()->notifications()->where('status', 'unread')->get();
+                            @endphp
+                            @if ($notif->count() > 0)
+                                <span class="notification-badge"> {{ $notif->count() }} </span>
                             @endif
-                        </button> --}}
+                        </button>
                         <div class="dropdown-content">
-                            {{-- <div class="dropdown-header">
+                            <div class="dropdown-header">
                                 <h4>Notifications</h4>
-                                @if (auth()->user()->unreadNotifications->count() > 0)
-                                    <a href="{{ route('notifications.markAllAsRead') }}" class="mark-all-read">Mark all as read</a>
+                                @if ($notif->count() > 0)
+                                    <a href="{{ route('notifications.markAllAsRead') }}"
+                                        class="mark-all-read">Mark all as read</a>
                                 @endif
-                            </div> --}}
-                            {{-- <div class="dropdown-body">
+                            </div>
+                            <div class="dropdown-body">
                                 @forelse(auth()->user()->notifications()->take(5)->get() as $notification)
-                                    <a href="{{ route('notifications.show', $notification->id) }}" class="notification-item {{ $notification->read_at ? '' : 'unread' }}">
+                                    <div  class="notification-item {{ $notification->status }}">
                                         <div class="notification-icon">
-                                            @if ($notification->is_announcement)
-                                                <i class="fas fa-bullhorn"></i>
-                                            @else
-                                                <i class="fas fa-bell"></i>
-                                            @endif
+                                            <i class="fas fa-bullhorn"></i>
                                         </div>
                                         <div class="notification-content">
                                             <p>{{ $notification->content }}</p>
-                                            <span class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
+                                            <span
+                                                class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
                                         </div>
-                                    </a>
+                                    </div>
                                 @empty
                                     <div class="empty-notifications">
                                         <p>No notifications yet</p>
                                     </div>
                                 @endforelse
-                            </div> --}}
+                            </div>
                             <div class="dropdown-footer">
                                 {{-- <a href="{{ route('notifications.index') }}">View all notifications</a> --}}
                             </div>
