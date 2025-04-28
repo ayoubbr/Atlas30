@@ -228,10 +228,9 @@ class GameController extends Controller
             $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
         }
 
-        // Paginate the results
         $games = $query->paginate(12)->withQueryString();
 
-        // Get all teams and stadiums for filter dropdowns
+
         $teams = Team::orderBy('name')->get();
         $stadiums = Stadium::orderBy('name')->get();
 

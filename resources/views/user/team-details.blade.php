@@ -558,7 +558,7 @@
                                                     @break
 
                                                     @case('postponed')
-                                                        <i class="fa-solid fa-clock-rotate-left"></i>{{ ucfirst($match->status) }}
+                                                        <i class="fa-solid fa-clock-rotate-left"></i> {{ ucfirst($match->status) }}
                                                     @break
 
                                                     @default

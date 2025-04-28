@@ -252,6 +252,7 @@
         .team-name {
             font-weight: 600;
             margin-bottom: 5px;
+
         }
 
         .team-code {
@@ -264,36 +265,51 @@
             flex-direction: column;
             align-items: center;
             width: 20%;
+            padding-top: 25px;
         }
 
         .score-display {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 5px;
         }
 
         .match-status {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             padding: 3px 8px;
             border-radius: 20px;
             background-color: var(--gray-200);
             color: var(--gray-700);
+            margin-top: 50px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .match-status.upcoming {
+        .match-status.scheduled {
             background-color: var(--info);
             color: white;
         }
 
         .match-status.live {
-            background-color: var(--danger);
+            background-color: var(--primary);
             color: white;
-            animation: pulse 1.5s infinite;
+            animation: pulse 1.3s infinite;
         }
 
         .match-status.completed {
             background-color: var(--success);
+            color: white;
+        }
+
+        .match-status.postponed {
+            background-color: var(--gray-600);
+            color: white;
+        }
+
+        .match-status.canceled {
+            background-color: var(--gray-900);
             color: white;
         }
 
@@ -753,7 +769,33 @@
                                 @else
                                     <div class="score-display">vs</div>
                                 @endif
-                                <div class="match-status {{ $game->status }}">{{ ucfirst($game->status) }}</div>
+
+                                <div class="match-status {{ $game->status }}">
+                                    @switch($game->status)
+                                        @case('scheduled')
+                                            <i class="fas fa-clock"></i> {{ ucfirst($game->status) }}
+                                        @break
+
+                                        @case('live')
+                                            <i class="fas fa-broadcast-tower"></i> {{ ucfirst($game->status) }}
+                                        @break
+
+                                        @case('completed')
+                                            <i class="fas fa-check-circle"></i> {{ ucfirst($game->status) }}
+                                        @break
+
+                                        @case('canceled')
+                                            <i class="fa-solid fa-ban"></i> {{ ucfirst($game->status) }}
+                                        @break
+
+                                        @case('postponed')
+                                            <i class="fa-solid fa-clock-rotate-left"></i> {{ ucfirst($game->status) }}
+                                        @break
+
+                                        @default
+                                            <i class="fas fa-question-circle"></i> Unknown
+                                    @endswitch
+                                </div>
                             </div>
                             <div class="match-team">
                                 <div class="team-flag"
