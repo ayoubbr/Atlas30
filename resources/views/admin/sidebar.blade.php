@@ -55,13 +55,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url('/admin/categories') }}"
-                        class="nav-link {{ request()->is('admin/categories') ? 'active' : '' }}">
-                        <i class="fa-solid fa-table-cells-large nav-icon"></i>
-                        <span class="nav-text">Categories</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="{{ url('/admin/roles') }}"
                         class="nav-link {{ request()->is('admin/roles') ? 'active' : '' }}">
                         <i class="fa-solid fa-user-gear nav-icon"></i>
