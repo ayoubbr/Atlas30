@@ -93,4 +93,68 @@ class TeamController extends Controller
         return redirect()->route('admin.teams.index')
             ->with('success', 'Team deleted successfully.');
     }
+
+
+    public function visitorIndex(Request $request)
+    {
+        $search = $request->input('search');
+        $sort = $request->input('sort', 'name');
+        $direction = $request->input('direction', 'asc');
+
+        $query = Team::query();
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('code', 'like', "%{$search}%");
+        }
+
+        $query->orderBy($sort, $direction);
+
+        $teams = $query->paginate(12)->withQueryString();
+
+        $totalTeams = Team::count();
+        $totalMatches = Game::count();
+
+        return view('user.teams', compact('teams', 'totalTeams', 'totalMatches', 'search', 'sort', 'direction'));
+    }
+
+
+    public function visitorShow($id)
+    {
+        $team = Team::findOrFail($id);
+
+        $upcomingMatches = Game::where(function ($query) use ($team) {
+            $query->where('home_team_id', $team->id)
+                ->orWhere('away_team_id', $team->id);
+        })
+            ->where('start_date', '>=', now()->format('Y-m-d'))
+            ->orderBy('start_date', 'asc')
+            ->orderBy('start_hour', 'asc')
+            ->take(5)
+            ->get();
+
+        
+        $recentMatches = Game::where(function ($query) use ($team) {
+            $query->where('home_team_id', $team->id)
+                ->orWhere('away_team_id', $team->id);
+        })
+            ->where('start_date', '<', now()->format('Y-m-d'))
+            ->orderBy('start_date', 'desc')
+            ->orderBy('start_hour', 'desc')
+            ->take(5)
+            ->get();
+
+        $totalMatches = $team->homeGames()->count() + $team->awayGames()->count();
+        $homeMatches = $team->homeGames()->count();
+        $awayMatches = $team->awayGames()->count();
+
+        return view('user.team-details', compact(
+            'team',
+            'upcomingMatches',
+            'recentMatches',
+            'totalMatches',
+            'homeMatches',
+            'awayMatches'
+        ));
+    }
 }

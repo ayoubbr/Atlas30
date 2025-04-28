@@ -12,6 +12,10 @@
             text-align: center;
         }
 
+        .container>h2 {
+            color: white
+        }
+
         .countdown-container {
             display: flex;
             justify-content: center;
@@ -46,13 +50,6 @@
         .section-title {
             text-align: center;
             margin-bottom: 60px;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            position: relative;
-            display: inline-block;
         }
 
         .section-title h2::after {

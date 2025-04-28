@@ -1,33 +1,85 @@
-<header>
+<header class="site-header">
     <div class="container">
         <nav class="navbar">
-            <a href="#" class="logo">
-                <i class="fas fa-futbol"></i> World Cup 2030
+            <a href="{{ url('/') }}" class="logo">
+                <i class="fas fa-futbol"></i> Atlas30
             </a>
             <ul class="nav-links">
-                <li><a href="{{ url('/') }}" class="{{ Request::is('/') ? 'active' : '' }}">Home</a></li>
-                <li><a href="{{ url('/matches') }}" class="{{ Request::is('matches') ? 'active' : '' }}">Matches</a></li>
-                <li><a href="{{ url('/match') }}" class="{{ Request::is('match') ? 'active' : '' }}">Match Details</a>
+                <li><a href="{{ route('home') }}" class="{{ Request::routeIs('home') ? 'active' : '' }}">Home</a></li>
+                <li><a href="{{ route('games') }}" class="{{ Request::routeIs('games') ? 'active' : '' }}">Games</a></li>
+                <li><a href="{{ route('teams') }}" class="{{ Request::routeIs('teams') ? 'active' : '' }}">Teams</a>
                 </li>
-                <li><a href="{{ url('/forum') }}" class="{{ Request::is('forum') ? 'active' : '' }}">Community</a></li>
-                <li><a href="{{ url('/payment') }}" class="{{ Request::is('payment') ? 'active' : '' }}">Payment</a>
+                <li><a href="{{ route('forum') }}" class="{{ Request::routeIs('forum') ? 'active' : '' }}">Community</a>
                 </li>
-                @auth
-                    <li><a href="{{ url('/profile') }}" class="{{ Request::is('profile') ? 'active' : '' }}">Profile</a>
-                    </li>
-                    <li>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none">
-                            @csrf
-                        </form>
-                        <a href="{{ route('logout') }}"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Logout
-                        </a>
-                    </li>
-                @else
-                    <li><a href="{{ route('login') }}" class="{{ Request::is('auth') ? 'active' : '' }}">Sign In</a></li>
-                @endauth
             </ul>
+
+            <div class="nav-actions">
+                @auth
+                    <div class="notifications-dropdown">
+                        {{-- <button class="btn-icon notification-btn">
+                            <i class="fas fa-bell"></i>
+                            @if (auth()->user()->unreadNotifications->count() > 0)
+                                <span class="notification-badge">{{ auth()->user()->unreadNotifications->count() }}</span>
+                            @endif
+                        </button> --}}
+                        <div class="dropdown-content">
+                            {{-- <div class="dropdown-header">
+                                <h4>Notifications</h4>
+                                @if (auth()->user()->unreadNotifications->count() > 0)
+                                    <a href="{{ route('notifications.markAllAsRead') }}" class="mark-all-read">Mark all as read</a>
+                                @endif
+                            </div> --}}
+                            {{-- <div class="dropdown-body">
+                                @forelse(auth()->user()->notifications()->take(5)->get() as $notification)
+                                    <a href="{{ route('notifications.show', $notification->id) }}" class="notification-item {{ $notification->read_at ? '' : 'unread' }}">
+                                        <div class="notification-icon">
+                                            @if ($notification->is_announcement)
+                                                <i class="fas fa-bullhorn"></i>
+                                            @else
+                                                <i class="fas fa-bell"></i>
+                                            @endif
+                                        </div>
+                                        <div class="notification-content">
+                                            <p>{{ $notification->content }}</p>
+                                            <span class="notification-time">{{ $notification->created_at->diffForHumans() }}</span>
+                                        </div>
+                                    </a>
+                                @empty
+                                    <div class="empty-notifications">
+                                        <p>No notifications yet</p>
+                                    </div>
+                                @endforelse
+                            </div> --}}
+                            <div class="dropdown-footer">
+                                {{-- <a href="{{ route('notifications.index') }}">View all notifications</a> --}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-dropdown">
+                        <button class="btn btn-user">
+                            <span>{{ auth()->user()->firstname }}</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{{ route('profile') }}">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ route('logout') }}">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-outline">Sign In</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary">Register</a>
+                @endauth
+            </div>
+
             <div class="mobile-menu">
                 <i class="fas fa-bars"></i>
             </div>

@@ -19,15 +19,15 @@ class GameFactory extends Factory
     public function definition()
     {
         return [
-            'start_date' => $this->faker->date(),
-            'start_hour' => $this->faker->time(),
+            'start_date' => $this->faker->dateTimeBetween('-1 week', '+2 months')->format('Y-m-d'),
+            'start_hour' => $this->faker->time('H:i'),
             'home_team_id' => Team::inRandomOrder()->first()->id,
             'away_team_id' => Team::inRandomOrder()->first()->id,
             'stadium_id' => Stadium::inRandomOrder()->first()->id,
             'home_team_goals' => $this->faker->numberBetween(0, 5),
             'away_team_goals' => $this->faker->numberBetween(0, 5),
             'image' => 'https://cdn.vectorstock.com/i/500p/58/35/soccer-bannertemplate-football-banner-vs-vector-53655835.jpg',
-            'status' => $this->faker->randomElement(['scheduled', 'live', 'finished']),
+            'status' => $this->faker->randomElement(['scheduled', 'live', 'completed', 'canceled', 'postponed']),
         ];
     }
 }

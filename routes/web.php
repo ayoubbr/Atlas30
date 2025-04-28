@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StadiumController;
@@ -23,6 +23,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// User profile 
+// Route::middleware(['auth'])->group(function () {
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+// });
+
+
+
 // User
 Route::prefix('/')->group(function () {
 
@@ -34,25 +45,33 @@ Route::prefix('/')->group(function () {
         return view('user.auth');
     })->name('login');
 
-    Route::get('matches', function () {
-        return view('user.matches');
-    });
-
-    Route::get('match', function () {
-        return view('user.match');
-    });
-
-    Route::get('payment', function () {
-        return view('user.payment');
-    });
+    // Visitor routes
+    // GAMES
+    Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
+    Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
+    Route::get('team/{id}/games', [GameController::class, 'teamGames']);
+    Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
+    Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
+    // to be confirmed
+    Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
+    Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
+    // Route::get('user/tickets/', [TicketController::class, 'userTickets'])->name('user.tickets');
+    Route::get('user/tickets/{id}/download', [TicketController::class, 'downloadPdf'])->name('user.ticket.download');
+    Route::get('user/tickets/show', [TicketController::class, 'userTicketsShow'])->name('user.ticket.view');
+    // Route::get('tickets/{ticket}/download', [TicketController::class, 'downloadPdf'])->name('tickets.download');
+    Route::get('tickets/verify/{id}', [App\Http\Controllers\TicketController::class, 'verifyTicket'])->name('tickets.verify');
 
     Route::get('forum', function () {
         return view('user.forum');
-    });
+    })->name('forum');
 
-    // Route::get('profile', function () {
-    //     return view('user.profile');
-    // });
+    Route::get('teams', [TeamController::class, 'visitorIndex'])->name('teams');
+    Route::get('teams/{id}', [TeamController::class, 'visitorShow'])->name('teams.show');
+
+
+    Route::get('stadiums', function () {
+        return view('user.stadiums');
+    })->name('stadiums');
 
     // Authentication 
     Route::post('login', [UserController::class, 'login'])->name('login');
@@ -61,14 +80,7 @@ Route::prefix('/')->group(function () {
     Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('forgot-password');
 });
 
-// User profile 
-// Route::middleware(['auth'])->group(function () {
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
-// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
-// });
+
 
 // Admin
 // middleware(['auth', 'admin'])->
@@ -84,12 +96,6 @@ Route::prefix('admin')->group(function () {
     Route::post('stadiums', [StadiumController::class, 'store'])->name('admin.stadiums.store');
     Route::put('stadiums/{id}', [StadiumController::class, 'update'])->name('admin.stadiums.update');
     Route::delete('stadiums/{id}', [StadiumController::class, 'destroy'])->name('admin.stadiums.destroy');
-
-    // CATEGORY
-    Route::get('categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-    Route::post('categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-    Route::put('categories/{id}', [CategoryController::class, 'update'])->name('admin.categories.update');
-    Route::delete('categories/{id}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
     // ROLE
     Route::get('roles', [RoleController::class, 'index'])->name('admin.roles.index');
@@ -140,6 +146,11 @@ Route::prefix('admin')->group(function () {
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
 
-
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
+});
+
+
+
+Route::fallback(function () {
+    return redirect('/')->with('error', 'The page you are looking for does not exist.');
 });

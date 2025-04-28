@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Game;
 use App\Models\Post;
 use App\Models\Stadium;
@@ -22,12 +21,6 @@ class DashboardController extends Controller
             Carbon::now()->endOfWeek()
         ])->count();
 
-        $ticketSalesByCategory = Category::withCount('tickets')
-            ->orderBy('tickets_count', 'desc')
-            ->get();
-
-        $categoryLabels = $ticketSalesByCategory->pluck('title')->toArray();
-        $categoryCounts = $ticketSalesByCategory->pluck('tickets_count')->toArray();
 
         $ticketSalesByMatch = Game::withCount('tickets')
             ->orderBy('tickets_count', 'desc')
@@ -40,9 +33,7 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-      
-
-        $recentForumActivity = Post::with(['user', 'group'])
+        $recentForumActivity = Post::with(['user', '    '])
             ->latest()
             ->take(4)
             ->get();
@@ -51,9 +42,6 @@ class DashboardController extends Controller
             'stadiumCount',
             'forumPostCount',
             'ticketsSoldThisWeek',
-            'ticketSalesByCategory',
-            'categoryLabels',
-            'categoryCounts',
             'ticketSalesByMatch',
             'upcomingMatches',
             'recentForumActivity'

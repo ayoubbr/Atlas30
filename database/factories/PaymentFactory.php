@@ -18,7 +18,6 @@ class PaymentFactory extends Factory
     public function definition()
     {
         return [
-            'ticket_id' => Ticket::inRandomOrder()->first()->id,
             'status' => $this->faker->randomElement(['paid', 'pending', 'failed']),
         ];
     }

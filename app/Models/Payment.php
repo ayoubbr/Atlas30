@@ -9,11 +9,21 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['ticket_id', 'status'];
+    protected $fillable = ['status'];
 
 
-    public function ticket()
+    public function user()
     {
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(User::class);
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    // public function ticket()
+    // {
+    //     return $this->belongsTo(Ticket::class);
+    // }
 }

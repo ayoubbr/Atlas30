@@ -53,12 +53,6 @@
             background-color: var(--success);
         }
 
-        .progress-step.completed .step-number::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 5 Free';
-            font-weight: 900;
-        }
-
         .step-label {
             font-size: 0.9rem;
             font-weight: 600;
@@ -245,17 +239,28 @@
             color: var(--gray-600);
         }
 
-        .card-number-wrapper {
-            position: relative;
+        /* Stripe Elements */
+        .stripe-element {
+            padding: 12px 15px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            background-color: white;
+            transition: all 0.3s ease;
         }
 
-        .card-type-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5rem;
-            color: var(--gray-600);
+        .stripe-element.focused {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+        }
+
+        .stripe-element.invalid {
+            border-color: var(--danger);
+        }
+
+        #card-errors {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 5px;
         }
 
         /* Terms and Conditions */
@@ -559,6 +564,39 @@
             gap: 15px;
         }
 
+        /* Loading Spinner */
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         /* Responsive Styles */
         @media (max-width: 992px) {
             .checkout-container {
@@ -644,23 +682,19 @@
 @endsection
 
 @section('content')
-    <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>Secure Checkout</h1>
             <ul class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Matches</a></li>
-                <li><a href="#">Tickets</a></li>
-                <li><a href="#">Seat Selection</a></li>
-                <li><a href="#">Payment</a></li>
+                <li><a href="{{ url('/') }}">Home</a></li>
+                <li><a href="{{ route('games') }}">Matches</a></li>
+                <li>Payment</li>
             </ul>
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="container">
-        <!-- Checkout Progress -->
+
         <div class="checkout-progress">
             <div class="progress-step completed">
                 <div class="step-number">1</div>
@@ -676,177 +710,77 @@
             </div>
         </div>
 
-        <!-- Checkout Container -->
         <div class="checkout-container">
-            <!-- Payment Form -->
+
             <div class="payment-form-container">
-                <form class="payment-form" id="payment-form">
-                    <!-- Payment Methods -->
+                <form class="payment-form" id="payment-form" action="{{ route('tickets.process-payment') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="ticket_ids" value="{{ implode(',', $tickets->pluck('id')->toArray()) }}">
+                    <input type="hidden" name="payment_intent_id" id="payment_intent_id">
+                    <input type="hidden" name="payment_method_id" id="payment_method_id">
+
                     <div class="form-section">
                         <h3 class="form-section-title">
                             <i class="fas fa-credit-card"></i> Payment Method
                         </h3>
-                        <div class="payment-methods">
-                            <div class="payment-method">
-                                <input type="radio" name="payment_method" id="credit-card" value="credit-card"
-                                    class="payment-method-input" checked>
-                                <label for="credit-card" class="payment-method-label">
-                                    <i class="far fa-credit-card payment-method-icon"></i>
-                                    <span class="payment-method-name">Credit Card</span>
-                                </label>
-                            </div>
-                            <div class="payment-method">
-                                <input type="radio" name="payment_method" id="paypal" value="paypal"
-                                    class="payment-method-input">
-                                <label for="paypal" class="payment-method-label">
-                                    <i class="fab fa-paypal payment-method-icon"></i>
-                                    <span class="payment-method-name">PayPal</span>
-                                </label>
-                            </div>
-                            <div class="payment-method">
-                                <input type="radio" name="payment_method" id="apple-pay" value="apple-pay"
-                                    class="payment-method-input">
-                                <label for="apple-pay" class="payment-method-label">
-                                    <i class="fab fa-apple-pay payment-method-icon"></i>
-                                    <span class="payment-method-name">Apple Pay</span>
-                                </label>
-                            </div>
-                            <div class="payment-method">
-                                <input type="radio" name="payment_method" id="google-pay" value="google-pay"
-                                    class="payment-method-input">
-                                <label for="google-pay" class="payment-method-label">
-                                    <i class="fab fa-google-pay payment-method-icon"></i>
-                                    <span class="payment-method-name">Google Pay</span>
-                                </label>
-                            </div>
-                        </div>
 
-                        <!-- Credit Card Form -->
-                        <div class="credit-card-form" id="credit-card-form">
+                        <div class="credit-card-form">
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="card-number" class="form-label">Card Number</label>
-                                    <div class="card-number-wrapper">
-                                        <input type="text" id="card-number" class="form-control"
-                                            placeholder="1234 5678 9012 3456" maxlength="19">
-                                        <i class="fab fa-cc-visa card-type-icon" id="card-type-icon"></i>
+                                    <label for="card-element" class="form-label">Credit or Debit Card</label>
+                                    <div id="card-element" class="stripe-element">
+                                        <!-- Stripe Card Element will be inserted here -->
                                     </div>
-                                    <div class="invalid-feedback">Please enter a valid card number</div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-half">
-                                    <label for="card-name" class="form-label">Cardholder Name</label>
-                                    <input type="text" id="card-name" class="form-control" placeholder="John Doe">
-                                    <div class="invalid-feedback">Please enter the cardholder name</div>
-                                </div>
-                                <div class="form-group col-half">
-                                    <label for="expiry-date" class="form-label">Expiry Date</label>
-                                    <input type="text" id="expiry-date" class="form-control" placeholder="MM/YY"
-                                        maxlength="5">
-                                    <div class="invalid-feedback">Please enter a valid expiry date</div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-third">
-                                    <label for="cvv" class="form-label">CVV</label>
-                                    <input type="text" id="cvv" class="form-control" placeholder="123"
-                                        maxlength="4">
-                                    <div class="invalid-feedback">Please enter a valid CVV</div>
-                                </div>
-                                <div class="form-group col-third">
-                                    <label for="postal-code" class="form-label">Postal Code</label>
-                                    <input type="text" id="postal-code" class="form-control" placeholder="12345">
-                                    <div class="invalid-feedback">Please enter your postal code</div>
+                                    <div id="card-errors" role="alert"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Billing Information -->
                     <div class="form-section">
+
                         <h3 class="form-section-title">
                             <i class="fas fa-file-invoice"></i> Billing Information
                         </h3>
+
                         <div class="form-row">
                             <div class="form-group col-half">
                                 <label for="first-name" class="form-label">First Name</label>
-                                <input type="text" id="first-name" class="form-control" placeholder="John">
-                                <div class="invalid-feedback">Please enter your first name</div>
+                                <input type="text" id="first-name" name="first_name" class="form-control"
+                                    placeholder="John" required value="{{ auth()->user()->firstname ?? '' }}">
                             </div>
                             <div class="form-group col-half">
                                 <label for="last-name" class="form-label">Last Name</label>
-                                <input type="text" id="last-name" class="form-control" placeholder="Doe">
-                                <div class="invalid-feedback">Please enter your last name</div>
+                                <input type="text" id="last-name" name="last_name" class="form-control" placeholder="Doe"
+                                    required value="{{ auth()->user()->lastname ?? '' }}">
                             </div>
                         </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="email" class="form-label">Email Address</label>
-                                <input type="email" id="email" class="form-control"
-                                    placeholder="john.doe@example.com">
-                                <div class="invalid-feedback">Please enter a valid email address</div>
+                                <input type="email" id="email" name="email" class="form-control"
+                                    placeholder="john.doe@example.com" required value="{{ auth()->user()->email ?? '' }}">
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="address" class="form-label">Address</label>
-                                <input type="text" id="address" class="form-control" placeholder="123 Main St">
-                                <div class="invalid-feedback">Please enter your address</div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-half">
-                                <label for="city" class="form-label">City</label>
-                                <input type="text" id="city" class="form-control" placeholder="New York">
-                                <div class="invalid-feedback">Please enter your city</div>
-                            </div>
-                            <div class="form-group col-half">
-                                <label for="country" class="form-label">Country</label>
-                                <select id="country" class="form-control">
-                                    <option value="">Select Country</option>
-                                    <option value="US">United States</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="UK">United Kingdom</option>
-                                    <option value="AU">Australia</option>
-                                    <option value="FR">France</option>
-                                    <option value="DE">Germany</option>
-                                    <option value="BR">Brazil</option>
-                                    <option value="JP">Japan</option>
-                                </select>
-                                <div class="invalid-feedback">Please select your country</div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-half">
-                                <label for="state" class="form-label">State/Province</label>
-                                <input type="text" id="state" class="form-control" placeholder="NY">
-                                <div class="invalid-feedback">Please enter your state/province</div>
-                            </div>
-                            <div class="form-group col-half">
-                                <label for="zip" class="form-label">ZIP/Postal Code</label>
-                                <input type="text" id="zip" class="form-control" placeholder="10001">
-                                <div class="invalid-feedback">Please enter your ZIP/postal code</div>
-                            </div>
-                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="phone" class="form-label">Phone Number</label>
-                                <input type="tel" id="phone" class="form-control"
-                                    placeholder="+1 (123) 456-7890">
-                                <div class="invalid-feedback">Please enter a valid phone number</div>
+                                <input type="tel" id="phone" name="phone" class="form-control"
+                                    placeholder="+1 (123) 456-7890" required>
                             </div>
+
                         </div>
                     </div>
 
-                    <!-- Terms and Conditions -->
                     <div class="form-section">
                         <div class="terms-checkbox">
-                            <input type="checkbox" id="terms" required>
+                            <input type="checkbox" id="terms" name="terms" required>
                             <label for="terms">
-                                I agree to the <a href="#" target="_blank">Terms and Conditions</a>, <a
-                                    href="#" target="_blank">Privacy Policy</a>, and <a href="#"
-                                    target="_blank">Refund Policy</a>. I understand that my personal information will be
+                                I agree to the <a href="#" target="_blank">Terms and Conditions</a>, <a href="#"
+                                    target="_blank">Privacy Policy</a>, and <a href="#" target="_blank">Refund
+                                    Policy</a>. I understand that my personal information will be
                                 processed as described in the Privacy Policy.
                             </label>
                         </div>
@@ -865,84 +799,83 @@
                 </form>
             </div>
 
-            <!-- Order Summary -->
             <div class="order-summary-container">
                 <div class="order-summary">
                     <h3 class="order-summary-title">Order Summary</h3>
 
-                    <div class="match-info-card">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <div class="team-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/3498db/ffffff?text=BRA')">
+                    @if ($tickets->isNotEmpty() && $tickets->first()->game)
+                        <div class="match-info-card">
+                            <div class="match-teams">
+
+                                <div class="match-team">
+                                    <div class="team-flag"
+                                        style="background-image: url('{{ $tickets->first()->game->homeTeam->flag ?? 'https://via.placeholder.com/60x40/3498db/ffffff?text=' . substr($tickets->first()->game->homeTeam->name, 0, 3) }}')">
+                                    </div>
+                                    <div class="team-name">{{ $tickets->first()->game->homeTeam->name }}</div>
                                 </div>
-                                <div class="team-name">Brazil</div>
+
+                                <div class="match-vs">VS</div>
+
+                                <div class="match-team">
+                                    <div class="team-flag"
+                                        style="background-image: url('{{ $tickets->first()->game->awayTeam->flag ?? 'https://via.placeholder.com/60x40/e74c3c/ffffff?text=' . substr($tickets->first()->game->awayTeam->name, 0, 3) }}')">
+                                    </div>
+                                    <div class="team-name">{{ $tickets->first()->game->awayTeam->name }}</div>
+                                </div>
+
                             </div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-team">
-                                <div class="team-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/e74c3c/ffffff?text=FRA')">
+
+                            <div class="match-details">
+
+                                <div class="match-details-item">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>{{ $tickets->first()->game->start_date }}</span>
                                 </div>
-                                <div class="team-name">France</div>
+
+                                <div class="match-details-item">
+                                    <i class="far fa-clock"></i>
+                                    <span>{{ $tickets->first()->game->start_hour }}</span>
+                                </div>
+
+                                <div class="match-details-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>{{ $tickets->first()->game->stadium->name }},
+                                        {{ $tickets->first()->game->stadium->city }}</span>
+                                </div>
+
                             </div>
                         </div>
-                        <div class="match-details">
-                            <div class="match-details-item">
-                                <i class="far fa-calendar-alt"></i>
-                                <span>June 15, 2030</span>
-                            </div>
-                            <div class="match-details-item">
-                                <i class="far fa-clock"></i>
-                                <span>18:00 GMT</span>
-                            </div>
-                            <div class="match-details-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Rio Stadium, Brazil</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
 
                     <div class="tickets-list">
-                        <div class="ticket-item">
-                            <div class="ticket-info">
-                                <div class="ticket-section">North Stand, Category 1</div>
-                                <div class="ticket-seat">Row 12, Seat 5</div>
+                        @foreach ($tickets as $ticket)
+                            <div class="ticket-item">
+                                <div class="ticket-info">
+                                    <div class="ticket-section">{{ $ticket->section }}</div>
+                                    <div class="ticket-seat">Seat {{ $ticket->place_number }}</div>
+                                </div>
+                                <div class="ticket-price">${{ number_format($ticket->price, 2) }}</div>
                             </div>
-                            <div class="ticket-price">$250.00</div>
-                        </div>
-                        <div class="ticket-item">
-                            <div class="ticket-info">
-                                <div class="ticket-section">North Stand, Category 1</div>
-                                <div class="ticket-seat">Row 12, Seat 6</div>
-                            </div>
-                            <div class="ticket-price">$250.00</div>
-                        </div>
-                    </div>
-
-                    <div class="promo-code">
-                        <h4 class="promo-code-title">Promo Code</h4>
-                        <div class="promo-code-form">
-                            <input type="text" class="promo-code-input" placeholder="Enter promo code">
-                            <button class="promo-code-btn">Apply</button>
-                        </div>
+                        @endforeach
                     </div>
 
                     <div class="order-totals">
+                        @php
+                            $subtotal = $tickets->sum('price');
+                            $serviceFee = $subtotal * 0.1;
+                            $total = $subtotal + $serviceFee;
+                        @endphp
                         <div class="order-total-item">
                             <div class="order-total-label">Subtotal</div>
-                            <div class="order-total-value">$500.00</div>
+                            <div class="order-total-value">${{ number_format($subtotal, 2) }}</div>
                         </div>
                         <div class="order-total-item">
                             <div class="order-total-label">Service Fee</div>
-                            <div class="order-total-value">$50.00</div>
-                        </div>
-                        <div class="order-total-item">
-                            <div class="order-total-label">Tax</div>
-                            <div class="order-total-value">$25.00</div>
+                            <div class="order-total-value">${{ number_format($serviceFee, 2) }}</div>
                         </div>
                         <div class="order-final-total">
                             <div class="order-final-label">Total</div>
-                            <div class="order-final-value">$575.00</div>
+                            <div class="order-final-value">${{ number_format($total, 2) }}</div>
                         </div>
                     </div>
                 </div>
@@ -950,27 +883,17 @@
         </div>
     </main>
 
-    <!-- Payment Success Modal -->
-    <div class="modal" id="success-modal">
-        <div class="modal-content">
-            <i class="fas fa-check-circle success-icon"></i>
-            <h2 class="modal-title">Payment Successful!</h2>
-            <p class="modal-text">
-                Thank you for your purchase. Your tickets have been confirmed and will be sent to your email shortly.
-            </p>
-            <div class="modal-actions">
-                <a href="#" class="btn btn-success">View My Tickets</a>
-                <a href="#" class="btn btn-outline">Back to Home</a>
-            </div>
-        </div>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" id="loading-spinner">
+        <div class="spinner"></div>
     </div>
 @endsection
 
 @section('js')
-    <!-- JavaScript -->
+    <script src="https://js.stripe.com/v3/"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
             const mobileMenuBtn = document.querySelector('.mobile-menu');
             const navLinks = document.querySelector('.nav-links');
 
@@ -978,127 +901,81 @@
                 mobileMenuBtn.addEventListener('click', function() {
                     navLinks.classList.toggle('active');
                 });
+
             }
 
-            // Payment method toggle
-            const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
-            const creditCardForm = document.getElementById('credit-card-form');
+            // Initialize Stripe
+            const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+            const elements = stripe.elements();
 
-            paymentMethods.forEach(method => {
-                method.addEventListener('change', function() {
-                    if (this.value === 'credit-card') {
-                        creditCardForm.style.display = 'block';
-                    } else {
-                        creditCardForm.style.display = 'none';
+            const cardElement = elements.create('card', {
+                style: {
+                    base: {
+                        color: '#32325d',
+                        fontFamily: '"Poppins", sans-serif',
+                        fontSmoothing: 'antialiased',
+                        fontSize: '16px',
+                        '::placeholder': {
+                            color: '#aab7c4'
+                        }
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a'
                     }
-                });
+                }
             });
 
-            // Credit card number formatting
-            const cardNumberInput = document.getElementById('card-number');
-            const cardTypeIcon = document.getElementById('card-type-icon');
+            cardElement.mount('#card-element');
 
-            if (cardNumberInput) {
-                cardNumberInput.addEventListener('input', function(e) {
-                    // Remove non-digit characters
-                    let value = this.value.replace(/\D/g, '');
+            // Handle validation errors
+            cardElement.addEventListener('change', function(event) {
+                const displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
 
-                    // Add spaces after every 4 digits
-                    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            // Handle form submission
+            const form = document.getElementById('payment-form');
+            const submitButton = document.getElementById('submit-payment');
+            const loadingSpinner = document.getElementById('loading-spinner');
 
-                    // Update input value
-                    this.value = value;
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
 
-                    // Detect card type
-                    const firstDigit = value.charAt(0);
-                    const firstTwoDigits = value.substring(0, 2);
+                submitButton.disabled = true;
+                loadingSpinner.classList.add('show');
 
-                    if (value.startsWith('4')) {
-                        cardTypeIcon.className = 'fab fa-cc-visa card-type-icon';
-                    } else if (value.startsWith('5')) {
-                        cardTypeIcon.className = 'fab fa-cc-mastercard card-type-icon';
-                    } else if (value.startsWith('3')) {
-                        cardTypeIcon.className = 'fab fa-cc-amex card-type-icon';
-                    } else if (value.startsWith('6')) {
-                        cardTypeIcon.className = 'fab fa-cc-discover card-type-icon';
-                    } else {
-                        cardTypeIcon.className = 'far fa-credit-card card-type-icon';
+                // Create payment method
+                const {
+                    paymentMethod,
+                    error
+                } = await stripe.createPaymentMethod({
+                    type: 'card',
+                    card: cardElement,
+                    billing_details: {
+                        name: document.getElementById('first-name').value + ' ' + document
+                            .getElementById(
+                                'last-name').value,
+                        email: document.getElementById('email').value
                     }
                 });
-            }
 
-            // Expiry date formatting
-            const expiryDateInput = document.getElementById('expiry-date');
+                if (error) {
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = error.message;
 
-            if (expiryDateInput) {
-                expiryDateInput.addEventListener('input', function(e) {
-                    // Remove non-digit characters
-                    let value = this.value.replace(/\D/g, '');
+                    loadingSpinner.classList.remove('show');
 
-                    // Add slash after month
-                    if (value.length > 2) {
-                        value = value.substring(0, 2) + '/' + value.substring(2);
-                    }
-
-                    // Update input value
-                    this.value = value;
-                });
-            }
-
-            // Form validation
-            const paymentForm = document.getElementById('payment-form');
-
-            if (paymentForm) {
-                paymentForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    // Simple validation
-                    let isValid = true;
-
-                    // Validate required fields
-                    const requiredFields = [
-                        'card-number', 'card-name', 'expiry-date', 'cvv',
-                        'first-name', 'last-name', 'email', 'address',
-                        'city', 'country', 'state', 'zip', 'phone'
-                    ];
-
-                    requiredFields.forEach(field => {
-                        const input = document.getElementById(field);
-                        if (input && !input.value.trim()) {
-                            input.classList.add('is-invalid');
-                            isValid = false;
-                        } else if (input) {
-                            input.classList.remove('is-invalid');
-                        }
-                    });
-
-                    // Validate terms checkbox
-                    const termsCheckbox = document.getElementById('terms');
-                    if (termsCheckbox && !termsCheckbox.checked) {
-                        isValid = false;
-                        alert('Please agree to the Terms and Conditions');
-                    }
-
-                    // If form is valid, show success modal
-                    if (isValid) {
-                        const successModal = document.getElementById('success-modal');
-                        if (successModal) {
-                            successModal.classList.add('show');
-                        }
-                    }
-                });
-            }
-
-            // Close modal when clicking outside
-            const modal = document.getElementById('success-modal');
-
-            if (modal) {
-                window.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.classList.remove('show');
-                    }
-                });
-            }
+                    submitButton.disabled = false;
+                } else {
+                    document.getElementById('payment_method_id').value = paymentMethod.id;
+                    form.submit();
+                }
+            });
         });
     </script>
 @endsection
