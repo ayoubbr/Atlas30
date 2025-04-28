@@ -345,7 +345,7 @@
             white-space: nowrap;
         }
 
-        .status-available {
+        .status-paid {
             background-color: var(--success-light);
             color: var(--success);
         }
@@ -355,14 +355,14 @@
             color: var(--primary);
         }
 
-        .status-reserved {
+        .status-used {
             background-color: var(--warning-light);
             color: var(--warning);
         }
 
         .status-canceled {
-            background-color: var(--danger-light);
-            color: var(--danger);
+            background-color: var(--gray-200);
+            color: var(--gray-600);
         }
 
         .ticket-actions {
@@ -838,137 +838,6 @@
             box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
         }
 
-        /* Ticket Seat Map */
-        .seat-map-container {
-            max-width: 100%;
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-
-        .seat-map {
-            position: relative;
-            width: 700px;
-            height: 400px;
-            margin: 0 auto;
-            background-color: var(--gray-100);
-            border-radius: var(--border-radius);
-            padding: 20px;
-        }
-
-        .stadium-outline {
-            position: absolute;
-            width: 600px;
-            height: 350px;
-            border: 3px solid var(--gray-400);
-            border-radius: 180px 180px 0 0;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .field {
-            position: absolute;
-            width: 400px;
-            height: 250px;
-            background-color: #7bb661;
-            border: 3px solid white;
-            border-radius: 120px 120px 0 0;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -45%);
-        }
-
-        .field-lines {
-            position: absolute;
-            width: 200px;
-            height: 125px;
-            border: 2px solid rgba(255, 255, 255, 0.7);
-            border-radius: 60px 60px 0 0;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -45%);
-        }
-
-        .seat-section {
-            position: absolute;
-            color: white;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .seat-section:hover {
-            filter: brightness(1.1);
-        }
-
-        .section-a {
-            width: 200px;
-            height: 40px;
-            background-color: var(--primary);
-            border-radius: 5px;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .section-b {
-            width: 40px;
-            height: 160px;
-            background-color: var(--info);
-            border-radius: 5px;
-            top: 120px;
-            left: 100px;
-            transform: rotate(-10deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .section-c {
-            width: 40px;
-            height: 160px;
-            background-color: var(--info);
-            border-radius: 5px;
-            top: 120px;
-            right: 100px;
-            transform: rotate(10deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .section-d {
-            width: 240px;
-            height: 40px;
-            background-color: var(--success);
-            border-radius: 5px;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .seat-legend {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.9rem;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-        }
-
         /* Responsive Styles */
         @media (max-width: 1200px) {
             .tickets-dashboard {
@@ -1067,636 +936,531 @@
 @section('content')
 @section('header-title', 'Ticket Management')
 
-    <main class="admin-main">
-        <div class="tickets-dashboard">
-            <div class="ticket-stats">
-                <div class="stat-card">
-                    <div class="stat-icon stat-icon-available">
-                        <i class="fas fa-ticket-alt"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ number_format($availableTickets) }}</div>
-                        <div class="stat-label">Available Tickets</div>
-                    </div>
-                    <i class="fas fa-ticket-alt stat-bg"></i>
+<main class="admin-main">
+    <div class="tickets-dashboard">
+        <div class="ticket-stats">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-available">
+                    <i class="fas fa-ticket-alt"></i>
                 </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon stat-icon-sold">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ number_format($soldTickets) }}</div>
-                        <div class="stat-label">Tickets Sold</div>
-                    </div>
-                    <i class="fas fa-shopping-cart stat-bg"></i>
+                <div class="stat-content">
+                    <div class="stat-value">{{ number_format($availableTickets) }}</div>
+                    <div class="stat-label">Available Tickets</div>
                 </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon stat-icon-reserved">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">{{ number_format($reservedTickets) }}</div>
-                        <div class="stat-label">Reserved Tickets</div>
-                    </div>
-                    <i class="fas fa-clock stat-bg"></i>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon stat-icon-revenue">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">${{ number_format($totalRevenue) }}</div>
-                        <div class="stat-label">Total Revenue</div>
-                    </div>
-                    <i class="fas fa-dollar-sign stat-bg"></i>
-                </div>
+                <i class="fas fa-ticket-alt stat-bg"></i>
             </div>
 
-            <div class="ticket-filters">
-                <form class="filters-form" id="filter-form">
-                    <div class="filter-group">
-                        <label for="match-filter" class="filter-label">Match</label>
-                        <select id="match-filter" class="filter-select">
-                            <option value="">All Matches</option>
-                            @foreach ($games as $game)
-                                <option value="{{ $game->id }}">{{ $game->homeTeam->name }} vs
-                                    {{ $game->awayTeam->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="category-filter" class="filter-label">Category</label>
-                        <select id="category-filter" class="filter-select">
-                            <option value="">All Categories</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="status-filter" class="filter-label">Status</label>
-                        <select id="status-filter" class="filter-select">
-                            <option value="">All Statuses</option>
-                            <option value="available">Available</option>
-                            <option value="sold">Sold</option>
-                            <option value="reserved">Reserved</option>
-                            <option value="canceled">Canceled</option>
-                        </select>
-                    </div>
-
-                    <div class="filters-actions">
-                        <button type="button" id="apply-filters" class="btn">
-                            <i class="fas fa-filter"></i> Apply Filters
-                        </button>
-                        <button type="reset" id="reset-filters" class="btn btn-outline">
-                            <i class="fas fa-times"></i> Clear
-                        </button>
-                    </div>
-                </form>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-sold">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value">{{ number_format($soldTickets) }}</div>
+                    <div class="stat-label">Tickets Sold</div>
+                </div>
+                <i class="fas fa-shopping-cart stat-bg"></i>
             </div>
 
-            <div class="ticket-management">
-                <div class="management-header">
-                    <h3 class="management-title">All Tickets</h3>
-                    <div class="management-actions">
-                        <button class="btn btn-outline" id="showSeatMap">
-                            <i class="fas fa-map"></i> Seat Map
-                        </button>
-                        <button class="btn" id="add-ticket-btn">
-                            <i class="fas fa-plus"></i> Add Tickets
-                        </button>
-                    </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-reserved">
+                    <i class="fas fa-clock"></i>
                 </div>
-
-                <div class="ticket-table-container">
-                    <table class="ticket-table">
-                        <thead>
-                            <tr>
-                                <th>Ticket ID</th>
-                                <th>Match</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Category</th>
-                                <th>Seat</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($tickets as $ticket)
-                                <tr data-ticket-id="{{ $ticket->id }}" data-game="{{ $ticket->game_id }}"
-                                    data-category="{{ $ticket->category_id }}" data-status="{{ $ticket->status }}">
-                                   
-                                    <td><span class="ticket-id">TKT-{{ $ticket->id }}</span></td>
-                                    <td>
-                                        <div class="ticket-match">
-                                            <div class="ticket-flags">
-                                                <div class="ticket-flag"
-                                                    style="background-image: url('{{ asset($ticket->game->homeTeam->flag) }}')">
-                                                </div>
-                                                <div class="ticket-flag"
-                                                    style="background-image: url('{{ asset($ticket->game->awayTeam->flag) }}')">
-                                                </div>
-                                            </div>
-                                            {{ $ticket->game->homeTeam->name }} vs {{ $ticket->game->awayTeam->name }}
-                                        </div>
-                                    </td>
-                                    <td>{{ date('M j, Y', strtotime($ticket->game->start_date)) }}</td>
-                                    <td>{{ date('g:i A', strtotime($ticket->game->start_hour)) }}</td>
-                                    <td>{{ $ticket->category->title }}</td>
-                                    <td>{{ $ticket->place_number }}</td>
-                                    <td class="ticket-price">${{ number_format($ticket->price) }}</td>
-                                    <td><span
-                                            class="ticket-status status-{{ $ticket->status }}">{{ ucfirst($ticket->status) }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="ticket-actions">
-                                            <div class="action-icon action-icon-edit edit-ticket-btn"
-                                                data-id="{{ $ticket->id }}" data-game="{{ $ticket->game_id }}"
-                                                data-user="{{ $ticket->user_id }}" data-price="{{ $ticket->price }}"
-                                                data-place="{{ $ticket->place_number }}"
-                                                data-status="{{ $ticket->status }}"
-                                                data-category="{{ $ticket->category_id }}">
-                                                <i class="fas fa-edit"></i>
-                                            </div>
-                                            <div class="action-icon action-icon-delete delete-ticket-btn"
-                                                data-id="{{ $ticket->id }}">
-                                                <i class="fas fa-trash"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="10" style="text-align: center; padding: 30px;">
-                                        No tickets found. Try adjusting your filters or add new tickets.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                <div class="stat-content">
+                    <div class="stat-value">{{ number_format($reservedTickets) }}</div>
+                    <div class="stat-label">Reserved Tickets</div>
                 </div>
+                <i class="fas fa-clock stat-bg"></i>
             </div>
 
-            <div class="tickets-pagination">
-                <div class="pagination">
-                    @if ($tickets->hasPages())
-                        <div class="pagination-container">
-                            <ul class="pagination">
-                                @if ($tickets->onFirstPage())
-                                    <li class="page-item disabled">
-                                        <span class="page-link">&laquo;</span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a href="{{ $tickets->previousPageUrl() }}" class="page-link">&laquo;</a>
-                                    </li>
-                                @endif
-
-                                @foreach ($tickets->getUrlRange(1, $tickets->lastPage()) as $page => $url)
-                                    @if ($page == $tickets->currentPage())
-                                        <li class="page-item active">
-                                            <span class="page-link">{{ $page }}</span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a href="{{ $url }}" class="page-link">{{ $page }}</a>
-                                        </li>
-                                    @endif
-                                @endforeach
-
-                                @if ($tickets->hasMorePages())
-                                    <li class="page-item">
-                                        <a href="{{ $tickets->nextPageUrl() }}" class="page-link">&raquo;</a>
-                                    </li>
-                                @else
-                                    <li class="page-item disabled">
-                                        <span class="page-link">&raquo;</span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </div>
-                    @endif
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-revenue">
+                    <i class="fas fa-dollar-sign"></i>
                 </div>
-            </div>
-
-            <div class="ticket-categories">
-                <div class="management-header">
-                    <h3 class="management-title">Ticket Categories</h3>
+                <div class="stat-content">
+                    <div class="stat-value">${{ number_format($totalRevenue) }}</div>
+                    <div class="stat-label">Total Revenue</div>
                 </div>
-
-                <div class="ticket-table-container">
-                    <table class="categories-table">
-                        <thead>
-                            <tr>
-                                <th>Category</th>
-                                <th>Base Price</th>
-                                <th>Availability</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($categories as $category)
-                                <tr>
-                                    <td>
-                                        <span class="category-color" style="background-color: var(--primary);"></span>
-                                        <span class="category-name">{{ $category->title }}</span>
-                                    </td>
-                                    <td class="category-price">${{ number_format($category->price ?? 0) }}</td>
-                                    <td>
-                                        <div class="category-availability">
-                                            <div class="availability-indicator indicator-available">
-                                                <i class="fas fa-circle"></i>
-                                                {{ number_format($categoryStats[$category->id]['available'] ?? 0) }}
-                                            </div>
-                                            <div class="availability-indicator indicator-sold">
-                                                <i class="fas fa-circle"></i>
-                                                {{ number_format($categoryStats[$category->id]['sold'] ?? 0) }}
-                                            </div>
-                                            <div class="availability-indicator indicator-reserved">
-                                                <i class="fas fa-circle"></i>
-                                                {{ number_format($categoryStats[$category->id]['reserved'] ?? 0) }}
-                                            </div>
-                                            <div class="availability-indicator indicator-cancelled">
-                                                <i class="fas fa-circle"></i>
-                                                {{ number_format($categoryStats[$category->id]['cancelled'] ?? 0) }}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                <i class="fas fa-dollar-sign stat-bg"></i>
             </div>
         </div>
-    </main>
+
+        <div class="ticket-filters">
+            <form class="filters-form" id="filter-form">
+                <div class="filter-group">
+                    <label for="match-filter" class="filter-label">Match</label>
+                    <select id="match-filter" class="filter-select">
+                        <option value="">All Matches</option>
+                        @foreach ($games as $game)
+                            <option value="{{ $game->id }}">{{ $game->homeTeam->name }} vs
+                                {{ $game->awayTeam->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="status-filter" class="filter-label">Status</label>
+                    <select id="status-filter" class="filter-select">
+                        <option value="">All Statuses</option>
+                        <option value="available">Available</option>
+                        <option value="sold">Sold</option>
+                        <option value="reserved">Reserved</option>
+                        <option value="canceled">Canceled</option>
+                    </select>
+                </div>
+
+                <div class="filters-actions">
+                    <button type="button" id="apply-filters" class="btn">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <button type="reset" id="reset-filters" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="ticket-management">
+            <div class="management-header">
+                <h3 class="management-title">All Tickets</h3>
+                <div class="management-actions">
+                    <button class="btn" id="add-ticket-btn">
+                        <i class="fas fa-plus"></i> Add Tickets
+                    </button>
+                </div>
+            </div>
+
+            <div class="ticket-table-container">
+                <table class="ticket-table">
+                    <thead>
+                        <tr>
+                            <th>Ticket ID</th>
+                            <th>Match</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Section</th>
+                            <th>Seat</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($tickets as $ticket)
+                            <tr data-ticket-id="{{ $ticket->id }}" data-game="{{ $ticket->game_id }}"
+                                data-category="{{ $ticket->section }}" data-status="{{ $ticket->status }}">
+
+                                <td><span class="ticket-id">TKT-{{ $ticket->id }}</span></td>
+                                <td>
+                                    <div class="ticket-match">
+                                        <div class="ticket-flags">
+                                            <div class="ticket-flag"
+                                                style="background-image: url('{{ asset($ticket->game->homeTeam->flag) }}')">
+                                            </div>
+                                            <div class="ticket-flag"
+                                                style="background-image: url('{{ asset($ticket->game->awayTeam->flag) }}')">
+                                            </div>
+                                        </div>
+                                        {{ $ticket->game->homeTeam->name }} vs {{ $ticket->game->awayTeam->name }}
+                                    </div>
+                                </td>
+                                <td>{{ date('M j, Y', strtotime($ticket->game->start_date)) }}</td>
+                                <td>{{ date('g:i A', strtotime($ticket->game->start_hour)) }}</td>
+                                <td>{{ $ticket->section }}</td>
+                                <td>{{ $ticket->place_number }}</td>
+                                <td class="ticket-price">${{ number_format($ticket->price) }}</td>
+                                <td><span
+                                        class="ticket-status status-{{ $ticket->status }}">{{ ucfirst($ticket->status) }}</span>
+                                </td>
+                                <td>
+                                    <div class="ticket-actions">
+                                        <div class="action-icon action-icon-edit edit-ticket-btn"
+                                            data-id="{{ $ticket->id }}" data-game="{{ $ticket->game_id }}"
+                                            data-user="{{ $ticket->user_id }}" data-price="{{ $ticket->price }}"
+                                            data-place="{{ $ticket->place_number }}"
+                                            data-status="{{ $ticket->status }}"
+                                            data-category="{{ $ticket->section }}">
+                                            <i class="fas fa-edit"></i>
+                                        </div>
+                                        <div class="action-icon action-icon-delete delete-ticket-btn"
+                                            data-id="{{ $ticket->id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="10" style="text-align: center; padding: 30px;">
+                                    No tickets found. Try adjusting your filters or add new tickets.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tickets-pagination">
+            <div class="pagination">
+                @if ($tickets->hasPages())
+                    <div class="pagination-container">
+                        <ul class="pagination">
+                            @if ($tickets->onFirstPage())
+                                <li class="page-item disabled">
+                                    <span class="page-link">&laquo;</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a href="{{ $tickets->previousPageUrl() }}" class="page-link">&laquo;</a>
+                                </li>
+                            @endif
+
+                            @foreach ($tickets->getUrlRange(1, $tickets->lastPage()) as $page => $url)
+                                @if ($page == $tickets->currentPage())
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ $page }}</span>
+                                    </li>
+                                @else
+                                    <li class="page-item">
+                                        <a href="{{ $url }}" class="page-link">{{ $page }}</a>
+                                    </li>
+                                @endif
+                            @endforeach
+
+                            @if ($tickets->hasMorePages())
+                                <li class="page-item">
+                                    <a href="{{ $tickets->nextPageUrl() }}" class="page-link">&raquo;</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <span class="page-link">&raquo;</span>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</main>
 @endsection
 
 @section('modal')
-    <!-- Add/Edit Ticket Modal -->
-    <div class="modal-backdrop" id="ticketModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">Add New Ticket</h3>
-                <div class="modal-close" id="closeTicketModal">
-                    <i class="fas fa-times"></i>
-                </div>
-            </div>
-            <div class="modal-body">
-                <form id="ticket-form" method="POST" action="{{ route('admin.tickets.store') }}">
-                    @csrf
-                    <input type="hidden" name="_method" id="form-method" value="POST">
-
-                    <div class="form-group">
-                        <label for="game_id" class="form-label">Match</label>
-                        <select id="game_id" name="game_id" class="form-control" required>
-                            <option value="">Select Match</option>
-                            @foreach ($games as $game)
-                                <option value="{{ $game->id }}">{{ $game->homeTeam->name }} vs
-                                    {{ $game->awayTeam->name }} - {{ date('M j, Y', strtotime($game->start_date)) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="user_id" class="form-label">User</label>
-                        <select id="user_id" name="user_id" class="form-control">
-                            <option value="">Select User</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->firstname }} {{ $user->lastname }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="category_id" class="form-label">Category</label>
-                        <select id="category_id" name="category_id" class="form-control" required>
-                            <option value="">Select Category</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->title }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-row" style="display: flex; gap: 15px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label for="place_number" class="form-label">Seat Number</label>
-                            <input type="number" id="place_number" name="place_number" class="form-control"
-                                min="1" required>
-                        </div>
-                        <div class="form-group" style="flex: 1;">
-                            <label for="price" class="form-label">Price ($)</label>
-                            <input type="number" id="price" name="price" class="form-control" min="0"
-                                required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status" class="form-label">Status</label>
-                        <select id="status" name="status" class="form-control" required>
-                            <option value="available">Available</option>
-                            <option value="sold">Sold</option>
-                            <option value="reserved">Reserved</option>
-                            <option value="canceled">Canceled</option>
-                        </select>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline" id="cancel-ticket-btn">Cancel</button>
-                        <button type="submit" class="btn">Save Ticket</button>
-                    </div>
-                </form>
+<!-- Add/Edit Ticket Modal -->
+<div class="modal-backdrop" id="ticketModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Add New Ticket</h3>
+            <div class="modal-close" id="closeTicketModal">
+                <i class="fas fa-times"></i>
             </div>
         </div>
-    </div>
+        <div class="modal-body">
+            <form id="ticket-form" method="POST" action="{{ route('admin.tickets.store') }}">
+                @csrf
+                <input type="hidden" name="_method" id="form-method" value="POST">
 
-    <!-- Delete Confirmation Modal -->
-    <div class="modal-backdrop" id="deleteModal">
-        <div class="modal" style="max-width: 400px;">
-            <div class="modal-header">
-                <h3 class="modal-title">Confirm Delete</h3>
-                <div class="modal-close" id="closeDeleteModal">
-                    <i class="fas fa-times"></i>
-                </div>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this ticket? This action cannot be undone.</p>
-                <form id="delete-form" method="POST" action="">
-                    @csrf
-                    @method('DELETE')
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline" id="cancel-delete-btn">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Delete Ticket</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Seat Map Modal -->
-    <div class="modal-backdrop" id="seatMapModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3 class="modal-title">Stadium Seat Map</h3>
-                <div class="modal-close" id="closeSeatMap">
-                    <i class="fas fa-times"></i>
-                </div>
-            </div>
-            <div class="modal-body">
-                <div class="seat-map-container">
-                    <div class="seat-map">
-                        <div class="stadium-outline"></div>
-                        <div class="field">
-                            <div class="field-lines"></div>
-                        </div>
-                        <div class="seat-section section-a">Section A (Category 1)</div>
-                        <div class="seat-section section-b">Section B (Category 2)</div>
-                        <div class="seat-section section-c">Section C (Category 2)</div>
-                        <div class="seat-section section-d">Section D (Category 3)</div>
-                    </div>
-                    <div class="seat-legend">
-                        @foreach ($categories as $category)
-                            <div class="legend-item">
-                                <div class="legend-color" style="background-color: var(--primary);"></div>
-                                <span>{{ $category->title }}</span>
-                            </div>
+                <div class="form-group">
+                    <label for="game_id" class="form-label">Match</label>
+                    <select id="game_id" name="game_id" class="form-control" required>
+                        <option value="">Select Match</option>
+                        @foreach ($games as $game)
+                            <option value="{{ $game->id }}">{{ $game->homeTeam->name }} vs
+                                {{ $game->awayTeam->name }} - {{ date('M j, Y', strtotime($game->start_date)) }}
+                            </option>
                         @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="user_id" class="form-label">User</label>
+                    <select id="user_id" name="user_id" class="form-control">
+                        <option value="">Select User</option>
+                        @foreach ($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->firstname }} {{ $user->lastname }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="category_id" class="form-label">Category</label>
+                    <select id="category_id" name="section" class="form-control" required>
+                        <option value="">Select Category</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category }}">{{ ucfirst($category) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="place_number" class="form-label">Seat Number</label>
+                        <input type="number" id="place_number" name="place_number" class="form-control"
+                            min="1" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="price" class="form-label">Price ($)</label>
+                        <input type="number" id="price" name="price" class="form-control" min="0"
+                            required>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="closeSeatMapBtn">Close</button>
-                <button class="btn">Edit Seat Map</button>
-            </div>
+
+                <div class="form-group">
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" class="form-control" required>
+                        <option value="available">Available</option>
+                        <option value="sold">Sold</option>
+                        <option value="reserved">Reserved</option>
+                        <option value="canceled">Canceled</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-ticket-btn">Cancel</button>
+                    <button type="submit" class="btn">Save Ticket</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-backdrop" id="deleteModal">
+    <div class="modal" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Delete</h3>
+            <div class="modal-close" id="closeDeleteModal">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete this ticket? This action cannot be undone.</p>
+            <form id="delete-form" method="POST" action="">
+                @csrf
+                @method('DELETE')
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-delete-btn">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Delete Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const addTicketBtn = document.getElementById('add-ticket-btn');
-            const ticketModal = document.getElementById('ticketModal');
-            const closeTicketModal = document.getElementById('closeTicketModal');
-            const cancelTicketBtn = document.getElementById('cancel-ticket-btn');
-            const ticketForm = document.getElementById('ticket-form');
-            const deleteModal = document.getElementById('deleteModal');
-            const closeDeleteModal = document.getElementById('closeDeleteModal');
-            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-            const deleteForm = document.getElementById('delete-form');
-           const seatMapModal = document.getElementById('seatMapModal');
-            const closeSeatMap = document.getElementById('closeSeatMap');
-            const closeSeatMapBtn = document.getElementById('closeSeatMapBtn');
-            const showSeatMap = document.getElementById('showSeatMap');
-            const selectAll = document.getElementById('selectAll');
-            const ticketChecks = document.querySelectorAll('.ticket-check');
-            const selectedCount = document.getElementById('selectedCount');
-            const applyFiltersBtn = document.getElementById('apply-filters');
-            const resetFiltersBtn = document.getElementById('reset-filters');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addTicketBtn = document.getElementById('add-ticket-btn');
+        const ticketModal = document.getElementById('ticketModal');
+        const closeTicketModal = document.getElementById('closeTicketModal');
+        const cancelTicketBtn = document.getElementById('cancel-ticket-btn');
+        const ticketForm = document.getElementById('ticket-form');
+        const deleteModal = document.getElementById('deleteModal');
+        const closeDeleteModal = document.getElementById('closeDeleteModal');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const deleteForm = document.getElementById('delete-form');
+        const seatMapModal = document.getElementById('seatMapModal');
+        const closeSeatMap = document.getElementById('closeSeatMap');
+        const closeSeatMapBtn = document.getElementById('closeSeatMapBtn');
+        const showSeatMap = document.getElementById('showSeatMap');
+        const selectAll = document.getElementById('selectAll');
+        const ticketChecks = document.querySelectorAll('.ticket-check');
+        const selectedCount = document.getElementById('selectedCount');
+        const applyFiltersBtn = document.getElementById('apply-filters');
+        const resetFiltersBtn = document.getElementById('reset-filters');
 
-            // Add event listeners for all edit buttons
-            document.querySelectorAll('.edit-ticket-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    openEditTicketModal(this);
+        // Add event listeners for all edit buttons
+        document.querySelectorAll('.edit-ticket-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                openEditTicketModal(this);
+            });
+        });
+
+        // Add event listeners for all delete buttons
+        document.querySelectorAll('.delete-ticket-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const ticketId = this.getAttribute('data-id');
+                openDeleteModal(ticketId);
+            });
+        });
+
+        // Event Listeners
+        addTicketBtn.addEventListener('click', function() {
+            openAddTicketModal();
+        });
+
+        closeTicketModal.addEventListener('click', function() {
+            closeModal(ticketModal);
+        });
+
+        cancelTicketBtn.addEventListener('click', function() {
+            closeModal(ticketModal);
+        });
+
+        closeDeleteModal.addEventListener('click', function() {
+            closeModal(deleteModal);
+        });
+
+        cancelDeleteBtn.addEventListener('click', function() {
+            closeModal(deleteModal);
+        });
+
+        if (showSeatMap && seatMapModal) {
+            showSeatMap.addEventListener('click', function() {
+                openModal(seatMapModal);
+            });
+
+            if (closeSeatMap) {
+                closeSeatMap.addEventListener('click', function() {
+                    closeModal(seatMapModal);
                 });
-            });
+            }
 
-            // Add event listeners for all delete buttons
-            document.querySelectorAll('.delete-ticket-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const ticketId = this.getAttribute('data-id');
-                    openDeleteModal(ticketId);
+            if (closeSeatMapBtn) {
+                closeSeatMapBtn.addEventListener('click', function() {
+                    closeModal(seatMapModal);
                 });
-            });
+            }
 
-            // Event Listeners
-            addTicketBtn.addEventListener('click', function() {
-                openAddTicketModal();
-            });
-
-            closeTicketModal.addEventListener('click', function() {
-                closeModal(ticketModal);
-            });
-
-            cancelTicketBtn.addEventListener('click', function() {
-                closeModal(ticketModal);
-            });
-
-            closeDeleteModal.addEventListener('click', function() {
-                closeModal(deleteModal);
-            });
-
-            cancelDeleteBtn.addEventListener('click', function() {
-                closeModal(deleteModal);
-            });
-
-            if (showSeatMap && seatMapModal) {
-                showSeatMap.addEventListener('click', function() {
-                    openModal(seatMapModal);
-                });
-
-                if (closeSeatMap) {
-                    closeSeatMap.addEventListener('click', function() {
-                        closeModal(seatMapModal);
-                    });
+            // Close on click outside
+            seatMapModal.addEventListener('click', function(e) {
+                if (e.target === seatMapModal) {
+                    closeModal(seatMapModal);
                 }
-
-                if (closeSeatMapBtn) {
-                    closeSeatMapBtn.addEventListener('click', function() {
-                        closeModal(seatMapModal);
-                    });
-                }
-
-                // Close on click outside
-                seatMapModal.addEventListener('click', function(e) {
-                    if (e.target === seatMapModal) {
-                        closeModal(seatMapModal);
-                    }
-                });
-            }
+            });
+        }
 
 
-            // Filters
-            if (applyFiltersBtn) {
-                applyFiltersBtn.addEventListener('click', function() {
-                    filterTickets();
-                });
-            }
+        // Filters
+        if (applyFiltersBtn) {
+            applyFiltersBtn.addEventListener('click', function() {
+                filterTickets();
+            });
+        }
 
-            if (resetFiltersBtn) {
-                resetFiltersBtn.addEventListener('click', function() {
-                    resetFilters();
-                });
-            }
+        if (resetFiltersBtn) {
+            resetFiltersBtn.addEventListener('click', function() {
+                resetFilters();
+            });
+        }
 
-            // Functions
-            function openAddTicketModal() {
-                ticketForm.reset();
-                document.getElementById('form-method').value = 'POST';
-                document.getElementById('modal-title').textContent = 'Add New Ticket';
-                ticketForm.action = "{{ route('admin.tickets.store') }}";
+        // Functions
+        function openAddTicketModal() {
+            ticketForm.reset();
+            document.getElementById('form-method').value = 'POST';
+            document.getElementById('modal-title').textContent = 'Add New Ticket';
+            ticketForm.action = "{{ route('admin.tickets.store') }}";
 
-                openModal(ticketModal);
-            }
+            openModal(ticketModal);
+        }
 
-            function openEditTicketModal(button) {
-                const ticketId = button.getAttribute('data-id');
-                const gameId = button.getAttribute('data-game');
-                const userId = button.getAttribute('data-user');
-                const price = button.getAttribute('data-price');
-                const placeNumber = button.getAttribute('data-place');
-                const status = button.getAttribute('data-status');
-                const categoryId = button.getAttribute('data-category');
+        function openEditTicketModal(button) {
+            const ticketId = button.getAttribute('data-id');
+            const gameId = button.getAttribute('data-game');
+            const userId = button.getAttribute('data-user');
+            const price = button.getAttribute('data-price');
+            const placeNumber = button.getAttribute('data-place');
+            const status = button.getAttribute('data-status');
+            const categoryId = button.getAttribute('data-category');
 
-                document.getElementById('form-method').value = 'PUT';
-                document.getElementById('modal-title').textContent = 'Edit Ticket';
-                ticketForm.action = "{{ url('admin/tickets') }}/" + ticketId;
+            document.getElementById('form-method').value = 'PUT';
+            document.getElementById('modal-title').textContent = 'Edit Ticket';
+            ticketForm.action = "{{ url('admin/tickets') }}/" + ticketId;
 
-                document.getElementById('game_id').value = gameId;
-                document.getElementById('user_id').value = userId;
-                document.getElementById('price').value = price;
-                document.getElementById('place_number').value = placeNumber;
-                document.getElementById('status').value = status;
-                document.getElementById('category_id').value = categoryId;
+            document.getElementById('game_id').value = gameId;
+            document.getElementById('user_id').value = userId;
+            document.getElementById('price').value = price;
+            document.getElementById('place_number').value = placeNumber;
+            document.getElementById('status').value = status;
+            document.getElementById('category_id').value = categoryId;
 
-                openModal(ticketModal);
-            }
+            openModal(ticketModal);
+        }
 
-            function openDeleteModal(ticketId) {
-                // Set the form action for delete
-                deleteForm.action = "{{ url('admin/tickets') }}/" + ticketId;
+        function openDeleteModal(ticketId) {
+            // Set the form action for delete
+            deleteForm.action = "{{ url('admin/tickets') }}/" + ticketId;
 
-                // Show modal
-                openModal(deleteModal);
-            }
+            // Show modal
+            openModal(deleteModal);
+        }
 
 
-            function getSelectedTickets() {
-                return Array.from(document.querySelectorAll('.ticket-check:checked')).map(check => check.value);
-            }
+        function getSelectedTickets() {
+            return Array.from(document.querySelectorAll('.ticket-check:checked')).map(check => check.value);
+        }
 
-            function filterTickets() {
-                const gameFilter = document.getElementById('match-filter').value;
-                const categoryFilter = document.getElementById('category-filter').value;
-                const statusFilter = document.getElementById('status-filter').value;
+        function filterTickets() {
+            const gameFilter = document.getElementById('match-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
 
-                const rows = document.querySelectorAll('.ticket-table tbody tr');
+            const rows = document.querySelectorAll('.ticket-table tbody tr');
 
-                rows.forEach(row => {
-                    const gameId = row.getAttribute('data-game');
-                    const categoryId = row.getAttribute('data-category');
-                    const status = row.getAttribute('data-status');
+            rows.forEach(row => {
+                const gameId = row.getAttribute('data-game');
+                const status = row.getAttribute('data-status');
 
-                    const gameMatch = !gameFilter || gameId === gameFilter;
-                    const categoryMatch = !categoryFilter || categoryId === categoryFilter;
-                    const statusMatch = !statusFilter || status === statusFilter;
+                const gameMatch = !gameFilter || gameId === gameFilter;
+                const statusMatch = !statusFilter || status === statusFilter;
 
-                    // Date filtering would require additional logic to match with the game date
+                // Date filtering would require additional logic to match with the game date
 
-                    if (gameMatch && categoryMatch && statusMatch) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-                // Check if no tickets are visible
-                checkNoTickets();
-            }
-
-            function resetFilters() {
-                document.getElementById('match-filter').value = '';
-                document.getElementById('date-filter').value = '';
-                document.getElementById('category-filter').value = '';
-                document.getElementById('status-filter').value = '';
-
-                // Show all tickets
-                const rows = document.querySelectorAll('.ticket-table tbody tr');
-                rows.forEach(row => {
+                if (gameMatch && statusMatch) {
                     row.style.display = '';
-                });
+                } else {
+                    row.style.display = 'none';
+                }
+            });
 
-                // Remove no tickets message if it exists
+            // Check if no tickets are visible
+            checkNoTickets();
+        }
+
+        function resetFilters() {
+            document.getElementById('match-filter').value = '';
+            document.getElementById('status-filter').value = '';
+
+            // Show all tickets
+            const rows = document.querySelectorAll('.ticket-table tbody tr');
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+
+            // Remove no tickets message if it exists
+            const noTicketsRow = document.querySelector('.no-tickets-row');
+            if (noTicketsRow) {
+                noTicketsRow.remove();
+            }
+        }
+
+        function checkNoTickets() {
+            const visibleRows = Array.from(document.querySelectorAll('.ticket-table tbody tr')).filter(row =>
+                row.style.display !== 'none');
+
+            if (visibleRows.length === 0 && !document.querySelector('.no-tickets-row')) {
+                const tbody = document.querySelector('.ticket-table tbody');
+                const noTicketsRow = document.createElement('tr');
+                noTicketsRow.className = 'no-tickets-row';
+                noTicketsRow.innerHTML =
+                    '<td colspan="10" style="text-align: center; padding: 30px;">No tickets found. Try adjusting your filters.</td>';
+                tbody.appendChild(noTicketsRow);
+            } else if (visibleRows.length > 0) {
                 const noTicketsRow = document.querySelector('.no-tickets-row');
                 if (noTicketsRow) {
                     noTicketsRow.remove();
                 }
             }
+        }
 
-            function checkNoTickets() {
-                const visibleRows = Array.from(document.querySelectorAll('.ticket-table tbody tr')).filter(row =>
-                    row.style.display !== 'none');
+        function openModal(modal) {
+            modal.classList.add('show');
+        }
 
-                if (visibleRows.length === 0 && !document.querySelector('.no-tickets-row')) {
-                    const tbody = document.querySelector('.ticket-table tbody');
-                    const noTicketsRow = document.createElement('tr');
-                    noTicketsRow.className = 'no-tickets-row';
-                    noTicketsRow.innerHTML =
-                        '<td colspan="10" style="text-align: center; padding: 30px;">No tickets found. Try adjusting your filters.</td>';
-                    tbody.appendChild(noTicketsRow);
-                } else if (visibleRows.length > 0) {
-                    const noTicketsRow = document.querySelector('.no-tickets-row');
-                    if (noTicketsRow) {
-                        noTicketsRow.remove();
-                    }
-                }
-            }
-
-            function openModal(modal) {
-                modal.classList.add('show');
-            }
-
-            function closeModal(modal) {
-                modal.classList.remove('show');
-            }
-        });
-    </script>
+        function closeModal(modal) {
+            modal.classList.remove('show');
+        }
+    });
+</script>
 @endsection

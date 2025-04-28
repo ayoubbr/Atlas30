@@ -21,7 +21,9 @@ class TicketController extends Controller
         $availableTickets = Ticket::where('status', 'available')->count();
         $soldTickets = Ticket::where('status', 'sold')->count();
         $reservedTickets = Ticket::where('status', 'reserved')->count();
-        $totalRevenue = Ticket::where('status', 'sold')->sum('price');
+        $totalRevenue = Ticket::where('status', 'used')->orWhere('status', 'paid')->sum('price');
+        $categories = ['regular', 'premium', 'standard', 'vip'];
+
 
         return view('admin.tickets', compact(
             'tickets',
@@ -31,6 +33,7 @@ class TicketController extends Controller
             'soldTickets',
             'reservedTickets',
             'totalRevenue',
+            'categories'
         ));
     }
 
@@ -50,6 +53,7 @@ class TicketController extends Controller
         $ticket->price = $request->price;
         $ticket->place_number = $request->place_number;
         $ticket->status = $request->status;
+        $ticket->section = $request->section;
         $ticket->save();
 
         return redirect()->route('admin.tickets.index')
@@ -73,6 +77,7 @@ class TicketController extends Controller
         $ticket->price = $request->price;
         $ticket->place_number = $request->place_number;
         $ticket->status = $request->status;
+        $ticket->section = $request->section;
         $ticket->save();
 
         return redirect()->route('admin.tickets.index')

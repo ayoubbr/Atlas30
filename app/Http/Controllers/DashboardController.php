@@ -33,7 +33,7 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        $recentForumActivity = Post::with(['user', '    '])
+        $recentForumActivity = Post::with(['user'])
             ->latest()
             ->take(4)
             ->get();
