@@ -341,7 +341,8 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar">
-                <img src="https://cdn-icons-png.flaticon.com/128/3177/3177465.png" alt="{{ $user->firstname }} Avatar">
+                <img src="{{ $user->image ?? 'https://cdn-icons-png.flaticon.com/128/3177/3177465.png' }}"
+                    alt="{{ $user->firstname }} Avatar">
             </div>
             <div class="profile-info">
                 <h1 class="profile-name">{{ $user->firstname }} {{ $user->lastname }}</h1>
@@ -401,16 +402,16 @@
                                         {{ $ticket->game->stadium->city }}</div>
                                     <div class="ticket-details">
                                         <div class="ticket-detail">
-                                            <i class="far fa-calendar-alt"></i> {{ $ticket->game->date }}
+                                            <i class="far fa-calendar-alt"></i> {{ $ticket->game->start_date }}
                                         </div>
                                         <div class="ticket-detail">
-                                            <i class="far fa-clock"></i> {{ $ticket->game->time }}
+                                            <i class="far fa-clock"></i> {{ $ticket->game->start_hour }}
                                         </div>
                                         <div class="ticket-detail">
                                             <i class="fas fa-ticket-alt"></i> {{ $ticket->section }}
                                         </div>
                                         <div class="ticket-detail">
-                                            <i class="fas fa-chair"></i> Seat: {{ $ticket->seat_number }}
+                                            <i class="fas fa-chair"></i> Seat: {{ $ticket->place_number }}
                                         </div>
                                     </div>
                                 </div>

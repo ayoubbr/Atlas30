@@ -49,7 +49,7 @@ class ProfileController extends Controller
             $activities->push([
                 'type' => 'post',
                 'icon' => 'comment',
-                'title' => 'Posted in "' . $post->topic . '" forum',
+                'title' => 'Posted in "' . $post->title . '" forum',
                 'time' => $post->created_at,
             ]);
         }
@@ -67,9 +67,6 @@ class ProfileController extends Controller
             'lastname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:2',
-            'language' => 'nullable|string|max:2',
-            'bio' => 'nullable|string|max:500',
         ]);
 
         $user = Auth::user();
@@ -77,9 +74,6 @@ class ProfileController extends Controller
         $user->lastname = $request->lastname;
         $user->email = $request->email;
         $user->phone = $request->phone;
-        $user->country = $request->country;
-        $user->language = $request->language;
-        $user->bio = $request->bio;
         $user->save();
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully!');

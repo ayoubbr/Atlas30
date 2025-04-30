@@ -9,7 +9,7 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'group_id', 'content'];
+    protected $fillable = ['user_id', 'group_id', 'title', 'content', 'is_pinned'];
 
 
     public function user()
@@ -30,5 +30,10 @@ class Post extends Model
     public function likes()
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function isLikedByUser($userId)
+    {
+        return $this->likes()->where('user_id', $userId)->exists();
     }
 }

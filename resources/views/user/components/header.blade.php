@@ -9,7 +9,7 @@
                 <li><a href="{{ route('games') }}" class="{{ Request::routeIs('games') ? 'active' : '' }}">Games</a></li>
                 <li><a href="{{ route('teams') }}" class="{{ Request::routeIs('teams') ? 'active' : '' }}">Teams</a>
                 </li>
-                <li><a href="{{ route('forum') }}" class="{{ Request::routeIs('forum') ? 'active' : '' }}">Community</a>
+                <li><a href="{{ route('forum.index') }}" class="{{ request()->is('forum') ? 'active' : '' }}">Community</a>
                 </li>
             </ul>
 
@@ -77,7 +77,7 @@
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="btn btn-outline">Sign In</a>
-                    <a href="{{ route('register') }}" class="btn btn-primary">Register</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary">Register</a>
                 @endauth
             </div>
 

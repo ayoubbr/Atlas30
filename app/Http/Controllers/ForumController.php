@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ForumController extends Controller
 {
@@ -298,5 +299,148 @@ class ForumController extends Controller
             ->get();
 
         return response()->json($activeUsers);
+    }
+
+    // ////
+    public function indexUser()
+    {
+        $groups = Group::withCount(['posts', 'latestPosts'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $stats = [
+            'total_posts' => Post::count(),
+            'total_members' => User::count()
+        ];
+
+
+        return view('user.forum.index', compact('groups', 'stats'));
+    }
+
+
+    public function showGroup($id)
+    {
+        $group = Group::findOrFail($id);
+
+        $posts = Post::where('group_id', $id)
+            ->with(['user', 'comments', 'likes'])
+            ->withCount(['comments', 'likes'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('user.forum.group', compact('group', 'posts'));
+    }
+
+
+    public function showPost($groupId, $postId)
+    {
+        $post = Post::where('id', $postId)
+            ->where('group_id', $groupId)
+            ->with(['user', 'group'])
+            ->firstOrFail();
+
+        $comments = Comment::where('post_id', $postId)
+            ->with('user')
+            ->orderBy('created_at', 'asc')
+            ->paginate(20);
+
+        $userLiked = false;
+        if (Auth::check()) {
+            $userLiked = Like::where('post_id', $postId)
+                ->where('user_id', Auth::id())
+                ->exists();
+        }
+
+        return view('user.forum.post', compact('post', 'comments', 'userLiked'));
+    }
+
+
+    public function createPost($groupId)
+    {
+        $group = Group::findOrFail($groupId);
+        return view('user.forum.create-post', compact('group'));
+    }
+
+
+    public function storePost(Request $request, $groupId)
+    {
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required'
+        ]);
+
+        $post = new Post();
+        $post->title = $validated['title'];
+        $post->content = $validated['content'];
+        $post->user_id = Auth::id();
+        $post->group_id = $groupId;
+        $post->save();
+
+        return redirect()->route('forum.post', ['groupId' => $groupId, 'postId' => $post->id])
+            ->with('success', 'Post created successfully!');
+    }
+
+
+    public function storeComment(Request $request, $groupId, $postId)
+    {
+        $validated = $request->validate([
+            'content' => 'required'
+        ]);
+
+        $comment = new Comment();
+        $comment->content = $validated['content'];
+        $comment->user_id = Auth::id();
+        $comment->post_id = $postId;
+        $comment->save();
+
+        return redirect()->route('forum.post', ['groupId' => $groupId, 'postId' => $postId])
+            ->with('success', 'Comment added successfully!');
+    }
+
+
+    public function toggleLike($groupId, $postId)
+    {
+        $userId = Auth::id();
+
+        $like = Like::where('post_id', $postId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($like) {
+            $like->delete();
+            $action = 'unliked';
+        } else {
+            $like = new Like();
+            $like->post_id = $postId;
+            $like->user_id = $userId;
+            $like->save();
+            $action = 'liked';
+        }
+
+        return redirect()->back();
+    }
+
+
+    public function createGroup()
+    {
+        return view('user.forum.create-group');
+    }
+
+
+    public function storeGroupUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255|unique:groups',
+            'description' => 'required'
+        ]);
+
+        $group = new Group();
+        $group->name = $validated['name'];
+        $group->description = $validated['description'];
+        $group->created_by = Auth::id();
+        $group->save();
+
+        return redirect()->route('forum.group', $group->id)
+            ->with('success', 'Group created successfully!');
     }
 }

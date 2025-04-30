@@ -62,19 +62,42 @@ Route::prefix('/')->group(function () {
     // Route::get('tickets/{ticket}/download', [TicketController::class, 'downloadPdf'])->name('tickets.download');
     Route::get('tickets/verify/{id}', [App\Http\Controllers\TicketController::class, 'verifyTicket'])->name('tickets.verify');
 
-    Route::get('forum', function () {
-        return view('user.forum');
-    })->name('forum');
-
     Route::get('teams', [TeamController::class, 'visitorIndex'])->name('teams');
     Route::get('teams/{id}', [TeamController::class, 'visitorShow'])->name('teams.show');
 
-
     Route::get('users/notifications', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+
+    // Forum Routes
+    Route::prefix('forum')->name('forum.')->group(function () {
+        Route::get('/', [ForumController::class, 'indexUser'])->name('index');
+        Route::get('/group/{id}', [ForumController::class, 'showGroup'])->name('group');
+        Route::get('/group/{groupId}/post/{postId}', [ForumController::class, 'showPost'])->name('post');
+
+        // require authentication
+        // Route::middleware(['auth'])->group(function () {
+        // Group creation
+        Route::get('/create-group', [ForumController::class, 'createGroup'])->name('create-group');
+        Route::post('/create-group', [ForumController::class, 'storeGroupUser'])->name('store-group');
+
+        // Post creation
+        Route::get('/group/{groupId}/create-post', [ForumController::class, 'createPost'])->name('create-post');
+        Route::post('/group/{groupId}/create-post', [ForumController::class, 'storePost'])->name('store-post');
+
+        // Comments
+        Route::post('/group/{groupId}/post/{postId}/comment', [ForumController::class, 'storeComment'])->name('store-comment');
+
+        // Likes
+        Route::post('/group/{groupId}/post/{postId}/like', [ForumController::class, 'toggleLike'])->name('toggle-like');
+        // });
+    });
+
+
 
     Route::get('stadiums', function () {
         return view('user.stadiums');
     })->name('stadiums');
+
+
 
     // Authentication 
     Route::post('login', [UserController::class, 'login'])->name('login');
