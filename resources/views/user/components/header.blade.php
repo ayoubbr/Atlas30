@@ -2,14 +2,19 @@
     <div class="container">
         <nav class="navbar">
             <a href="{{ url('/') }}" class="logo">
-                <i class="fas fa-futbol"></i> Atlas30
+                {{-- <i class="fas fa-futbol"></i> Atlas30 --}}
+                <img src="{{ asset('logo_landscape_trans.png') }}" alt="" width="150px">
             </a>
             <ul class="nav-links">
                 <li><a href="{{ route('home') }}" class="{{ Request::routeIs('home') ? 'active' : '' }}">Home</a></li>
-                <li><a href="{{ route('games') }}" class="{{ Request::routeIs('games') ? 'active' : '' }}">Games</a></li>
-                <li><a href="{{ route('teams') }}" class="{{ Request::routeIs('teams') ? 'active' : '' }}">Teams</a>
+                <li><a href="{{ route('games') }}" class="{{ Request::routeIs('games') ? 'active' : '' }}">Games</a>
                 </li>
-                <li><a href="{{ route('forum.index') }}" class="{{ request()->is('forum') ? 'active' : '' }}">Community</a>
+                <li><a href="{{ route('teams') }}" class="{{ Request::routeIs('teams') ? 'active' : '' }}">Teams</a>
+                <li><a href="{{ route('stadiums') }}"
+                        class="{{ Request::routeIs('stadiums') ? 'active' : '' }}">Stadiums</a>
+                </li>
+                <li><a href="{{ route('forum.index') }}"
+                        class="{{ request()->is('forum') ? 'active' : '' }}">Community</a>
                 </li>
             </ul>
 
@@ -29,13 +34,13 @@
                             <div class="dropdown-header">
                                 <h4>Notifications</h4>
                                 @if ($notif->count() > 0)
-                                    <a href="{{ route('notifications.markAllAsRead') }}"
-                                        class="mark-all-read">Mark all as read</a>
+                                    <a href="{{ route('notifications.markAllAsRead') }}" class="mark-all-read">Mark all as
+                                        read</a>
                                 @endif
                             </div>
                             <div class="dropdown-body">
                                 @forelse(auth()->user()->notifications()->take(5)->get() as $notification)
-                                    <div  class="notification-item {{ $notification->status }}">
+                                    <div class="notification-item {{ $notification->status }}">
                                         <div class="notification-icon">
                                             <i class="fas fa-bullhorn"></i>
                                         </div>

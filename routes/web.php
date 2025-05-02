@@ -70,6 +70,8 @@ Route::prefix('/')->group(function () {
 
     Route::get('users/notifications', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
+    Route::get('stadiums', [StadiumController::class, 'visitorIndex'])->name('stadiums');
+
     // Forum Routes
     Route::prefix('forum')->name('forum.')->group(function () {
         Route::get('/', [ForumController::class, 'indexUser'])->name('index');
@@ -94,21 +96,12 @@ Route::prefix('/')->group(function () {
         // });
     });
 
-
-
-    Route::get('stadiums', function () {
-        return view('user.stadiums');
-    })->name('stadiums');
-
-
-
     // Authentication 
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 });
-
 
 
 // Admin

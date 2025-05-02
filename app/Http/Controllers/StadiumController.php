@@ -16,6 +16,12 @@ class StadiumController extends Controller
         return view('admin.stadiums', compact('stadiums'));
     }
 
+    public function visitorIndex()
+    {
+        $stadiums = Stadium::with('games')->get();
+        return view('user.stadiums', compact('stadiums'));
+    }
+
 
     public function store(Request $request)
     {
@@ -42,13 +48,6 @@ class StadiumController extends Controller
         return redirect()->route('admin.stadiums.index')
             ->with('success', 'Stadium created successfully.');
     }
-
-
-    // public function show(Stadium $stadium)
-    // {
-    //     $stadium->load('games.homeTeam', 'games.awayTeam');
-    //     return view('admin.stadiums', compact('stadium'));
-    // }
 
 
     public function update(Request $request, $stadiumId)
