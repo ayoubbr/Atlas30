@@ -114,7 +114,7 @@
         @auth
             <div class="user-profile" id="admin-profile-link">
                 <div class="user-avatar">
-                    <img src="{{ Auth::user()->image ?? 'https://via.placeholder.com/40x40' }}" alt="Admin Avatar">
+                    <img src="{{ asset(Auth::user()->image) ?? 'https://via.placeholder.com/40x40' }}" alt="Admin Avatar">
                 </div>
                 <div class="user-info">
                     <div class="user-name">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>

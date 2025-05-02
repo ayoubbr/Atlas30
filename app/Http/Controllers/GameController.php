@@ -137,7 +137,6 @@ class GameController extends Controller
     {
         $query = Game::with(['homeTeam', 'awayTeam', 'stadium']);
 
-        // Filter by date range
         if ($request->has('date_range') && $request->date_range) {
             $today = Carbon::today();
 
@@ -171,7 +170,6 @@ class GameController extends Controller
             }
         }
 
-        // Filter by team
         if ($request->has('team_id') && $request->team_id) {
             $teamId = $request->team_id;
             $query->where(function ($q) use ($teamId) {
@@ -180,17 +178,14 @@ class GameController extends Controller
             });
         }
 
-        // Filter by stadium
         if ($request->has('stadium_id') && $request->stadium_id) {
             $query->where('stadium_id', $request->stadium_id);
         }
 
-        // Filter by status
         if ($request->has('status') && $request->status) {
             $query->where('status', $request->status);
         }
 
-        // Search functionality
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -207,7 +202,6 @@ class GameController extends Controller
             });
         }
 
-        // Sorting
         if ($request->has('sort')) {
             switch ($request->sort) {
                 case 'date-asc':
@@ -224,7 +218,6 @@ class GameController extends Controller
                     $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
             }
         } else {
-            // Default sorting by date ascending
             $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
         }
 

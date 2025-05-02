@@ -38,7 +38,7 @@
             @include('partials.flash-messages')
         </div>
         @yield('content')
-      
+
     </div>
 
     @yield('modal')

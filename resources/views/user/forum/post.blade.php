@@ -340,7 +340,7 @@
                 <div class="post-author">
                     <div class="author-info">
                         <div class="author-avatar">
-                            <img src="{{ $post->user->image ?? 'https://via.placeholder.com/80x80' }}"
+                            <img src="{{ asset($post->user->image) ?? 'https://via.placeholder.com/80x80' }}"
                                 alt="{{ $post->user->name }}">
                         </div>
                         <div class="author-info-stats">

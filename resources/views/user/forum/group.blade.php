@@ -762,7 +762,7 @@
                                     <div class="thread-author">
                                         <div class="author-info">
                                             <div class="author-avatar">
-                                                <img src="{{ $post->user->image ?? 'https://via.placeholder.com/50x50' }}"
+                                                <img src="{{ asset($post->user->image) ?? 'https://via.placeholder.com/50x50' }}"
                                                     alt="{{ $post->user->firstname }} {{ $post->user->lastname }}">
                                             </div>
                                             <div class="author-details">

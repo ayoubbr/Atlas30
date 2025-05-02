@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
@@ -39,6 +42,8 @@ Route::post('/profile/notifications', [ProfileController::class, 'updateNotifica
 Route::prefix('/')->group(function () {
 
     Route::get('', function () {
+        // $memoryUsage = memory_get_usage(true); // in bytes
+        // dd($memoryUsage);
         return view('welcome');
     })->name('home');
 
@@ -70,14 +75,14 @@ Route::prefix('/')->group(function () {
     // Forum Routes
     Route::prefix('forum')->name('forum.')->group(function () {
         Route::get('/', [ForumController::class, 'indexUser'])->name('index');
-        Route::get('/group/{id}', [ForumController::class, 'showGroup'])->name('group');
+        Route::get('/group/{id}', [GroupController::class, 'showGroup'])->name('group');
         Route::get('/group/{groupId}/post/{postId}', [ForumController::class, 'showPost'])->name('post');
 
         // require authentication
         // Route::middleware(['auth'])->group(function () {
         // Group creation
-        Route::get('/create-group', [ForumController::class, 'createGroup'])->name('create-group');
-        Route::post('/create-group', [ForumController::class, 'storeGroupUser'])->name('store-group');
+        Route::get('/create-group', [GroupController::class, 'createGroup'])->name('create-group');
+        Route::post('/create-group', [GroupController::class, 'storeGroupUser'])->name('store-group');
 
         // Post creation
         Route::get('/group/{groupId}/create-post', [ForumController::class, 'createPost'])->name('create-post');
@@ -100,10 +105,10 @@ Route::prefix('/')->group(function () {
 
 
     // Authentication 
-    Route::post('login', [UserController::class, 'login'])->name('login');
-    Route::post('register', [UserController::class, 'register'])->name('register');
-    Route::get('logout', [UserController::class, 'logout'])->name('logout');
-    Route::post('forgot-password', [UserController::class, 'forgotPassword'])->name('forgot-password');
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register'])->name('register');
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 });
 
 
@@ -143,23 +148,23 @@ Route::prefix('admin')->group(function () {
     Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
 
     // USER
-    Route::get('users', [UserController::class, 'adminIndex'])->name('admin.users.index');
-    Route::post('users', [UserController::class, 'store'])->name('admin.users.store');
-    Route::get('users/{id}', [UserController::class, 'show'])->name('admin.users.show');
-    Route::put('users/{id}', [UserController::class, 'update'])->name('admin.users.update');
-    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::get('users', [AdminController::class, 'index'])->name('admin.users.index');
+    Route::post('users', [AdminController::class, 'store'])->name('admin.users.store');
+    Route::get('users/{id}', [AdminController::class, 'show'])->name('admin.users.show');
+    Route::put('users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
+    Route::delete('users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
     // Admin profile routes
-    Route::get('profile', [UserController::class, 'adminProfile'])->name('admin.profile');
+    Route::get('profile', [AdminController::class, 'adminProfile'])->name('admin.profile');
     Route::post('profile', [UserController::class, 'updateProfile'])->name('admin.profile.update');
 
 
     // Forum dashboard
     Route::get('forum', [ForumController::class, 'index'])->name('admin.forum.index');
     // Group management
-    Route::post('forum/groups', [ForumController::class, 'storeGroup'])->name('admin.forum.store-group');
+    Route::post('forum/groups', [GroupController::class, 'storeGroup'])->name('admin.forum.store-group');
     Route::get('forum/groups/{id}', [ForumController::class, 'getGroup'])->name('admin.forum.get-group');
-    Route::put('forum/groups/{id}', [ForumController::class, 'updateGroup'])->name('admin.forum.update-group');
-    Route::delete('forum/groups/{id}', [ForumController::class, 'destroyGroup'])->name('admin.forum.destroy-group');
+    Route::put('forum/groups/{id}', [GroupController::class, 'updateGroup'])->name('admin.forum.update-group');
+    Route::delete('forum/groups/{id}', [GroupController::class, 'destroyGroup'])->name('admin.forum.destroy-group');
     // Post management
     Route::get('forum/groups/{id}/posts', [ForumController::class, 'getGroupPosts'])->name('admin.forum.get-group-posts');
     Route::delete('forum/posts/{id}', [ForumController::class, 'destroyPost'])->name('admin.forum.destroy-post');
