@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -49,7 +50,7 @@ class ProfileController extends Controller
             $activities->push([
                 'type' => 'post',
                 'icon' => 'comment',
-                'title' => 'Posted in "' . $post->topic . '" forum',
+                'title' => 'Posted in "' . $post->title . '" forum',
                 'time' => $post->created_at,
             ]);
         }
@@ -62,14 +63,13 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:2',
-            'language' => 'nullable|string|max:2',
-            'bio' => 'nullable|string|max:500',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         $user = Auth::user();
@@ -77,9 +77,11 @@ class ProfileController extends Controller
         $user->lastname = $request->lastname;
         $user->email = $request->email;
         $user->phone = $request->phone;
-        $user->country = $request->country;
-        $user->language = $request->language;
-        $user->bio = $request->bio;
+        if ($request->hasFile('image')) {
+            $imageName = Str::slug($request->firstname) . '_' . Str::slug($request->lastname) . '-' . time() . '.' . $request->image->extension();
+            $request->image->storeAs('public/users', $imageName);
+            $user->image = 'storage/users/' . $imageName;
+        }
         $user->save();
 
         return redirect()->route('profile')->with('success', 'Profile updated successfully!');

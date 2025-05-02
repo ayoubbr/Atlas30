@@ -17,7 +17,7 @@
                     <li><a href="{{ route('home') }}">Home</a></li>
                     <li><a href="{{ route('games') }}">Games</a></li>
                     <li><a href="{{ route('teams') }}">Teams</a></li>
-                    <li><a href="{{ route('forum') }}">Community</a></li>
+                    <li><a href="{{ route('forum.index') }}">Community</a></li>
                     <li><a href="{{ route('stadiums') }}">Stadiums</a></li>
                 </ul>
             </div>

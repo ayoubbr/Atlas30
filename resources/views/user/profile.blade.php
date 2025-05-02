@@ -341,7 +341,8 @@
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar">
-                <img src="https://cdn-icons-png.flaticon.com/128/3177/3177465.png" alt="{{ $user->firstname }} Avatar">
+                <img src="{{ asset($user->image) ?? 'https://cdn-icons-png.flaticon.com/128/3177/3177465.png' }}"
+                    alt="{{ $user->firstname }} Avatar">
             </div>
             <div class="profile-info">
                 <h1 class="profile-name">{{ $user->firstname }} {{ $user->lastname }}</h1>
@@ -401,16 +402,16 @@
                                         {{ $ticket->game->stadium->city }}</div>
                                     <div class="ticket-details">
                                         <div class="ticket-detail">
-                                            <i class="far fa-calendar-alt"></i> {{ $ticket->game->date }}
+                                            <i class="far fa-calendar-alt"></i> {{ $ticket->game->start_date }}
                                         </div>
                                         <div class="ticket-detail">
-                                            <i class="far fa-clock"></i> {{ $ticket->game->time }}
+                                            <i class="far fa-clock"></i> {{ $ticket->game->start_hour }}
                                         </div>
                                         <div class="ticket-detail">
                                             <i class="fas fa-ticket-alt"></i> {{ $ticket->section }}
                                         </div>
                                         <div class="ticket-detail">
-                                            <i class="fas fa-chair"></i> Seat: {{ $ticket->seat_number }}
+                                            <i class="fas fa-chair"></i> Seat: {{ $ticket->place_number }}
                                         </div>
                                     </div>
                                 </div>
@@ -436,7 +437,8 @@
                     <div class="section-title">Personal Information</div>
                 </div>
                 <div class="section-content">
-                    <form id="profile-form" action="{{ route('profile.update') }}" method="POST">
+                    <form id="profile-form" action="{{ route('profile.update') }}" method="POST"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="form-row">
                             <div class="form-group">
@@ -476,6 +478,22 @@
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profileImage" class="form-label">Profile Picture</label>
+                                <div class="custom-file-input">
+                                    <input type="file" id="image" name="image" accept="image/*">
+                                    <div class="custom-file-button">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span class="custom-file-text">Choose image</span>
+                                    </div>
+                                    <div class="custom-file-name"></div>
+                                    <div class="custom-file-preview">
+                                        <img src="#" alt="Image Preview" id="imagePreview">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-actions" style="text-align: right; margin-top: 20px;">
@@ -614,6 +632,26 @@
                 const tabId = window.location.hash.substring(1).replace('-tab', '');
                 activateTab(tabId);
             }
+
+            document.getElementById('image').addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                const preview = document.getElementById('imagePreview');
+                const previewImage = document.querySelector('.custom-file-preview');
+
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.parentElement.style.display = 'block';
+                    }
+
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '#';
+                    preview.style.display = 'none';
+                }
+            });
         });
     </script>
 @endsection

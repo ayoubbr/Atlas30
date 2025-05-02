@@ -26,7 +26,7 @@ class GameFactory extends Factory
             'stadium_id' => Stadium::inRandomOrder()->first()->id,
             'home_team_goals' => $this->faker->numberBetween(0, 5),
             'away_team_goals' => $this->faker->numberBetween(0, 5),
-            'image' => 'https://cdn.vectorstock.com/i/500p/58/35/soccer-bannertemplate-football-banner-vs-vector-53655835.jpg',
+            'image' => 'Atlas30_logo.png',
             'status' => $this->faker->randomElement(['scheduled', 'live', 'completed', 'canceled', 'postponed']),
         ];
     }

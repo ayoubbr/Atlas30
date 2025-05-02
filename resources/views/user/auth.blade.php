@@ -343,24 +343,6 @@
             font-size: 0.9rem;
         }
 
-        .alert-success {
-            background-color: rgba(46, 204, 113, 0.1);
-            border: 1px solid rgba(46, 204, 113, 0.2);
-            color: var(--success);
-        }
-
-        .alert-danger {
-            background-color: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.2);
-            color: var(--danger);
-        }
-
-        .alert-info {
-            background-color: rgba(52, 152, 219, 0.1);
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            color: var(--info);
-        }
-
         /* Responsive Styles */
         @media (max-width: 992px) {
             .auth-container {
