@@ -13,6 +13,17 @@ use Carbon\Carbon;
 
 class GameController extends Controller
 {
+
+    public function home()
+    {
+        $upcomingMatches = Game::with(['homeTeam', 'awayTeam', 'stadium'])
+            ->where('start_date', '>=', Carbon::now()->toDateString())
+            ->orderBy('start_date')
+            ->take(3)
+            ->get();
+            
+        return view('welcome', compact('upcomingMatches'));
+    }
     public function index()
     {
         $games = Game::with(['homeTeam', 'awayTeam', 'stadium'])->get();

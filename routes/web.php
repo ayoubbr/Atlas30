@@ -14,6 +14,8 @@ use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Models\Game;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,11 +43,7 @@ Route::post('/profile/notifications', [ProfileController::class, 'updateNotifica
 // User
 Route::prefix('/')->group(function () {
 
-    Route::get('', function () {
-        // $memoryUsage = memory_get_usage(true); // in bytes
-        // dd($memoryUsage);
-        return view('welcome');
-    })->name('home');
+    Route::get('', [GameController::class, 'home'])->name('home');
 
     Route::get('login', function () {
         return view('user.auth');

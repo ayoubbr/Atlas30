@@ -52,17 +52,6 @@
             margin-bottom: 60px;
         }
 
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--primary);
-        }
-
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -119,7 +108,7 @@
         }
 
         .match-image {
-            height: 200px;
+            height: 325px;
             background-size: cover;
             background-position: center;
         }
@@ -365,8 +354,8 @@
                 <p>Join the global celebration of football. Get your tickets and connect with fans from around the
                     world.</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn">Buy Tickets</a>
-                    <a href="#" class="btn btn-accent">Join Community</a>
+                    <a href="{{ route('games') }}" class="btn">Buy Tickets</a>
+                    <a href="{{ route('forum.index') }}" class="btn btn-accent">Join Community</a>
                 </div>
             </div>
         </div>
@@ -438,105 +427,40 @@
                 <p>Secure your tickets for the most anticipated matches</p>
             </div>
             <div class="matches-grid">
-                <div class="match-card">
-                    <div class="match-image"
-                        style="background-image: url('https://ichef.bbci.co.uk/images/ic/1200x675/p0g3pgmf.jpg')">
-                    </div>
-                    <div class="match-details">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/3498db/ffffff?text=Team+A')">
+                @foreach ($upcomingMatches as $match)
+                    <div class="match-card">
+                        <div class="match-image" style="background-image: url({{ asset($match->image) }})">
+                        </div>
+                        <div class="match-details">
+                            <div class="match-teams">
+                                <div class="match-team">
+                                    <div class="match-flag"
+                                        style="background-image: url({{ asset($match->homeTeam->flag) }})">
+                                    </div>
+                                    <div class="match-name">{{ $match->homeTeam->name }}</div>
                                 </div>
-                                <div class="match-name">Brazil</div>
-                            </div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/e74c3c/ffffff?text=Team+B')">
+                                <div class="match-vs">VS</div>
+                                <div class="match-team">
+                                    <div class="match-flag"
+                                        style="background-image: url({{ asset($match->awayTeam->flag) }})">
+                                    </div>
+                                    <div class="match-name">{{ $match->awayTeam->name }}</div>
                                 </div>
-                                <div class="match-name">France</div>
                             </div>
-                        </div>
-                        <div class="match-info">
-                            <div class="match-date">
-                                <i class="far fa-calendar-alt"></i> June 15, 2030
-                            </div>
-                            <div class="match-venue">
-                                <i class="fas fa-map-marker-alt"></i> Rio Stadium
-                            </div>
-                        </div>
-                        <div class="match-cta">
-                            <a href="#" class="btn">Get Tickets</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="match-card">
-                    <div class="match-image"
-                        style="background-image: url('https://ichef.bbci.co.uk/images/ic/640x360/p0dgf5kf.jpg')">
-                    </div>
-                    <div class="match-details">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/2ecc71/ffffff?text=Team+C')">
+                            <div class="match-info">
+                                <div class="match-date">
+                                    <i class="far fa-calendar-alt"></i> {{ $match->start_date }}
                                 </div>
-                                <div class="match-name">Germany</div>
-                            </div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/f39c12/ffffff?text=Team+D')">
+                                <div class="match-venue">
+                                    <i class="fas fa-map-marker-alt"></i> {{ $match->stadium->name }}
                                 </div>
-                                <div class="match-name">Spain</div>
                             </div>
-                        </div>
-                        <div class="match-info">
-                            <div class="match-date">
-                                <i class="far fa-calendar-alt"></i> June 18, 2030
+                            <div class="match-cta">
+                                <a href="{{ route('games.show', $match->id) }}" class="btn">Get Tickets</a>
                             </div>
-                            <div class="match-venue">
-                                <i class="fas fa-map-marker-alt"></i> Berlin Arena
-                            </div>
-                        </div>
-                        <div class="match-cta">
-                            <a href="#" class="btn">Get Tickets</a>
                         </div>
                     </div>
-                </div>
-                <div class="match-card">
-                    <div class="match-image"
-                        style="background-image: url('https://i.ytimg.com/vi/8h_VAG-rnD0/maxresdefault.jpg')">
-                    </div>
-                    <div class="match-details">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/9b59b6/ffffff?text=Team+E')">
-                                </div>
-                                <div class="match-name">Argentina</div>
-                            </div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/34495e/ffffff?text=Team+F')">
-                                </div>
-                                <div class="match-name">England</div>
-                            </div>
-                        </div>
-                        <div class="match-info">
-                            <div class="match-date">
-                                <i class="far fa-calendar-alt"></i> June 21, 2030
-                            </div>
-                            <div class="match-venue">
-                                <i class="fas fa-map-marker-alt"></i> London Stadium
-                            </div>
-                        </div>
-                        <div class="match-cta">
-                            <a href="#" class="btn">Get Tickets</a>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -567,7 +491,7 @@
                             <span>Participate in discussions and predictions</span>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-secondary">Join Community</a>
+                    <a href="{{ route('forum.index') }}" class="btn btn-secondary">Join Community</a>
                 </div>
                 <div class="community-image">
                     <img src="https://assets.publishing.service.gov.uk/media/619df21d8fa8f5037b09c5ef/Fans_clapping.jpg"
@@ -584,8 +508,8 @@
             <p>Subscribe to our newsletter to receive the latest news, ticket releases, and special offers for the World
                 Cup 2030.</p>
             <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email address" required>
-                <button type="submit">Subscribe</button>
+                <input disabled type="email" placeholder="Enter your email address" required>
+                <button type="submit" disabled>Subscribe</button>
             </form>
         </div>
     </section>
