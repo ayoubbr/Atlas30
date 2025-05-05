@@ -3,24 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Repository\Impl\IGroupRepository;
+use App\Repository\Impl\IPostRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
     private $groupRepository;
+    private $postRepository;
 
-    public function __construct(IGroupRepository $groupRepository)
+    public function __construct(IGroupRepository $groupRepository, IPostRepository $postRepository)
     {
         $this->groupRepository = $groupRepository;
+        $this->postRepository = $postRepository;
+    }
+
+    public function index()
+    {
+        $groups = $this->groupRepository->getGroupsWithStats();
+        $stats = [
+            'total_posts' => $this->postRepository->getPostCount(),
+            'total_members' => \App\Models\User::count()
+        ];
+
+        return view('user.forum.index', compact('groups', 'stats'));
     }
 
     public function showGroup($id)
     {
         $group = $this->groupRepository->getGroupWithPosts($id);
         $posts = $group->paginatedPosts;
+        $pinnedPosts = $this->postRepository->getPinnedPosts($id);
 
-        return view('user.forum.group', compact('group', 'posts'));
+        return view('user.forum.group', compact('group', 'posts', 'pinnedPosts'));
     }
 
     public function createGroup()
@@ -54,6 +69,17 @@ class GroupController extends Controller
             ->with('success', 'Group created successfully.');
     }
 
+    public function edit($id)
+    {
+        $group = $this->groupRepository->findById($id);
+
+        if (!$group) {
+            return redirect()->back()->with('error', 'Group not found.');
+        }
+
+        return view('user.forum.edit-group', compact('group'));
+    }
+
     public function updateGroup(Request $request, $id)
     {
         $request->validate([
@@ -61,7 +87,11 @@ class GroupController extends Controller
             'description' => 'required|string',
         ]);
 
-        $this->groupRepository->updateGroup($id, $request->all());
+        $result = $this->groupRepository->updateGroup($id, $request->all());
+
+        if (!$result) {
+            return redirect()->back()->with('error', 'Failed to update group.');
+        }
 
         return redirect()->route('admin.forum.index')
             ->with('success', 'Group updated successfully.');
@@ -69,7 +99,11 @@ class GroupController extends Controller
 
     public function destroyGroup($id)
     {
-        $this->groupRepository->deleteGroup($id);
+        $result = $this->groupRepository->deleteGroup($id);
+
+        if (!$result) {
+            return redirect()->back()->with('error', 'Failed to delete group.');
+        }
 
         return redirect()->route('admin.forum.index')
             ->with('success', 'Group and all associated content deleted successfully.');
@@ -79,5 +113,11 @@ class GroupController extends Controller
     {
         $groupData = $this->groupRepository->getGroupWithDetails($id);
         return response()->json($groupData);
+    }
+
+    public function getTopGroups()
+    {
+        $topGroups = $this->groupRepository->getTopGroups();
+        return response()->json($topGroups);
     }
 }
