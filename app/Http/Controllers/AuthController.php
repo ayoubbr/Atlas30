@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Repository\Impl\IAuthRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    private $authRepository;
+
+    public function __construct(IAuthRepository $authRepository)
+    {
+        $this->authRepository = $authRepository;
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -25,16 +30,9 @@ class AuthController extends Controller
                 ->withInput($request->except('password', 'password_confirmation'));
         }
 
-        $user = User::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'status' => 'active',
-            'role_id' => 2, // User role 
-        ]);
+        $user = $this->authRepository->createUser($request->all());
 
-        Auth::login($user);
+        auth()->login($user);
 
         if ($user->role->name == 'admin') {
             return redirect()->route('admin')->with('success', 'Welcome to World Cup 2030, ' . $user->firstname . '! Your account has been created successfully.');
@@ -58,8 +56,8 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        if ($this->authRepository->attemptLogin($credentials)) {
+            $user = $this->authRepository->getCurrentUser();
 
             if ($user->role->name === 'admin') {
                 return redirect()->route('admin')->with('success', 'Welcome to admin dashboard!');
@@ -75,11 +73,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
+        $this->authRepository->logout($request);
         return redirect()->route('home')->with('success', 'You have been logged out!');
     }
 }
