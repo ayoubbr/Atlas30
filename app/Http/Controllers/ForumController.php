@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Repository\Impl\IForumRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
