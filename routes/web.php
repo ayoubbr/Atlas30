@@ -43,7 +43,6 @@ Route::post('/profile/notifications', [ProfileController::class, 'updateNotifica
 // User
 Route::prefix('/')->group(function () {
 
-
     Route::get('login', function () {
         return view('user.auth');
     })->name('login');
