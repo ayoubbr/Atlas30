@@ -2,30 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Repository\Impl\IForumRepository;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+use App\Repository\Impl\ICommentRepository;
+use App\Repository\Impl\IGroupRepository;
+use App\Repository\Impl\ILikeRepository;
+use App\Repository\Impl\IPostRepository;
+use App\Repository\Impl\INotificationRepository;
 
 class ForumController extends Controller
 {
-    private $forumRepository;
+    private $groupRepository;
+    private $postRepository;
+    private $commentRepository;
+    private $likeRepository;
+    private $notificationRepository;
 
-    public function __construct(IForumRepository $forumRepository)
-    {
-        $this->forumRepository = $forumRepository;
+    public function __construct(
+        IGroupRepository $groupRepository,
+        IPostRepository $postRepository,
+        ICommentRepository $commentRepository,
+        ILikeRepository $likeRepository,
+        INotificationRepository $notificationRepository
+    ) {
+        $this->groupRepository = $groupRepository;
+        $this->postRepository = $postRepository;
+        $this->commentRepository = $commentRepository;
+        $this->likeRepository = $likeRepository;
+        $this->notificationRepository = $notificationRepository;
     }
 
     public function index()
     {
-        $stats = $this->forumRepository->getDashboardStats();
-        $topGroups = $this->forumRepository->getTopGroups();
-        $recentPosts = $this->forumRepository->getRecentPosts();
-        $recentComments = $this->forumRepository->getRecentComments();
-        $topPosts = $this->forumRepository->getTopPosts();
-        $monthlyPosts = $this->forumRepository->getMonthlyActivityData(Post::class);
-        $monthlyComments = $this->forumRepository->getMonthlyActivityData(Comment::class);
-        $announcements = $this->forumRepository->getAnnouncements();
+        $stats = [
+            'totalGroups' => $this->groupRepository->getGroupCount(),
+            'totalPosts' => $this->postRepository->getPostCount(),
+            'totalComments' => $this->commentRepository->getCommentCount(),
+            'totalLikes' => $this->likeRepository->getTotalLikes(),
+            'activeUsers' => $this->getActiveUsers()
+        ];
+
+        $topGroups = $this->groupRepository->getTopGroups();
+        $recentPosts = $this->postRepository->getRecentPosts();
+        $recentComments = $this->commentRepository->getRecentComments();
+        $topPosts = $this->postRepository->getTopPosts();
+        $monthlyPosts = $this->postRepository->getMonthlyPostData();
+        $monthlyComments = $this->commentRepository->getMonthlyCommentData();
+        $announcements = $this->getAnnouncements();
 
         return view('admin.forum', compact(
             'stats',
@@ -39,18 +61,23 @@ class ForumController extends Controller
         ));
     }
 
-    public function destroyPost($id)
+    private function getActiveUsers()
     {
-        $this->forumRepository->deletePost($id);
-        return redirect()->route('admin.forum.index')
-            ->with('success', 'Post and all associated content deleted successfully.');
+        return \App\Models\User::whereHas('posts', function ($query) {
+            $query->where('created_at', '>=', \Carbon\Carbon::now()->subDays(30));
+        })
+            ->orWhereHas('comments', function ($query) {
+                $query->where('created_at', '>=', \Carbon\Carbon::now()->subDays(30));
+            })->count();
     }
 
-    public function destroyComment($id)
+    private function getAnnouncements()
     {
-        $this->forumRepository->deleteComment($id);
-        return redirect()->route('admin.forum.index')
-            ->with('success', 'Comment deleted successfully.');
+        return \App\Models\Notification::orderBy('created_at', 'desc')
+            ->get()
+            ->unique('content')
+            ->take(10)
+            ->values();
     }
 
     public function createAnnouncement(Request $request)
@@ -61,10 +88,27 @@ class ForumController extends Controller
             'user_ids.*' => 'exists:users,id',
         ]);
 
-        $this->forumRepository->createAnnouncement(
-            $request->content,
-            $request->has('user_ids') ? $request->user_ids : null
-        );
+        $content = $request->content;
+        $userIds = $request->has('user_ids') ? $request->user_ids : null;
+
+        if ($userIds && !empty($userIds)) {
+            foreach ($userIds as $userId) {
+                \App\Models\Notification::create([
+                    'content' => $content,
+                    'status' => 'unread',
+                    'user_id' => $userId,
+                ]);
+            }
+        } else {
+            $users = \App\Models\User::all();
+            foreach ($users as $user) {
+                \App\Models\Notification::create([
+                    'content' => $content,
+                    'status' => 'unread',
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
 
         return redirect()->route('admin.forum.index')
             ->with('success', 'Announcement created and notifications sent successfully.');
@@ -72,77 +116,20 @@ class ForumController extends Controller
 
     public function destroyAnnouncement($id)
     {
-        $this->forumRepository->deleteAnnouncement($id);
+        $announcement = \App\Models\Notification::findOrFail($id);
+        $announcement->delete();
+
         return redirect()->route('admin.forum.index')
             ->with('success', 'Announcement deleted successfully.');
     }
 
-    public function getGroupPosts($groupId)
-    {
-        $posts = $this->forumRepository->getGroupPosts($groupId);
-        return response()->json($posts);
-    }
-
-    public function getTopPosts()
-    {
-        $topPosts = $this->forumRepository->getTopPosts(10);
-        return response()->json($topPosts);
-    }
-
     public function getMostActiveUsers()
     {
-        $activeUsers = $this->forumRepository->getMostActiveUsers();
+        $activeUsers = \App\Models\User::withCount(['posts', 'comments'])
+            ->orderByRaw('posts_count + comments_count DESC')
+            ->take(10)
+            ->get();
+
         return response()->json($activeUsers);
-    }
-
-    public function indexUser()
-    {
-        $groups = $this->forumRepository->getAllGroups();
-        $stats = $this->forumRepository->getForumStats();
-        return view('user.forum.index', compact('groups', 'stats'));
-    }
-
-    public function showPost($groupId, $postId)
-    {
-        $data = $this->forumRepository->getPostWithComments($groupId, $postId);
-        return view('user.forum.post', compact('post', 'comments', 'userLiked'));
-    }
-
-    public function createPost($groupId)
-    {
-        $group = Group::findOrFail($groupId);
-        return view('user.forum.create-post', compact('group'));
-    }
-
-    public function storePost(Request $request, $groupId)
-    {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required'
-        ]);
-
-        $post = $this->forumRepository->createPost($validated, Auth::id(), $groupId);
-
-        return redirect()->route('forum.post', ['groupId' => $groupId, 'postId' => $post->id])
-            ->with('success', 'Post created successfully!');
-    }
-
-    public function storeComment(Request $request, $groupId, $postId)
-    {
-        $validated = $request->validate([
-            'content' => 'required'
-        ]);
-
-        $this->forumRepository->createComment($validated['content'], Auth::id(), $postId);
-
-        return redirect()->route('forum.post', ['groupId' => $groupId, 'postId' => $postId])
-            ->with('success', 'Comment added successfully!');
-    }
-
-    public function toggleLike($groupId, $postId)
-    {
-        $userId = Auth::id();
-        $this->forumRepository->toggleLike($postId, $userId);
-        return redirect()->back();
     }
 }
