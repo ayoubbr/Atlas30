@@ -2,24 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Repository\Impl\IRoleRepository;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    private $roleRepository;
+
+    public function __construct(IRoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
 
     public function index()
     {
-        $roles = Role::all();
+        $roles = $this->roleRepository->getAllRoles();
         return view('admin.roles', compact('roles'));
     }
-
 
     public function create()
     {
         return view('admin.roles');
     }
-
 
     public function store(Request $request)
     {
@@ -28,56 +32,47 @@ class RoleController extends Controller
             'description' => 'nullable|string|max:255',
         ]);
 
-        $role = new Role();
-        $role->name = $request->name;
-        $role->description = $request->description;
-        $role->save();
+        $this->roleRepository->createRole($request->all());
 
         return redirect()->route('admin.roles.index')
             ->with('success', 'Role created successfully.');
     }
 
-
-    public function show(Role $role)
+    public function show(int $id)
     {
+        $role = $this->roleRepository->findById($id);
         return view('admin.roles', compact('role'));
     }
 
-
-    public function edit(Role $role)
+    public function edit(int $id)
     {
+        $role = $this->roleRepository->findById($id);
         return view('admin.roles', compact('role'));
     }
-
 
     public function update(Request $request, $roleId)
     {
-        $role = Role::find($roleId);
+        $role = $this->roleRepository->findById($roleId);
 
         $request->validate([
-            'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
+            'name' => 'required|string|max:255|unique:roles,name,' . $roleId,
             'description' => 'nullable|string|max:255',
         ]);
 
-        $role->name = $request->name;
-        $role->description = $request->description;
-        $role->save();
+        $this->roleRepository->updateRole($roleId, $request->all());
 
         return redirect()->route('admin.roles.index')
             ->with('success', 'Role updated successfully.');
     }
 
-
     public function destroy($roleId)
     {
-        $role = Role::find($roleId);
-
-        if ($role->users()->count() > 0) {
+        if ($this->roleRepository->hasUsers($roleId)) {
             return redirect()->route('admin.roles.index')
                 ->with('error', 'Cannot delete role with associated users.');
         }
 
-        $role->delete();
+        $this->roleRepository->deleteRole($roleId);
 
         return redirect()->route('admin.roles.index')
             ->with('success', 'Role deleted successfully.');
