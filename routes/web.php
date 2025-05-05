@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ForumController;
+use App\Http\Controllers\ForumDashboardController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PostController;
@@ -15,8 +17,6 @@ use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
-use App\Models\Game;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,20 +36,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
-    // Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
 });
 
 
 // Visitor routes
 Route::prefix('/')->group(function () {
-    
+
     // Authentication 
     Route::get('login', [AuthController::class, 'authenticate'])->name('login');
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
-   
+
     // GAMES
     Route::get('', [GameController::class, 'home'])->name('home');
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
@@ -57,54 +56,30 @@ Route::prefix('/')->group(function () {
     Route::get('team/{id}/games', [GameController::class, 'teamGames']);
     Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
 
+    // TICKETS
     Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
-    // to be confirmed
     Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
     Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
-    // Route::get('user/tickets/', [TicketController::class, 'userTickets'])->name('user.tickets');
     Route::get('user/tickets/{id}/download', [TicketController::class, 'downloadPdf'])->name('user.ticket.download');
     Route::get('user/tickets/show', [TicketController::class, 'userTicketsShow'])->name('user.ticket.view');
-    // Route::get('tickets/{ticket}/download', [TicketController::class, 'downloadPdf'])->name('tickets.download');
-    Route::get('tickets/verify/{id}', [App\Http\Controllers\TicketController::class, 'verifyTicket'])->name('tickets.verify');
+    Route::get('tickets/verify/{id}', [TicketController::class, 'verifyTicket'])->name('tickets.verify');
 
+    // TEAMS
     Route::get('teams', [TeamController::class, 'visitorIndex'])->name('teams');
     Route::get('teams/{id}', [TeamController::class, 'visitorShow'])->name('teams.show');
 
+    // NOTIFICATIONS
     Route::get('users/notifications', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
+    // STADIUMS
     Route::get('stadiums', [StadiumController::class, 'visitorIndex'])->name('stadiums');
-
-    // // Forum Routes
-    // Route::prefix('forum')->name('forum.')->group(function () {
-    //     Route::get('/', [GroupController::class, 'index'])->name('index');
-    //     Route::get('/group/{id}', [GroupController::class, 'showGroup'])->name('group');
-    //     Route::get('/group/{groupId}/post/{postId}', [PostController::class, 'show'])->name('post');
-
-    //     // require authentication
-    //     // Route::middleware(['auth'])->group(function () {
-    //     // Group creation
-    //     Route::get('/create-group', [GroupController::class, 'createGroup'])->name('create-group');
-    //     Route::post('/create-group', [GroupController::class, 'storeGroupUser'])->name('store-group');
-
-    //     // Post creation
-    //     Route::get('/group/{groupId}/create-post', [ForumController::class, 'createPost'])->name('create-post');
-    //     Route::post('/group/{groupId}/create-post', [ForumController::class, 'storePost'])->name('store-post');
-
-    //     // Comments
-    //     Route::post('/group/{groupId}/post/{postId}/comment', [ForumController::class, 'storeComment'])->name('store-comment');
-
-    //     // Likes
-    //     Route::post('/group/{groupId}/post/{postId}/like', [ForumController::class, 'toggleLike'])->name('toggle-like');
-    //     // });
-    // });
-
 });
 
 
 // Admin routes
-// middleware(['auth', 'admin'])->
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
+
     // TEAM
     Route::get('teams', [TeamController::class, 'index'])->name('admin.teams.index');
     Route::post('teams', [TeamController::class, 'store'])->name('admin.teams.store');
@@ -142,33 +117,10 @@ Route::prefix('admin')->group(function () {
     Route::get('users/{id}', [AdminController::class, 'show'])->name('admin.users.show');
     Route::put('users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
+
     // Admin profile routes
     Route::get('profile', [AdminController::class, 'adminProfile'])->name('admin.profile');
     Route::post('profile', [UserController::class, 'updateProfile'])->name('admin.profile.update');
-
-
-    // Forum dashboard
-    // Route::get('forum', [ForumController::class, 'index'])->name('admin.forum.index');
-
-    // // Group management
-    // Route::post('forum/groups', [GroupController::class, 'storeGroup'])->name('admin.forum.store-group');
-    // Route::get('forum/groups/{id}', [ForumController::class, 'getGroup'])->name('admin.forum.get-group');
-    // Route::put('forum/groups/{id}', [GroupController::class, 'updateGroup'])->name('admin.forum.update-group');
-    // Route::delete('forum/groups/{id}', [GroupController::class, 'destroyGroup'])->name('admin.forum.destroy-group');
-
-    // // Post management
-    // Route::get('forum/groups/{id}/posts', [ForumController::class, 'getGroupPosts'])->name('admin.forum.get-group-posts');
-    // Route::delete('forum/posts/{id}', [ForumController::class, 'destroyPost'])->name('admin.forum.destroy-post');
-    // Route::get('forum/top-posts', [ForumController::class, 'getTopPosts'])->name('admin.forum.get-top-posts');
-
-    // // Comment management
-    // Route::delete('forum/comments/{id}', [ForumController::class, 'destroyComment'])->name('admin.forum.destroy-comment');
-
-    // // Announcement management
-    // Route::post('forum/announcements', [ForumController::class, 'createAnnouncement'])->name('admin.forum.create-announcement');
-    // Route::delete('forum/announcements/{id}', [ForumController::class, 'destroyAnnouncement']);
-
-
 
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
@@ -200,7 +152,6 @@ Route::prefix('forum')->name('forum.')->group(function () {
     });
 });
 
-
 // Admin forum routes
 Route::prefix('admin/forum')->name('admin.forum.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [ForumDashboardController::class, 'index'])->name('index');
@@ -218,7 +169,6 @@ Route::prefix('admin/forum')->name('admin.forum.')->middleware(['auth', 'admin']
     Route::get('/top-groups', [GroupController::class, 'getTopGroups'])->name('top-groups');
     Route::get('/active-users', [ForumDashboardController::class, 'getMostActiveUsers'])->name('active-users');
 });
-
 
 Route::fallback(function () {
     return redirect('/')->with('error', 'The page you are looking for does not exist.');
