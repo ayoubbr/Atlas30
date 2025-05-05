@@ -43,7 +43,6 @@ Route::post('/profile/notifications', [ProfileController::class, 'updateNotifica
 // User
 Route::prefix('/')->group(function () {
 
-    Route::get('', [GameController::class, 'home'])->name('home');
 
     Route::get('login', function () {
         return view('user.auth');
@@ -51,10 +50,12 @@ Route::prefix('/')->group(function () {
 
     // Visitor routes
     // GAMES
+    Route::get('', [GameController::class, 'home'])->name('home');
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
     Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
     Route::get('team/{id}/games', [GameController::class, 'teamGames']);
     Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
+
     Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
     // to be confirmed
     Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
