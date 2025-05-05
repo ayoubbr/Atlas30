@@ -33,9 +33,8 @@ class GroupController extends Controller
     {
         $group = $this->groupRepository->getGroupWithPosts($id);
         $posts = $group->paginatedPosts;
-        $pinnedPosts = $this->postRepository->getPinnedPosts($id);
 
-        return view('user.forum.group', compact('group', 'posts', 'pinnedPosts'));
+        return view('user.forum.group', compact('group', 'posts'));
     }
 
     public function createGroup()

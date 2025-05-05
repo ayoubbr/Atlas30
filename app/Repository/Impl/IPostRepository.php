@@ -19,5 +19,4 @@ interface IPostRepository
     public function getMonthlyPostData(): array;
     public function getPostCount(): int;
     public function getPostsByGroupId(int $groupId, int $perPage = 10): LengthAwarePaginator;
-    public function getPinnedPosts(int $groupId): Collection;
 }

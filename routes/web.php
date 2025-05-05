@@ -8,6 +8,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StadiumController;
@@ -30,24 +31,25 @@ use Illuminate\Support\Facades\Route;
 */
 
 // User profile 
-// Route::middleware(['auth'])->group(function () {
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
-// Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
-// });
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+    // Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+});
 
 
-
-// User
+// Visitor routes
 Route::prefix('/')->group(function () {
-
-    Route::get('login', function () {
-        return view('user.auth');
-    })->name('login');
-
-    // Visitor routes
+    
+    // Authentication 
+    Route::get('login', [AuthController::class, 'authenticate'])->name('login');
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register'])->name('register');
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
+   
     // GAMES
     Route::get('', [GameController::class, 'home'])->name('home');
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
@@ -72,41 +74,37 @@ Route::prefix('/')->group(function () {
 
     Route::get('stadiums', [StadiumController::class, 'visitorIndex'])->name('stadiums');
 
-    // Forum Routes
-    Route::prefix('forum')->name('forum.')->group(function () {
-        Route::get('/', [ForumController::class, 'indexUser'])->name('index');
-        Route::get('/group/{id}', [GroupController::class, 'showGroup'])->name('group');
-        Route::get('/group/{groupId}/post/{postId}', [ForumController::class, 'showPost'])->name('post');
+    // // Forum Routes
+    // Route::prefix('forum')->name('forum.')->group(function () {
+    //     Route::get('/', [GroupController::class, 'index'])->name('index');
+    //     Route::get('/group/{id}', [GroupController::class, 'showGroup'])->name('group');
+    //     Route::get('/group/{groupId}/post/{postId}', [PostController::class, 'show'])->name('post');
 
-        // require authentication
-        // Route::middleware(['auth'])->group(function () {
-        // Group creation
-        Route::get('/create-group', [GroupController::class, 'createGroup'])->name('create-group');
-        Route::post('/create-group', [GroupController::class, 'storeGroupUser'])->name('store-group');
+    //     // require authentication
+    //     // Route::middleware(['auth'])->group(function () {
+    //     // Group creation
+    //     Route::get('/create-group', [GroupController::class, 'createGroup'])->name('create-group');
+    //     Route::post('/create-group', [GroupController::class, 'storeGroupUser'])->name('store-group');
 
-        // Post creation
-        Route::get('/group/{groupId}/create-post', [ForumController::class, 'createPost'])->name('create-post');
-        Route::post('/group/{groupId}/create-post', [ForumController::class, 'storePost'])->name('store-post');
+    //     // Post creation
+    //     Route::get('/group/{groupId}/create-post', [ForumController::class, 'createPost'])->name('create-post');
+    //     Route::post('/group/{groupId}/create-post', [ForumController::class, 'storePost'])->name('store-post');
 
-        // Comments
-        Route::post('/group/{groupId}/post/{postId}/comment', [ForumController::class, 'storeComment'])->name('store-comment');
+    //     // Comments
+    //     Route::post('/group/{groupId}/post/{postId}/comment', [ForumController::class, 'storeComment'])->name('store-comment');
 
-        // Likes
-        Route::post('/group/{groupId}/post/{postId}/like', [ForumController::class, 'toggleLike'])->name('toggle-like');
-        // });
-    });
+    //     // Likes
+    //     Route::post('/group/{groupId}/post/{postId}/like', [ForumController::class, 'toggleLike'])->name('toggle-like');
+    //     // });
+    // });
 
-    // Authentication 
-    Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('register', [AuthController::class, 'register'])->name('register');
-    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 });
 
 
-// Admin
+// Admin routes
 // middleware(['auth', 'admin'])->
 Route::prefix('admin')->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
     // TEAM
     Route::get('teams', [TeamController::class, 'index'])->name('admin.teams.index');
     Route::post('teams', [TeamController::class, 'store'])->name('admin.teams.store');
@@ -150,27 +148,76 @@ Route::prefix('admin')->group(function () {
 
 
     // Forum dashboard
-    Route::get('forum', [ForumController::class, 'index'])->name('admin.forum.index');
-    // Group management
-    Route::post('forum/groups', [GroupController::class, 'storeGroup'])->name('admin.forum.store-group');
-    Route::get('forum/groups/{id}', [ForumController::class, 'getGroup'])->name('admin.forum.get-group');
-    Route::put('forum/groups/{id}', [GroupController::class, 'updateGroup'])->name('admin.forum.update-group');
-    Route::delete('forum/groups/{id}', [GroupController::class, 'destroyGroup'])->name('admin.forum.destroy-group');
-    // Post management
-    Route::get('forum/groups/{id}/posts', [ForumController::class, 'getGroupPosts'])->name('admin.forum.get-group-posts');
-    Route::delete('forum/posts/{id}', [ForumController::class, 'destroyPost'])->name('admin.forum.destroy-post');
-    Route::get('forum/top-posts', [ForumController::class, 'getTopPosts'])->name('admin.forum.get-top-posts');
-    // Comment management
-    Route::delete('forum/comments/{id}', [ForumController::class, 'destroyComment'])->name('admin.forum.destroy-comment');
-    // Announcement management
-    Route::post('forum/announcements', [ForumController::class, 'createAnnouncement'])->name('admin.forum.create-announcement');
-    Route::delete('forum/announcements/{id}', [ForumController::class, 'destroyAnnouncement']);
+    // Route::get('forum', [ForumController::class, 'index'])->name('admin.forum.index');
+
+    // // Group management
+    // Route::post('forum/groups', [GroupController::class, 'storeGroup'])->name('admin.forum.store-group');
+    // Route::get('forum/groups/{id}', [ForumController::class, 'getGroup'])->name('admin.forum.get-group');
+    // Route::put('forum/groups/{id}', [GroupController::class, 'updateGroup'])->name('admin.forum.update-group');
+    // Route::delete('forum/groups/{id}', [GroupController::class, 'destroyGroup'])->name('admin.forum.destroy-group');
+
+    // // Post management
+    // Route::get('forum/groups/{id}/posts', [ForumController::class, 'getGroupPosts'])->name('admin.forum.get-group-posts');
+    // Route::delete('forum/posts/{id}', [ForumController::class, 'destroyPost'])->name('admin.forum.destroy-post');
+    // Route::get('forum/top-posts', [ForumController::class, 'getTopPosts'])->name('admin.forum.get-top-posts');
+
+    // // Comment management
+    // Route::delete('forum/comments/{id}', [ForumController::class, 'destroyComment'])->name('admin.forum.destroy-comment');
+
+    // // Announcement management
+    // Route::post('forum/announcements', [ForumController::class, 'createAnnouncement'])->name('admin.forum.create-announcement');
+    // Route::delete('forum/announcements/{id}', [ForumController::class, 'destroyAnnouncement']);
+
+
+
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
-
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('admin');
 });
 
+// Forum routes
+Route::prefix('forum')->name('forum.')->group(function () {
+    Route::get('/', [GroupController::class, 'index'])->name('index');
+    Route::get('/group/{id}', [GroupController::class, 'showGroup'])->name('group');
+    Route::get('/group/{groupId}/post/{postId}', [PostController::class, 'show'])->name('post');
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/create-group', [GroupController::class, 'createGroup'])->name('create-group');
+        Route::post('/create-group', [GroupController::class, 'storeGroupUser'])->name('store-group');
+
+        Route::get('/group/{groupId}/create-post', [PostController::class, 'create'])->name('create-post');
+        Route::post('/group/{groupId}/create-post', [PostController::class, 'store'])->name('store-post');
+
+        Route::post('/group/{groupId}/post/{postId}/comment', [CommentController::class, 'store'])->name('store-comment');
+        Route::post('/group/{groupId}/post/{postId}/like', [LikeController::class, 'toggleLike'])->name('toggle-like');
+
+        Route::get('/group/{groupId}/post/{postId}/edit', [PostController::class, 'edit'])->name('edit-post');
+        Route::put('/group/{groupId}/post/{postId}', [PostController::class, 'update'])->name('update-post');
+
+        Route::get('/group/{id}/edit', [GroupController::class, 'edit'])->name('edit-group');
+        Route::put('/group/{id}', [GroupController::class, 'updateGroup'])->name('update-group');
+
+        Route::get('/my-likes', [LikeController::class, 'getUserLikes'])->name('my-likes');
+    });
+});
+
+
+// Admin forum routes
+Route::prefix('admin/forum')->name('admin.forum.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', [ForumDashboardController::class, 'index'])->name('index');
+
+    Route::post('/announcement', [ForumDashboardController::class, 'createAnnouncement'])->name('create-announcement');
+    Route::delete('/announcement/{id}', [ForumDashboardController::class, 'destroyAnnouncement'])->name('destroy-announcement');
+
+    Route::delete('/post/{id}', [PostController::class, 'destroy'])->name('destroy-post');
+    Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('destroy-comment');
+    Route::delete('/group/{id}', [GroupController::class, 'destroyGroup'])->name('destroy-group');
+
+    Route::get('/top-posts', [PostController::class, 'getTopPosts'])->name('top-posts');
+    Route::get('/recent-posts', [PostController::class, 'getRecentPosts'])->name('recent-posts');
+    Route::get('/recent-comments', [CommentController::class, 'getRecentComments'])->name('recent-comments');
+    Route::get('/top-groups', [GroupController::class, 'getTopGroups'])->name('top-groups');
+    Route::get('/active-users', [ForumDashboardController::class, 'getMostActiveUsers'])->name('active-users');
+});
 
 
 Route::fallback(function () {

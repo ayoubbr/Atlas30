@@ -59,7 +59,6 @@ class PostRepository implements IPostRepository
         $post->content = $data['content'];
         $post->user_id = $userId;
         $post->group_id = $groupId;
-        $post->is_pinned = $data['is_pinned'] ?? false;
         $post->save();
 
         return $post;
@@ -75,7 +74,6 @@ class PostRepository implements IPostRepository
 
         $post->title = $data['title'];
         $post->content = $data['content'];
-        $post->is_pinned = $data['is_pinned'] ?? $post->is_pinned;
 
         return $post->save();
     }
@@ -144,18 +142,7 @@ class PostRepository implements IPostRepository
         return Post::where('group_id', $groupId)
             ->with(['user', 'comments', 'likes'])
             ->withCount(['comments', 'likes'])
-            ->orderBy('is_pinned', 'desc')
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
-    }
-
-    public function getPinnedPosts(int $groupId): Collection
-    {
-        return Post::where('group_id', $groupId)
-            ->where('is_pinned', true)
-            ->with(['user'])
-            ->withCount(['comments', 'likes'])
-            ->orderBy('created_at', 'desc')
-            ->get();
     }
 }

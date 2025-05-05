@@ -128,7 +128,6 @@ class GroupRepository implements IGroupRepository
         $posts = Post::where('group_id', $id)
             ->with(['user', 'comments', 'likes'])
             ->withCount(['comments', 'likes'])
-            ->orderBy('is_pinned', 'desc')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

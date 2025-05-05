@@ -15,6 +15,11 @@ class AuthController extends Controller
         $this->authRepository = $authRepository;
     }
 
+    public function authenticate()
+    {
+        return view('user.auth');
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
