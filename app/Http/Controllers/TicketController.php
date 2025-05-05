@@ -2,41 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ticket;
 use App\Models\Game;
 use App\Models\User;
+use App\Repository\Impl\ITicketRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    private $ticketRepository;
+
+    public function __construct(ITicketRepository $ticketRepository)
+    {
+        $this->ticketRepository = $ticketRepository;
+    }
 
     public function index()
     {
-        $tickets = Ticket::with(['game.homeTeam', 'game.awayTeam', 'user'])->paginate(30);
+        $tickets = $this->ticketRepository->getAllTickets();
         $games = Game::with(['homeTeam', 'awayTeam'])->get();
         $users = User::all();
 
-        // Get ticket statistics
-        $availableTickets = Ticket::where('status', 'available')->count();
-        $soldTickets = Ticket::where('status', 'sold')->count();
-        $reservedTickets = Ticket::where('status', 'reserved')->count();
-        $totalRevenue = Ticket::where('status', 'used')->orWhere('status', 'paid')->sum('price');
+        $statistics = $this->ticketRepository->getTicketStatistics();
         $categories = ['regular', 'premium', 'standard', 'vip'];
-
 
         return view('admin.tickets', compact(
             'tickets',
             'games',
             'users',
-            'availableTickets',
-            'soldTickets',
-            'reservedTickets',
-            'totalRevenue',
-            'categories'
+            'categories',
+            'statistics'
         ));
     }
-
 
     public function store(Request $request)
     {
@@ -47,24 +44,14 @@ class TicketController extends Controller
             'status' => 'required|string|in:available,sold,reserved,canceled'
         ]);
 
-        $ticket = new Ticket();
-        $ticket->game_id = $request->game_id;
-        $ticket->user_id = $request->user_id;
-        $ticket->price = $request->price;
-        $ticket->place_number = $request->place_number;
-        $ticket->status = $request->status;
-        $ticket->section = $request->section;
-        $ticket->save();
+        $this->ticketRepository->createTicket($request->all());
 
         return redirect()->route('admin.tickets.index')
             ->with('success', 'Ticket created successfully.');
     }
 
-
     public function update(Request $request, $id)
     {
-        $ticket = Ticket::findOrFail($id);
-
         $request->validate([
             'game_id' => 'required|exists:games,id',
             'price' => 'required|numeric|min:0',
@@ -72,44 +59,36 @@ class TicketController extends Controller
             'status' => 'required|string|in:available,sold,reserved,canceled'
         ]);
 
-        $ticket->game_id = $request->game_id;
-        $ticket->user_id = $request->user_id;
-        $ticket->price = $request->price;
-        $ticket->place_number = $request->place_number;
-        $ticket->status = $request->status;
-        $ticket->section = $request->section;
-        $ticket->save();
+        $result = $this->ticketRepository->updateTicket($id, $request->all());
+
+        if (!$result) {
+            return redirect()->route('admin.tickets.index')
+                ->with('error', 'Failed to update ticket.');
+        }
 
         return redirect()->route('admin.tickets.index')
             ->with('success', 'Ticket updated successfully.');
     }
 
-
     public function destroy($id)
     {
-        $ticket = Ticket::findOrFail($id);
+        $result = $this->ticketRepository->deleteTicket($id);
 
-        // Check if ticket has a payment
-        if ($ticket->payment) {
+        if (!$result) {
             return redirect()->route('admin.tickets.index')
                 ->with('error', 'Cannot delete ticket with associated payment.');
         }
 
-        $ticket->delete();
-
         return redirect()->route('admin.tickets.index')
             ->with('success', 'Ticket deleted successfully.');
     }
-
 
     public function checkout(Request $request)
     {
         $ticketIds = explode(',', $request->query('tickets'));
         $success = session('success');
 
-        $tickets = Ticket::whereIn('id', $ticketIds)
-            ->with(['game.homeTeam', 'game.awayTeam', 'game.stadium'])
-            ->get();
+        $tickets = $this->ticketRepository->getTicketsByIds($ticketIds);
 
         if ($tickets->isEmpty()) {
             return redirect()->route('games')->with('error', 'No tickets found.');
@@ -120,9 +99,11 @@ class TicketController extends Controller
 
     public function downloadPdf($ticketId)
     {
-        $ticket = Ticket::where('id', $ticketId)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        $ticket = $this->ticketRepository->getTicketByIdAndUser($ticketId, auth()->id());
+
+        if (!$ticket) {
+            return redirect()->back()->with('error', 'Ticket not found.');
+        }
 
         $pdf = Pdf::loadView('user.ticket-pdf', compact('ticket'));
         $pdf->setPaper('a4', 'portrait');
@@ -138,7 +119,11 @@ class TicketController extends Controller
 
     public function verifyTicket($id)
     {
-        $ticket = Ticket::with(['game.homeTeam', 'game.awayTeam', 'game.stadium', 'user'])->findOrFail($id);
+        $ticket = $this->ticketRepository->getTicketWithRelations($id);
+
+        if (!$ticket) {
+            return redirect()->back()->with('error', 'Ticket not found.');
+        }
 
         return view('user.ticket-verify', compact('ticket'));
     }
