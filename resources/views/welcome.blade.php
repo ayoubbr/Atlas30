@@ -4,7 +4,7 @@
 
 @section('css')
     <style>
-        /* Countdown Section */
+        /* Countdown */
         .countdown {
             background-color: var(--secondary);
             color: white;
@@ -41,7 +41,7 @@
             letter-spacing: 1px;
         }
 
-        /* Features Section */
+        /* Features */
         .features {
             padding: 80px 0;
             background-color: white;
@@ -82,7 +82,7 @@
             margin-bottom: 15px;
         }
 
-        /* Upcoming Matches */
+        /* Upcoming */
         .matches {
             padding: 80px 0;
             background-color: #f8f9fa;
@@ -172,7 +172,7 @@
             text-align: center;
         }
 
-        /* Community Section */
+        /* Community */
         .community {
             padding: 80px 0;
             background-color: white;
@@ -219,55 +219,6 @@
             color: var(--success);
             margin-right: 10px;
             font-size: 1.2rem;
-        }
-
-        /* Newsletter */
-        .newsletter {
-            padding: 60px 0;
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-        }
-
-        .newsletter h2 {
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .newsletter p {
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .newsletter-form {
-            display: flex;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .newsletter-form input {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px 0 0 4px;
-            font-size: 1rem;
-        }
-
-        .newsletter-form button {
-            padding: 12px 20px;
-            background-color: var(--accent);
-            color: var(--dark);
-            border: none;
-            border-radius: 0 4px 4px 0;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .newsletter-form button:hover {
-            background-color: #dab10d;
         }
 
         /* Responsive Styles */
@@ -346,7 +297,6 @@
 @endsection
 
 @section('content')
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -361,7 +311,6 @@
         </div>
     </section>
 
-    <!-- Countdown Section -->
     <section class="countdown">
         <div class="container">
             <h2>Countdown to Kickoff</h2>
@@ -386,7 +335,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features">
         <div class="container">
             <div class="section-title">
@@ -419,7 +367,6 @@
         </div>
     </section>
 
-    <!-- Upcoming Matches -->
     <section class="matches">
         <div class="container">
             <div class="section-title">
@@ -465,7 +412,6 @@
         </div>
     </section>
 
-    <!-- Community Section -->
     <section class="community">
         <div class="container">
             <div class="community-content">
@@ -501,27 +447,11 @@
         </div>
     </section>
 
-    <!-- Newsletter -->
-    <section class="newsletter">
-        <div class="container">
-            <h2>Stay Updated</h2>
-            <p>Subscribe to our newsletter to receive the latest news, ticket releases, and special offers for the World
-                Cup 2030.</p>
-            <form class="newsletter-form">
-                <input disabled type="email" placeholder="Enter your email address" required>
-                <button type="submit" disabled>Subscribe</button>
-            </form>
-        </div>
-    </section>
 @endsection
 
 @section('js')
-    <!-- JavaScript for Countdown -->
     <script>
-        // You can implement the actual countdown functionality here
-        // This is just a placeholder for now
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
             const mobileMenuBtn = document.querySelector('.mobile-menu');
             const navLinks = document.querySelector('.nav-links');
 
@@ -534,24 +464,16 @@
             // Countdown functionality
             const countdownNumbers = document.querySelectorAll('.countdown-number');
 
-            // Set the World Cup date (example: June 8, 2030)
             const worldCupDate = new Date('June 8, 2030 00:00:00').getTime();
-
-            // Update the countdown every second
             const countdownTimer = setInterval(function() {
-                // Get today's date and time
                 const now = new Date().getTime();
-
-                // Find the distance between now and the World Cup date
                 const distance = worldCupDate - now;
 
-                // Time calculations for days, hours, minutes and seconds
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Display the results
                 if (countdownNumbers.length >= 4) {
                     countdownNumbers[0].textContent = days;
                     countdownNumbers[1].textContent = hours;
@@ -559,7 +481,6 @@
                     countdownNumbers[3].textContent = seconds;
                 }
 
-                // If the countdown is finished, display a message
                 if (distance < 0) {
                     clearInterval(countdownTimer);
                     document.querySelector('.countdown-container').innerHTML =

@@ -2,7 +2,6 @@
     <div class="container">
         <nav class="navbar">
             <a href="{{ url('/') }}" class="logo">
-                {{-- <i class="fas fa-futbol"></i> Atlas30 --}}
                 <img src="{{ asset('logo_landscape_trans.png') }}" alt="" width="150px">
             </a>
             <ul class="nav-links">
