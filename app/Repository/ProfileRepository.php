@@ -113,4 +113,9 @@ class ProfileRepository implements IProfileRepository
     {
         return Post::where('user_id', $id)->count();
     }
+
+    public function getUserTickets(int $id): Collection
+    {
+        return Ticket::where('user_id', $id)->get();
+    }
 }

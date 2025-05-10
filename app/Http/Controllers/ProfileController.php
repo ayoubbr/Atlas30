@@ -21,8 +21,9 @@ class ProfileController extends Controller
         $user = $this->profileRepository->getUserWithTickets($userId);
         $postCount = $this->profileRepository->getUserPostCount($userId);
         $activities = $this->profileRepository->getUserActivity($userId);
+        $tickets = $this->profileRepository->getUserTickets($userId);
 
-        return view('user.profile', compact('user', 'postCount', 'activities'));
+        return view('user.profile', compact('user', 'postCount', 'activities', 'tickets'));
     }
 
     public function update(Request $request)

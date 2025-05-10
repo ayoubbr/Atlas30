@@ -127,4 +127,8 @@ class TicketController extends Controller
 
         return view('user.ticket-verify', compact('ticket'));
     }
+
+    public function userTicketsShow(){
+        
+    }
 }

@@ -32,10 +32,11 @@ use Illuminate\Support\Facades\Route;
 
 // User profile 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::post('/profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::post('profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 
@@ -46,8 +47,6 @@ Route::prefix('/')->group(function () {
     Route::get('login', [AuthController::class, 'authenticate'])->name('login');
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('register', [AuthController::class, 'register'])->name('register');
-    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
-    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
 
     // GAMES
     Route::get('', [GameController::class, 'home'])->name('home');
