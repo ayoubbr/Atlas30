@@ -27,7 +27,7 @@ class GameFactory extends Factory
             'home_team_goals' => $this->faker->numberBetween(0, 5),
             'away_team_goals' => $this->faker->numberBetween(0, 5),
             'image' => 'Atlas30_logo.png',
-            'status' => $this->faker->randomElement(['scheduled', 'live', 'completed', 'canceled', 'postponed']),
+            'status' => $this->faker->randomElement(['upcoming', 'live', 'completed', 'canceled', 'postponed']),
         ];
     }
 }

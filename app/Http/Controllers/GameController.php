@@ -22,7 +22,7 @@ class GameController extends Controller
         $upcomingMatches = $this->gameRepository->home();
         return view('welcome', compact('upcomingMatches'));
     }
-    
+
     public function index()
     {
         $games = $this->gameRepository->getAllWithRelations();
@@ -149,7 +149,7 @@ class GameController extends Controller
     {
         $team = Team::findOrFail($teamId);
         $games = $this->gameRepository->getTeamGames($teamId);
-
+      
         return view('user.team-games', compact('games', 'team'));
     }
 

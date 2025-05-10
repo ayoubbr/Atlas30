@@ -539,7 +539,7 @@
                 <div class="match-teams">
                     <div class="match-team">
                         <div class="team-flag"
-                            style="background-image: url('{{ $game->homeTeam->flag ?? 'https://via.placeholder.com/60x40/3498db/ffffff?text=' . substr($game->homeTeam->name, 0, 3) }}')">
+                            style="background-image: url('{{ asset($game->homeTeam->flag) ?? 'https://via.placeholder.com/60x40/3498db/ffffff?text=' . substr($game->homeTeam->name, 0, 3) }}')">
                         </div>
                         <div class="team-name">{{ $game->homeTeam->name }}</div>
                     </div>
@@ -552,7 +552,7 @@
                     </div>
                     <div class="match-team">
                         <div class="team-flag"
-                            style="background-image: url('{{ $game->awayTeam->flag ?? 'https://via.placeholder.com/60x40/e74c3c/ffffff?text=' . substr($game->awayTeam->name, 0, 3) }}')">
+                            style="background-image: url('{{ asset($game->awayTeam->flag) ?? 'https://via.placeholder.com/60x40/e74c3c/ffffff?text=' . substr($game->awayTeam->name, 0, 3) }}')">
                         </div>
                         <div class="team-name">{{ $game->awayTeam->name }}</div>
                     </div>
@@ -578,7 +578,7 @@
             </div>
         </section>
 
-        @if ($game->status != 'completed' && $game->status != 'cancelled')
+        @if ($game->status == 'upcoming' || $game->status == 'live')
             <div class="seat-selection-container">
                 <section class="stadium-map-container">
                     <div class="stadium-map-header">

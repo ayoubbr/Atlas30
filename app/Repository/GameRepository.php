@@ -183,7 +183,7 @@ class GameRepository implements IGameRepository
                     $query->orderBy('start_date', 'desc')->orderBy('start_hour', 'desc');
                     break;
                 case 'status':
-                    $query->orderByRaw("FIELD(status, 'live', 'scheduled', 'completed', 'postponed', 'cancelled')")
+                    $query->orderByRaw("FIELD(status, 'live', 'upcoming', 'completed', 'postponed', 'cancelled')")
                         ->orderBy('start_date', 'asc');
                     break;
                 default:
@@ -214,7 +214,7 @@ class GameRepository implements IGameRepository
     public function getUpcomingGames($limit = 5)
     {
         return Game::with(['homeTeam', 'awayTeam', 'stadium'])
-            ->where('status', 'scheduled')
+            ->where('status', 'upcoming')
             ->orderBy('start_date', 'asc')
             ->orderBy('start_hour', 'asc')
             ->limit($limit)

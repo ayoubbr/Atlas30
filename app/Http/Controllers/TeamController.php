@@ -92,10 +92,20 @@ class TeamController extends Controller
         }
 
         $stats = $this->teamRepository->getTeamStatistics($id);
-
+        $totalMatches =  $this->teamRepository->getTeamGamesCount($id);
+        $homeMatches =  $this->teamRepository->getHomeTeamGamesCount($id);
+        $awayMatches =  $this->teamRepository->getAwayTeamGamesCount($id);
+        $upcomingMatches =  $this->teamRepository->getTeamUpcomingGames($id);
+        $recentMatches =  $this->teamRepository->getTeamRecentGames($id);
+        // dd($upcomingMatches);
         return view('user.team-details', compact(
             'team',
-            'stats'
+            'stats',
+            'totalMatches',
+            'homeMatches',
+            'awayMatches',
+            'upcomingMatches',
+            'recentMatches'
         ));
     }
 }

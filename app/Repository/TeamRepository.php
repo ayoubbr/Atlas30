@@ -151,4 +151,48 @@ class TeamRepository implements ITeamRepository
             'awayMatches' => $awayMatches
         ];
     }
+
+    public function getTeamGamesCount(int $id): int
+    {
+        return Game::where('home_team_id', $id)->orWhere('away_team_id', $id)->count();
+    }
+
+    public function getHomeTeamGamesCount(int $id): int
+    {
+        return Game::where('home_team_id', $id)->count();
+    }
+
+    public function getAwayTeamGamesCount(int $id): int
+    {
+        return Game::where('away_team_id', $id)->count();
+    }
+
+    public function getTeamUpcomingGames(int $id): Collection
+    {
+        return Game::with(['homeTeam', 'awayTeam', 'stadium'])
+            ->where(function ($query) {
+                $query->where('status', 'upcoming')
+                    ->orWhere('status', 'live');
+            })->where(function ($query) use ($id) {
+                $query->where('home_team_id', $id)
+                    ->orWhere('away_team_id', $id);
+            })->orderBy('start_date', 'asc')
+            ->orderBy('start_hour', 'asc')
+            ->get();
+    }
+
+    public function getTeamRecentGames(int $id): Collection
+    {
+        return Game::with(['homeTeam', 'awayTeam', 'stadium'])
+            ->where(function ($query) {
+                $query->where('status', 'completed')
+                    ->orWhere('status', 'canceled')
+                    ->orWhere('status', 'postponed');
+            })->where(function ($query) use ($id) {
+                $query->where('home_team_id', $id)
+                    ->orWhere('away_team_id', $id);
+            })->orderBy('start_date', 'asc')
+            ->orderBy('start_hour', 'asc')
+            ->get();
+    }
 }

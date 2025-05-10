@@ -18,4 +18,5 @@ interface ITeamRepository
     public function searchTeams(string $search = null, string $sort = 'name', string $direction = 'asc', int $perPage = 12): LengthAwarePaginator;
     public function getTeamWithMatches(int $id): ?Team;
     public function getTeamStatistics(int $id): array;
+    public function getTeamRecentGames(int $id): Collection;
 }

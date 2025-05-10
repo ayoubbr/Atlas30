@@ -287,7 +287,7 @@
             gap: 5px;
         }
 
-        .match-status.scheduled {
+        .match-status.upcoming {
             background-color: var(--info);
             color: white;
         }
@@ -703,7 +703,7 @@
                         <label for="status">Status</label>
                         <select class="form-control" id="status" name="status">
                             <option value="">All Statuses</option>
-                            <option value="scheduled">Scheduled</option>
+                            <option value="upcoming">upcoming</option>
                             <option value="live">Live</option>
                             <option value="completed">Completed</option>
                             <option value="postponed">Postponed</option>
@@ -772,7 +772,7 @@
 
                                 <div class="match-status {{ $game->status }}">
                                     @switch($game->status)
-                                        @case('scheduled')
+                                        @case('upcoming')
                                             <i class="fas fa-clock"></i> {{ ucfirst($game->status) }}
                                         @break
 
