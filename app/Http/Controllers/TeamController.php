@@ -97,7 +97,8 @@ class TeamController extends Controller
         $awayMatches =  $this->teamRepository->getAwayTeamGamesCount($id);
         $upcomingMatches =  $this->teamRepository->getTeamUpcomingGames($id);
         $recentMatches =  $this->teamRepository->getTeamRecentGames($id);
-        // dd($upcomingMatches);
+        $upcomingMatchesCount = $upcomingMatches->count();
+
         return view('user.team-details', compact(
             'team',
             'stats',
@@ -105,7 +106,8 @@ class TeamController extends Controller
             'homeMatches',
             'awayMatches',
             'upcomingMatches',
-            'recentMatches'
+            'recentMatches',
+            'upcomingMatchesCount'
         ));
     }
 }

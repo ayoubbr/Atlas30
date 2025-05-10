@@ -30,19 +30,30 @@ class DatabaseSeeder extends Seeder
             'firstname' => 'Admin',
             'lastname' => 'User',
             'email' => 'admin@atlas.com',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('password'),
             'status' => 'active',
             'image' => 'https://cdn-icons-png.flaticon.com/512/9703/9703596.png',
             'role_id' => $adminRole->id,
         ]);
 
+        // Normal User
+        User::create([
+            'firstname' => 'Ayoub',
+            'lastname' => 'Benmansour',
+            'email' => 'ayoub1benmansour@gmail.com',
+            'password' => Hash::make('password'),
+            'status' => 'active',
+            'image' => 'https://cdn-icons-png.flaticon.com/128/3250/3250434.png',
+            'role_id' => $userRole->id,
+        ]);
+
         User::factory()->count(3)->create(['role_id' => $userRole->id]);
 
-        $teams = Team::factory()->count(3)->create();
+        $teams = Team::factory()->count(4)->create();
 
-        $stadiums = Stadium::factory()->count(3)->create();
+        $stadiums = Stadium::factory()->count(4)->create();
 
-        $games = Game::factory()->count(10)->create();
+        $games = Game::factory()->count(8)->create();
 
         $users = User::where('role_id', $userRole->id)->get();
 
@@ -69,12 +80,12 @@ class DatabaseSeeder extends Seeder
 
         $groups = Group::factory()->count(3)->create();
 
-        $posts = Post::factory()->count(3)->create();
+        $posts = Post::factory()->count(6)->create();
 
-        Comment::factory()->count(3)->create();
+        Comment::factory()->count(8)->create();
 
-        Like::factory()->count(3)->create();
+        Like::factory()->count(15)->create();
 
-        Notification::factory()->count(3)->create();
+        Notification::factory()->count(5)->create();
     }
 }

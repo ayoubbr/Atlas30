@@ -8,6 +8,7 @@ use App\Repository\Impl\IGroupRepository;
 use App\Repository\Impl\ILikeRepository;
 use App\Repository\Impl\IPostRepository;
 use App\Repository\Impl\INotificationRepository;
+use Illuminate\Support\Facades\Request;
 
 class ForumController extends Controller
 {
@@ -88,8 +89,8 @@ class ForumController extends Controller
             'user_ids.*' => 'exists:users,id',
         ]);
 
-        $content = $request->content;
-        $userIds = $request->has('user_ids') ? $request->user_ids : null;
+        $content = $request['content'];
+        $userIds = $request->has('user_ids') ? $request['user_ids'] : null;
 
         if ($userIds && !empty($userIds)) {
             foreach ($userIds as $userId) {

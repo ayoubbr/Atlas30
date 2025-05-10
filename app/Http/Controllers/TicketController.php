@@ -116,19 +116,4 @@ class TicketController extends Controller
 
         return $pdf->download('ticket_' . $ticket->id . '.pdf');
     }
-
-    public function verifyTicket($id)
-    {
-        $ticket = $this->ticketRepository->getTicketWithRelations($id);
-
-        if (!$ticket) {
-            return redirect()->back()->with('error', 'Ticket not found.');
-        }
-
-        return view('user.ticket-verify', compact('ticket'));
-    }
-
-    public function userTicketsShow(){
-        
-    }
 }

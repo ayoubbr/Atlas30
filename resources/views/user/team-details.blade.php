@@ -749,16 +749,9 @@
                                 <div class="team-stat-label">Away Matches</div>
                                 <div class="team-stat-value">{{ $awayMatches }}</div>
                             </div>
-                            @php
-                                $upcomingCount = \App\Models\Game::where(function ($query) use ($team) {
-                                    $query->where('home_team_id', $team->id)->orWhere('away_team_id', $team->id);
-                                })
-                                    ->where('start_date', '>=', now()->format('Y-m-d'))
-                                    ->count();
-                            @endphp
                             <div class="team-stat-item">
                                 <div class="team-stat-label">Upcoming Matches</div>
-                                <div class="team-stat-value">{{ $upcomingCount }}</div>
+                                <div class="team-stat-value">{{ $upcomingMatchesCount }}</div>
                             </div>
                         </div>
                     </div>

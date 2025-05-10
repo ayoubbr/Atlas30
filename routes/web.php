@@ -4,7 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ForumDashboardController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LikeController;
@@ -37,6 +37,36 @@ Route::middleware(['auth'])->group(function () {
     Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::post('profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
+    Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
+
+
+    // Forum routes
+    Route::prefix('forum')->name('forum.')->group(function () {
+        Route::get('/', [GroupController::class, 'index'])->name('index');
+        Route::get('/group/{id}', [GroupController::class, 'showGroup'])->name('group');
+        Route::get('/group/{groupId}/post/{postId}', [PostController::class, 'show'])->name('post');
+
+        Route::middleware(['auth'])->group(function () {
+            Route::get('/create-group', [GroupController::class, 'createGroup'])->name('create-group');
+            Route::post('/create-group', [GroupController::class, 'storeGroupUser'])->name('store-group');
+
+            Route::get('/group/{groupId}/create-post', [PostController::class, 'create'])->name('create-post');
+            Route::post('/group/{groupId}/create-post', [PostController::class, 'store'])->name('store-post');
+
+            Route::post('/group/{groupId}/post/{postId}/comment', [CommentController::class, 'store'])->name('store-comment');
+            Route::post('/group/{groupId}/post/{postId}/like', [LikeController::class, 'toggleLike'])->name('toggle-like');
+
+            Route::get('/group/{groupId}/post/{postId}/edit', [PostController::class, 'edit'])->name('edit-post');
+            Route::put('/group/{groupId}/post/{postId}', [PostController::class, 'update'])->name('update-post');
+
+            Route::get('/group/{id}/edit', [GroupController::class, 'edit'])->name('edit-group');
+            Route::put('/group/{id}', [GroupController::class, 'updateGroup'])->name('update-group');
+
+            Route::get('/my-likes', [LikeController::class, 'getUserLikes'])->name('my-likes');
+        });
+    });
 });
 
 
@@ -51,17 +81,15 @@ Route::prefix('/')->group(function () {
     // GAMES
     Route::get('', [GameController::class, 'home'])->name('home');
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
-    Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
-    Route::get('team/{id}/games', [GameController::class, 'teamGames']);
-    Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
+    // Route::get('team/{id}/games', [GameController::class, 'teamGames']);
+
 
     // TICKETS
     Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
     Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
     Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
     Route::get('user/tickets/{id}/download', [TicketController::class, 'downloadPdf'])->name('user.ticket.download');
-    Route::get('user/tickets/show', [TicketController::class, 'userTicketsShow'])->name('user.ticket.view');
-    Route::get('tickets/verify/{id}', [TicketController::class, 'verifyTicket'])->name('tickets.verify');
+    // Route::get('user/tickets/show', [TicketController::class, 'userTicketsShow'])->name('user.ticket.view');
 
     // TEAMS
     Route::get('teams', [TeamController::class, 'visitorIndex'])->name('teams');
@@ -125,38 +153,14 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
 });
 
-// Forum routes
-Route::prefix('forum')->name('forum.')->group(function () {
-    Route::get('/', [GroupController::class, 'index'])->name('index');
-    Route::get('/group/{id}', [GroupController::class, 'showGroup'])->name('group');
-    Route::get('/group/{groupId}/post/{postId}', [PostController::class, 'show'])->name('post');
 
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/create-group', [GroupController::class, 'createGroup'])->name('create-group');
-        Route::post('/create-group', [GroupController::class, 'storeGroupUser'])->name('store-group');
-
-        Route::get('/group/{groupId}/create-post', [PostController::class, 'create'])->name('create-post');
-        Route::post('/group/{groupId}/create-post', [PostController::class, 'store'])->name('store-post');
-
-        Route::post('/group/{groupId}/post/{postId}/comment', [CommentController::class, 'store'])->name('store-comment');
-        Route::post('/group/{groupId}/post/{postId}/like', [LikeController::class, 'toggleLike'])->name('toggle-like');
-
-        Route::get('/group/{groupId}/post/{postId}/edit', [PostController::class, 'edit'])->name('edit-post');
-        Route::put('/group/{groupId}/post/{postId}', [PostController::class, 'update'])->name('update-post');
-
-        Route::get('/group/{id}/edit', [GroupController::class, 'edit'])->name('edit-group');
-        Route::put('/group/{id}', [GroupController::class, 'updateGroup'])->name('update-group');
-
-        Route::get('/my-likes', [LikeController::class, 'getUserLikes'])->name('my-likes');
-    });
-});
 
 // Admin forum routes
 Route::prefix('admin/forum')->name('admin.forum.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [ForumDashboardController::class, 'index'])->name('index');
+    Route::get('/', [ForumController::class, 'index'])->name('index');
 
-    Route::post('/announcement', [ForumDashboardController::class, 'createAnnouncement'])->name('create-announcement');
-    Route::delete('/announcement/{id}', [ForumDashboardController::class, 'destroyAnnouncement'])->name('destroy-announcement');
+    Route::post('/announcement', [ForumController::class, 'createAnnouncement'])->name('create-announcement');
+    Route::delete('/announcement/{id}', [ForumController::class, 'destroyAnnouncement'])->name('destroy-announcement');
 
     Route::delete('/post/{id}', [PostController::class, 'destroy'])->name('destroy-post');
     Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('destroy-comment');
@@ -166,7 +170,7 @@ Route::prefix('admin/forum')->name('admin.forum.')->middleware(['auth', 'admin']
     Route::get('/recent-posts', [PostController::class, 'getRecentPosts'])->name('recent-posts');
     Route::get('/recent-comments', [CommentController::class, 'getRecentComments'])->name('recent-comments');
     Route::get('/top-groups', [GroupController::class, 'getTopGroups'])->name('top-groups');
-    Route::get('/active-users', [ForumDashboardController::class, 'getMostActiveUsers'])->name('active-users');
+    Route::get('/active-users', [ForumController::class, 'getMostActiveUsers'])->name('active-users');
 });
 
 Route::fallback(function () {
