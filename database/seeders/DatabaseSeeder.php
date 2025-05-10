@@ -49,11 +49,11 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->count(3)->create(['role_id' => $userRole->id]);
 
-        $teams = Team::factory()->count(4)->create();
+        $teams = Team::factory()->count(3)->create();
 
-        $stadiums = Stadium::factory()->count(4)->create();
+        $stadiums = Stadium::factory()->count(3)->create();
 
-        $games = Game::factory()->count(8)->create();
+        $games = Game::factory()->count(3)->create();
 
         $users = User::where('role_id', $userRole->id)->get();
 
@@ -80,12 +80,12 @@ class DatabaseSeeder extends Seeder
 
         $groups = Group::factory()->count(3)->create();
 
-        $posts = Post::factory()->count(6)->create();
+        $posts = Post::factory()->count(3)->create();
 
-        Comment::factory()->count(8)->create();
+        Comment::factory()->count(3)->create();
 
-        Like::factory()->count(15)->create();
+        Like::factory()->count(3)->create();
 
-        Notification::factory()->count(5)->create();
+        Notification::factory()->count(3)->create();
     }
 }
