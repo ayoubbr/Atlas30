@@ -193,7 +193,7 @@ class GameRepository implements IGameRepository
             $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
         }
 
-        return $query->paginate(12)->withQueryString();
+        return $query->get();
     }
 
     public function getGameWithRelations($id)

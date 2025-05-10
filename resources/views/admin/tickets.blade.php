@@ -944,8 +944,8 @@
                     <i class="fas fa-ticket-alt"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-value">{{ number_format($availableTickets) }}</div>
-                    <div class="stat-label">Available Tickets</div>
+                    <div class="stat-value">{{ number_format($statistics['usedTickets']) }}</div>
+                    <div class="stat-label">Used Tickets</div>
                 </div>
                 <i class="fas fa-ticket-alt stat-bg"></i>
             </div>
@@ -955,8 +955,8 @@
                     <i class="fas fa-shopping-cart"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-value">{{ number_format($soldTickets) }}</div>
-                    <div class="stat-label">Tickets Sold</div>
+                    <div class="stat-value">{{ number_format($statistics['paidTickets']) }}</div>
+                    <div class="stat-label">Paid Tickets</div>
                 </div>
                 <i class="fas fa-shopping-cart stat-bg"></i>
             </div>
@@ -966,8 +966,8 @@
                     <i class="fas fa-clock"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-value">{{ number_format($reservedTickets) }}</div>
-                    <div class="stat-label">Reserved Tickets</div>
+                    <div class="stat-value">{{ number_format($statistics['soldTickets']) }}</div>
+                    <div class="stat-label">Sold Tickets</div>
                 </div>
                 <i class="fas fa-clock stat-bg"></i>
             </div>
@@ -977,7 +977,7 @@
                     <i class="fas fa-dollar-sign"></i>
                 </div>
                 <div class="stat-content">
-                    <div class="stat-value">${{ number_format($totalRevenue) }}</div>
+                    <div class="stat-value">${{ number_format($statistics['totalRevenue']) }}</div>
                     <div class="stat-label">Total Revenue</div>
                 </div>
                 <i class="fas fa-dollar-sign stat-bg"></i>
@@ -1001,9 +1001,9 @@
                     <label for="status-filter" class="filter-label">Status</label>
                     <select id="status-filter" class="filter-select">
                         <option value="">All Statuses</option>
-                        <option value="available">Available</option>
+                        <option value="used">Used</option>
+                        <option value="paid">Paid</option>
                         <option value="sold">Sold</option>
-                        <option value="reserved">Reserved</option>
                         <option value="canceled">Canceled</option>
                     </select>
                 </div>
@@ -1022,11 +1022,6 @@
         <div class="ticket-management">
             <div class="management-header">
                 <h3 class="management-title">All Tickets</h3>
-                <div class="management-actions">
-                    <button class="btn" id="add-ticket-btn">
-                        <i class="fas fa-plus"></i> Add Tickets
-                    </button>
-                </div>
             </div>
 
             <div class="ticket-table-container">
@@ -1146,7 +1141,7 @@
 @endsection
 
 @section('modal')
-<!-- Add/Edit Ticket Modal -->
+<!-- Edit Ticket Modal -->
 <div class="modal-backdrop" id="ticketModal">
     <div class="modal">
         <div class="modal-header">
@@ -1156,7 +1151,7 @@
             </div>
         </div>
         <div class="modal-body">
-            <form id="ticket-form" method="POST" action="{{ route('admin.tickets.store') }}">
+            <form id="ticket-form" method="POST" action="">
                 @csrf
                 <input type="hidden" name="_method" id="form-method" value="POST">
 
@@ -1209,9 +1204,10 @@
                 <div class="form-group">
                     <label for="status" class="form-label">Status</label>
                     <select id="status" name="status" class="form-control" required>
-                        <option value="available">Available</option>
+                        <option value="">All Statuses</option>
+                        <option value="used">Used</option>
+                        <option value="paid">Paid</option>
                         <option value="sold">Sold</option>
-                        <option value="reserved">Reserved</option>
                         <option value="canceled">Canceled</option>
                     </select>
                 </div>
@@ -1287,10 +1283,6 @@
         });
 
         // Event Listeners
-        addTicketBtn.addEventListener('click', function() {
-            openAddTicketModal();
-        });
-
         closeTicketModal.addEventListener('click', function() {
             closeModal(ticketModal);
         });
@@ -1307,31 +1299,6 @@
             closeModal(deleteModal);
         });
 
-        if (showSeatMap && seatMapModal) {
-            showSeatMap.addEventListener('click', function() {
-                openModal(seatMapModal);
-            });
-
-            if (closeSeatMap) {
-                closeSeatMap.addEventListener('click', function() {
-                    closeModal(seatMapModal);
-                });
-            }
-
-            if (closeSeatMapBtn) {
-                closeSeatMapBtn.addEventListener('click', function() {
-                    closeModal(seatMapModal);
-                });
-            }
-
-            // Close on click outside
-            seatMapModal.addEventListener('click', function(e) {
-                if (e.target === seatMapModal) {
-                    closeModal(seatMapModal);
-                }
-            });
-        }
-
 
         // Filters
         if (applyFiltersBtn) {
@@ -1344,16 +1311,6 @@
             resetFiltersBtn.addEventListener('click', function() {
                 resetFilters();
             });
-        }
-
-        // Functions
-        function openAddTicketModal() {
-            ticketForm.reset();
-            document.getElementById('form-method').value = 'POST';
-            document.getElementById('modal-title').textContent = 'Add New Ticket';
-            ticketForm.action = "{{ route('admin.tickets.store') }}";
-
-            openModal(ticketModal);
         }
 
         function openEditTicketModal(button) {
@@ -1380,16 +1337,8 @@
         }
 
         function openDeleteModal(ticketId) {
-            // Set the form action for delete
             deleteForm.action = "{{ url('admin/tickets') }}/" + ticketId;
-
-            // Show modal
             openModal(deleteModal);
-        }
-
-
-        function getSelectedTickets() {
-            return Array.from(document.querySelectorAll('.ticket-check:checked')).map(check => check.value);
         }
 
         function filterTickets() {
@@ -1405,8 +1354,6 @@
                 const gameMatch = !gameFilter || gameId === gameFilter;
                 const statusMatch = !statusFilter || status === statusFilter;
 
-                // Date filtering would require additional logic to match with the game date
-
                 if (gameMatch && statusMatch) {
                     row.style.display = '';
                 } else {
@@ -1414,7 +1361,6 @@
                 }
             });
 
-            // Check if no tickets are visible
             checkNoTickets();
         }
 
@@ -1422,7 +1368,6 @@
             document.getElementById('match-filter').value = '';
             document.getElementById('status-filter').value = '';
 
-            // Show all tickets
             const rows = document.querySelectorAll('.ticket-table tbody tr');
             rows.forEach(row => {
                 row.style.display = '';

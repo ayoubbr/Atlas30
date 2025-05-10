@@ -11,7 +11,6 @@ interface ITicketRepository
     public function getAllTickets(int $perPage = 30): LengthAwarePaginator;
     public function getTicketById(int $id): ?Ticket;
     public function getTicketsByIds(array $ids): Collection;
-    public function createTicket(array $data): Ticket;
     public function updateTicket(int $id, array $data): bool;
     public function deleteTicket(int $id): bool;
     public function getTicketsByUser(int $userId): Collection;

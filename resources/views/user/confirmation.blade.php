@@ -248,7 +248,7 @@
                                 <a href="{{ route('user.ticket.download', $ticket->id) }}" class="btn btn-sm btn-outline">
                                     <i class="fas fa-download"></i> Download
                                 </a>
-                                <a href="{{ route('user.ticket.view', $ticket->id) }}" class="btn btn-sm btn-primary">
+                                <a href="{{ route('profile') }}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </div>

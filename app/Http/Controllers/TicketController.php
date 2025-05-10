@@ -35,28 +35,13 @@ class TicketController extends Controller
         ));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'game_id' => 'required|exists:games,id',
-            'price' => 'required|numeric|min:0',
-            'place_number' => 'required|integer|min:1',
-            'status' => 'required|string|in:available,sold,reserved,canceled'
-        ]);
-
-        $this->ticketRepository->createTicket($request->all());
-
-        return redirect()->route('admin.tickets.index')
-            ->with('success', 'Ticket created successfully.');
-    }
-
     public function update(Request $request, $id)
     {
         $request->validate([
             'game_id' => 'required|exists:games,id',
             'price' => 'required|numeric|min:0',
             'place_number' => 'required|integer|min:1',
-            'status' => 'required|string|in:available,sold,reserved,canceled'
+            'status' => 'required|string|in:used,paid,sold,canceled'
         ]);
 
         $result = $this->ticketRepository->updateTicket($id, $request->all());

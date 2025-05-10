@@ -134,7 +134,6 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // TICKET
     Route::get('tickets', [TicketController::class, 'index'])->name('admin.tickets.index');
-    Route::post('tickets', [TicketController::class, 'store'])->name('admin.tickets.store');
     Route::put('tickets/{id}', [TicketController::class, 'update'])->name('admin.tickets.update');
     Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
 
@@ -151,27 +150,29 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
+
+    // Admin forum routes
+    Route::prefix('forum')->name('admin.forum.')->middleware(['auth', 'admin'])->group(function () {
+        Route::get('/', [ForumController::class, 'index'])->name('index');
+
+        Route::post('/announcement', [ForumController::class, 'createAnnouncement'])->name('create-announcement');
+        Route::delete('/announcement/{id}', [ForumController::class, 'destroyAnnouncement'])->name('destroy-announcement');
+
+        Route::delete('/post/{id}', [PostController::class, 'destroy'])->name('destroy-post');
+        Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('destroy-comment');
+        Route::delete('/group/{id}', [GroupController::class, 'destroyGroup'])->name('destroy-group');
+
+        Route::get('/top-posts', [PostController::class, 'getTopPosts'])->name('top-posts');
+        Route::get('/recent-posts', [PostController::class, 'getRecentPosts'])->name('recent-posts');
+        Route::get('/recent-comments', [CommentController::class, 'getRecentComments'])->name('recent-comments');
+        Route::get('/top-groups', [GroupController::class, 'getTopGroups'])->name('top-groups');
+        Route::get('/active-users', [ForumController::class, 'getMostActiveUsers'])->name('active-users');
+    });
 });
 
 
 
-// Admin forum routes
-Route::prefix('admin/forum')->name('admin.forum.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', [ForumController::class, 'index'])->name('index');
 
-    Route::post('/announcement', [ForumController::class, 'createAnnouncement'])->name('create-announcement');
-    Route::delete('/announcement/{id}', [ForumController::class, 'destroyAnnouncement'])->name('destroy-announcement');
-
-    Route::delete('/post/{id}', [PostController::class, 'destroy'])->name('destroy-post');
-    Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('destroy-comment');
-    Route::delete('/group/{id}', [GroupController::class, 'destroyGroup'])->name('destroy-group');
-
-    Route::get('/top-posts', [PostController::class, 'getTopPosts'])->name('top-posts');
-    Route::get('/recent-posts', [PostController::class, 'getRecentPosts'])->name('recent-posts');
-    Route::get('/recent-comments', [CommentController::class, 'getRecentComments'])->name('recent-comments');
-    Route::get('/top-groups', [GroupController::class, 'getTopGroups'])->name('top-groups');
-    Route::get('/active-users', [ForumController::class, 'getMostActiveUsers'])->name('active-users');
-});
 
 Route::fallback(function () {
     return redirect('/')->with('error', 'The page you are looking for does not exist.');

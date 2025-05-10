@@ -26,20 +26,6 @@ class TicketRepository implements ITicketRepository
             ->get();
     }
 
-    public function createTicket(array $data): Ticket
-    {
-        $ticket = new Ticket();
-        $ticket->game_id = $data['game_id'];
-        $ticket->user_id = $data['user_id'] ?? null;
-        $ticket->price = $data['price'];
-        $ticket->place_number = $data['place_number'];
-        $ticket->status = $data['status'];
-        $ticket->section = $data['section'] ?? null;
-        $ticket->save();
-
-        return $ticket;
-    }
-
     public function updateTicket(int $id, array $data): bool
     {
         $ticket = $this->getTicketById($id);
@@ -79,9 +65,9 @@ class TicketRepository implements ITicketRepository
     public function getTicketStatistics(): array
     {
         return [
-            'availableTickets' => Ticket::where('status', 'available')->count(),
+            'usedTickets' => Ticket::where('status', 'used')->count(),
+            'paidTickets' => Ticket::where('status', 'paid')->count(),
             'soldTickets' => Ticket::where('status', 'sold')->count(),
-            'reservedTickets' => Ticket::where('status', 'reserved')->count(),
             'totalRevenue' => Ticket::where('status', 'used')->orWhere('status', 'paid')->sum('price')
         ];
     }
