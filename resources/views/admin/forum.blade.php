@@ -798,7 +798,7 @@
                 <i class="fas fa-folder"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($totalGroups) }}</div>
+                <div class="stats-value">{{ number_format($stats['totalGroups']) }}</div>
                 <div class="stats-label">Groups</div>
             </div>
         </div>
@@ -808,7 +808,7 @@
                 <i class="fas fa-comments"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($totalPosts) }}</div>
+                <div class="stats-value">{{ number_format($stats['totalPosts']) }}</div>
                 <div class="stats-label">Total Posts</div>
             </div>
         </div>
@@ -818,7 +818,7 @@
                 <i class="fas fa-comment-alt"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($totalComments) }}</div>
+                <div class="stats-value">{{ number_format($stats['totalComments']) }}</div>
                 <div class="stats-label">Total Comments</div>
             </div>
         </div>
@@ -828,7 +828,7 @@
                 <i class="fas fa-users"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($activeUsers) }}</div>
+                <div class="stats-value">{{ number_format($stats['activeUsers']) }}</div>
                 <div class="stats-label">Active Users</div>
             </div>
         </div>
@@ -1415,6 +1415,7 @@
                     document.getElementById('form-method').value = 'PUT';
                     document.getElementById('group_id').value = groupId;
                     groupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
+                    console.log(groupForm);
 
                     // Fetch group data and populate the form
                     fetch("{{ url('admin/forum/groups') }}/" + groupId)

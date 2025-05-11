@@ -125,7 +125,7 @@
             font-weight: 600;
         }
 
-        .status-scheduled {
+        .status-upcoming {
             background-color: var(--info-light);
             color: var(--info);
         }
@@ -145,7 +145,7 @@
             color: var(--warning);
         }
 
-        .status-cancelled {
+        .status-canceled {
             background-color: var(--danger-light);
             color: var(--danger);
         }
@@ -336,11 +336,11 @@
             <label for="filter-status">Status:</label>
             <select id="filter-status" class="filter-select">
                 <option value="all">All Statuses</option>
-                <option value="scheduled">Scheduled</option>
+                <option value="upcoming">Upcoming</option>
                 <option value="live">Live</option>
                 <option value="completed">Completed</option>
                 <option value="postponed">Postponed</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="canceled">Canceled</option>
             </select>
         </div>
 
@@ -563,11 +563,11 @@
                     <div class="form-group">
                         <label for="status">Status</label>
                         <select id="status" name="status" class="form-control" required>
-                            <option value="scheduled">Scheduled</option>
+                            <option value="upcoming">Upcoming</option>
                             <option value="live">Live</option>
                             <option value="completed">Completed</option>
                             <option value="postponed">Postponed</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="canceled">Canceled</option>
                         </select>
                     </div>
                 </div>

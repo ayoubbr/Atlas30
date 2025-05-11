@@ -15,7 +15,7 @@ interface ITeamRepository
     public function updateTeam(int $id, array $data): bool;
     public function deleteTeam(int $id): bool;
     public function getTeamCount(): int;
-    public function searchTeams(string $search = null, string $sort = 'name', string $direction = 'asc', int $perPage = 12): LengthAwarePaginator;
+    public function searchTeams(string $search = null, string $sort = 'name', string $direction = 'asc'): Collection;
     public function getTeamWithMatches(int $id): ?Team;
     public function getTeamStatistics(int $id): array;
     public function getTeamRecentGames(int $id): Collection;

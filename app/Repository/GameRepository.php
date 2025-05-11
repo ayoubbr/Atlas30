@@ -109,7 +109,7 @@ class GameRepository implements IGameRepository
     {
         $query = Game::with(['homeTeam', 'awayTeam', 'stadium']);
 
-        if ($request->has('date_range') && $request->date_range) {
+        if ($request->date_range) {
             $today = Carbon::today();
 
             switch ($request->date_range) {
@@ -142,7 +142,7 @@ class GameRepository implements IGameRepository
             }
         }
 
-        if ($request->has('team_id') && $request->team_id) {
+        if ($request->team_id) {
             $teamId = $request->team_id;
             $query->where(function ($q) use ($teamId) {
                 $q->where('home_team_id', $teamId)
@@ -150,15 +150,15 @@ class GameRepository implements IGameRepository
             });
         }
 
-        if ($request->has('stadium_id') && $request->stadium_id) {
+        if ($request->stadium_id) {
             $query->where('stadium_id', $request->stadium_id);
         }
 
-        if ($request->has('status') && $request->status) {
+        if ($request->status) {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('search') && $request->search) {
+        if ($request->search) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->whereHas('homeTeam', function ($q) use ($search) {
@@ -172,25 +172,6 @@ class GameRepository implements IGameRepository
                             ->orWhere('city', 'like', '%' . $search . '%');
                     });
             });
-        }
-
-        if ($request->has('sort')) {
-            switch ($request->sort) {
-                case 'date-asc':
-                    $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
-                    break;
-                case 'date-desc':
-                    $query->orderBy('start_date', 'desc')->orderBy('start_hour', 'desc');
-                    break;
-                case 'status':
-                    $query->orderByRaw("FIELD(status, 'live', 'upcoming', 'completed', 'postponed', 'cancelled')")
-                        ->orderBy('start_date', 'asc');
-                    break;
-                default:
-                    $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
-            }
-        } else {
-            $query->orderBy('start_date', 'asc')->orderBy('start_hour', 'asc');
         }
 
         return $query->get();

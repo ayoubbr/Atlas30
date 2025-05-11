@@ -380,7 +380,7 @@
                             <div class="team-stats">
                                 <div class="team-stat">
                                     <div class="team-stat-value">
-                                        {{ $totalMatches }}</div>
+                                        {{ $team->homeGames()->count() + $team->awayGames()->count() }}</div>
                                     <div class="team-stat-label">Matches</div>
                                 </div>
                                 <div class="team-stat">
@@ -400,7 +400,7 @@
                                     $upcomingMatches = \App\Models\Game::where(function ($query) use ($team) {
                                         $query->where('home_team_id', $team->id)->orWhere('away_team_id', $team->id);
                                     })
-                                        ->where('start_date', '>=', now()->format('Y-m-d'))
+                                        ->where('status', 'upcoming')
                                         ->count();
                                 @endphp
                                 {{ $upcomingMatches }} upcoming
@@ -409,11 +409,6 @@
                         </div>
                     </div>
                 @endforeach
-            </div>
-
-            <!-- Pagination -->
-            <div class="teams-pagination">
-                {{ $teams->links() }}
             </div>
         @endif
     </main>

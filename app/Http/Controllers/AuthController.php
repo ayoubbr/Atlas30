@@ -39,11 +39,7 @@ class AuthController extends Controller
 
         auth()->login($user);
 
-        if ($user->role->name == 'admin') {
-            return redirect()->route('admin')->with('success', 'Welcome to World Cup 2030, ' . $user->firstname . '! Your account has been created successfully.');
-        } else {
-            return redirect()->route('home')->with('success', 'Welcome to World Cup 2030, ' . $user->firstname . '! Your account has been created successfully.');
-        }
+        return redirect()->route('home')->with('success', 'Welcome to World Cup 2030, ' . $user->firstname . '! Your account has been created successfully.');
     }
 
     public function login(Request $request)

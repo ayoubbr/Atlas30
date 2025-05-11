@@ -700,11 +700,11 @@
                         <label for="status">Status</label>
                         <select class="form-control" id="status" name="status">
                             <option value="">All Statuses</option>
-                            <option value="upcoming">upcoming</option>
+                            <option value="upcoming">Upcoming</option>
                             <option value="live">Live</option>
                             <option value="completed">Completed</option>
                             <option value="postponed">Postponed</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="canceled">Canceled</option>
                         </select>
                     </div>
                     <div class="filters-actions">

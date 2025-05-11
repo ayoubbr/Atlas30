@@ -92,7 +92,7 @@ class TeamRepository implements ITeamRepository
         return Team::count();
     }
 
-    public function searchTeams(string $search = null, string $sort = 'name', string $direction = 'asc', int $perPage = 12): LengthAwarePaginator
+    public function searchTeams(string $search = null, string $sort = 'name', string $direction = 'asc'): Collection
     {
         $query = Team::query();
 
@@ -103,7 +103,7 @@ class TeamRepository implements ITeamRepository
 
         $query->orderBy($sort, $direction);
 
-        return $query->paginate($perPage)->withQueryString();
+        return $query->get();
     }
 
     public function getTeamWithMatches(int $id): ?Team

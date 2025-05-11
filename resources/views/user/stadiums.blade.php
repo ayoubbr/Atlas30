@@ -691,10 +691,6 @@
                                 <span class="info-value">{{ number_format($stadium->capacity) }}</span>
                             </div>
                             <div class="info-row">
-                                <span class="info-label">Year Built</span>
-                                <span class="info-value">{{ $stadium->year_built }}</span>
-                            </div>
-                            <div class="info-row">
                                 <span class="info-label">Total Games</span>
                                 <span class="info-value">{{ $stadium->games->count() }}</span>
                             </div>
@@ -703,7 +699,7 @@
                             <div class="games-header">
                                 <h4 class="games-title">Upcoming Games</h4>
                                 <span
-                                    class="games-count">{{ $stadium->games->where('start_date', '>=', date('Y-m-d'))->count() }}</span>
+                                    class="games-count">{{ $stadium->games->where('status', 'upcoming')->count() }}</span>
                             </div>
                         </div>
                     </div>
@@ -757,7 +753,7 @@
                             <div class="feature-text">
                                 <div class="feature-label">Upcoming Games</div>
                                 <div class="feature-value">
-                                    {{ $stadium->games->where('start_date', '>=', date('Y-m-d'))->count() }}</div>
+                                    {{ $stadium->games->where('status', 'upcoming')->count() }}</div>
                             </div>
                         </div>
                     </div>
@@ -766,7 +762,7 @@
                     <div class="modal-games">
                         <div class="modal-game-list">
                             @php
-                                $upcomingGames = $stadium->games->where('start_date', '>=', date('Y-m-d'))->take(6);
+                                $upcomingGames = $stadium->games->where('status', 'upcoming')->take(6);
                             @endphp
 
                             @if ($upcomingGames->count() > 0)
@@ -802,11 +798,11 @@
                         </div>
                     </div>
 
-                    <h3 class="modal-section-title">Past Games</h3>
+                    <h3 class="modal-section-title">Completed Games</h3>
                     <div class="modal-games">
                         <div class="modal-game-list">
                             @php
-                                $pastGames = $stadium->games->where('start_date', '<', date('Y-m-d'))->take(6);
+                                $pastGames = $stadium->games->where('status', 'completed')->take(6);
                             @endphp
 
                             @if ($pastGames->count() > 0)
