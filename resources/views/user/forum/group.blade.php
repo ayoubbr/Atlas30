@@ -719,12 +719,12 @@
             <ul class="breadcrumb">
                 <li><a href="{{ url('/') }}">Home</a></li>
                 <li><a href="{{ route('forum.index') }}">Forum</a></li>
-                <li>{{ $group->name }}</li>
+                <li><a href="">{{ $group->name }}</a></li>
             </ul>
         </div>
     </section>
 
-    <!-- Main Content -->
+
     <main class="container">
         <div class="forum-layout">
 
@@ -821,16 +821,9 @@
                         No posts yet in this group!
                     @endif
                 </div>
-
-                <!-- Pagination -->
-                <div class="pagination">
-                    {{ $posts->links() }}
-                </div>
             </div>
 
-            <!-- Forum Sidebar -->
             <div class="forum-sidebar">
-                <!-- Group Info -->
                 <div class="forum-stats">
                     <h3 class="stats-title">Group Information</h3>
                     <ul class="stats-list">
@@ -845,7 +838,7 @@
                         </li>
                         <li class="stats-item">
                             <div class="stats-label">Total Posts:</div>
-                            <div class="stats-value">{{ $posts->total() }}</div>
+                            <div class="stats-value">{{ $posts->count() }}</div>
                         </li>
                     </ul>
                 </div>

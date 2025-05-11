@@ -116,7 +116,7 @@
             padding-bottom: 10px;
             border-bottom: 1px solid var(--gray-200);
         }
-        
+
 
         /* Thread List */
         .thread-list {
@@ -577,8 +577,10 @@
                                                 alt="Creator Avatar">
                                         </div>
                                         <div class="author-details">
-                                            <div class="author-name">{{ $group->createdBy->firstname }}</div>
+                                            <div class="author-name">{{ $group->createdBy->firstname }}
+                                                {{ $group->createdBy->lastname }}</div>
                                             <div class="author-role">
+                                               
                                                 @if ($group->createdBy->isAdmin())
                                                     Administrator
                                                 @else

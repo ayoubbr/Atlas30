@@ -129,9 +129,9 @@ class GroupRepository implements IGroupRepository
             ->with(['user', 'comments', 'likes'])
             ->withCount(['comments', 'likes'])
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->get();
 
-        $group->setAttribute('paginatedPosts', $posts);
+        $group->setAttribute('posts', $posts);
 
         return $group;
     }

@@ -36,7 +36,7 @@ class PostRepository implements IPostRepository
         $comments = $post->comments()
             ->with('user')
             ->orderBy('created_at', 'asc')
-            ->paginate(20);
+            ->get();
 
         $userLiked = false;
         if (auth()->check()) {

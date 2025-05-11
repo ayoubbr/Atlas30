@@ -34,7 +34,7 @@ class GroupController extends Controller
     public function showGroup($id)
     {
         $group = $this->groupRepository->getGroupWithPosts($id);
-        $posts = $group->paginatedPosts;
+        $posts = $group->posts;
 
         return view('user.forum.group', compact('group', 'posts'));
     }
