@@ -422,7 +422,7 @@
             font-weight: 600;
         }
 
-        .status-scheduled {
+        .status-upcoming {
             background-color: var(--info-light);
             color: var(--info);
         }
@@ -738,7 +738,6 @@
                     <div>
                         <h2 class="stadium-title">World Cup 2030 Dashboard</h2>
                         @auth
-
                             <div class="stadium-subtitle">Welcome back, {{ Auth::user()->firstname }}! Here's what's happening
                                 with the tournament.</div>
                         @endauth
@@ -821,7 +820,7 @@
                         @if ($groupedMatches->count() == 0)
                             <div class="timeline-day">
                                 <div class="day-header">
-                                    <div class="day-date">No matches scheduled!</div>
+                                    <div class="day-date">No upcoming matches!</div>
                                 </div>
                             </div>
                         @endif
@@ -842,14 +841,14 @@
                                             <div class="match-teams">
                                                 <div class="match-team">
                                                     <div class="team-flag"
-                                                        style="background-image: url('{{ $match->homeTeam->flag ?? 'https://via.placeholder.com/30x20/e74c3c/ffffff?text=' . substr($match->homeTeam->name, 0, 3) }}')">
+                                                        style="background-image: url('{{ asset($match->homeTeam->flag) ?? 'https://via.placeholder.com/30x20/e74c3c/ffffff?text=' . substr($match->homeTeam->name, 0, 3) }}')">
                                                     </div>
                                                     <div class="team-name">{{ $match->homeTeam->name }}</div>
                                                 </div>
                                                 <div class="match-vs">VS</div>
                                                 <div class="match-team">
                                                     <div class="team-flag"
-                                                        style="background-image: url('{{ $match->awayTeam->flag ?? 'https://via.placeholder.com/30x20/3498db/ffffff?text=' . substr($match->awayTeam->name, 0, 3) }}')">
+                                                        style="background-image: url('{{ asset($match->awayTeam->flag) ?? 'https://via.placeholder.com/30x20/3498db/ffffff?text=' . substr($match->awayTeam->name, 0, 3) }}')">
                                                     </div>
                                                     <div class="team-name">{{ $match->awayTeam->name }}</div>
                                                 </div>
@@ -859,7 +858,7 @@
                                                 {{ $match->stadium->city }}
                                             </div>
                                             <div class="match-status">
-                                                <span class="status-badge status-scheduled">Scheduled</span>
+                                                <span class="status-badge status-upcoming">upcoming</span>
                                                 <div class="match-actions">
                                                     <a href="{{ route('admin.games.index') }}?id={{ $match->id }}"
                                                         class="btn btn-sm btn-icon">
@@ -876,7 +875,6 @@
                 </div>
             </div>
 
-            <!-- Ticket Sales by Match -->
             <div class="ticket-sales-by-match">
                 <div class="section-header">
                     <h3 class="section-title">Ticket Sales by Match</h3>

@@ -42,8 +42,7 @@ class PostController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|max:255',
-            'content' => 'required',
-            'is_pinned' => 'sometimes|boolean'
+            'content' => 'required'
         ]);
 
         $post = $this->postRepository->createPost($validated, Auth::id(), $groupId);

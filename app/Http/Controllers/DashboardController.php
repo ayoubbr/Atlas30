@@ -15,11 +15,11 @@ class DashboardController extends Controller
 
     public function index()
     {
+        $upcomingMatches = $this->dashboardRepository->getUpcomingMatches();
+        $ticketsSoldThisWeek = $this->dashboardRepository->getTicketsSoldThisWeek();
         $stadiumCount = $this->dashboardRepository->getStadiumCount();
         $forumPostCount = $this->dashboardRepository->getForumPostCount();
-        $ticketsSoldThisWeek = $this->dashboardRepository->getTicketsSoldThisWeek();
         $ticketSalesByMatch = $this->dashboardRepository->getTicketSalesByMatch();
-        $upcomingMatches = $this->dashboardRepository->getUpcomingMatches();
         $recentForumActivity = $this->dashboardRepository->getRecentForumActivity();
 
         return view('admin.dashboard', compact(

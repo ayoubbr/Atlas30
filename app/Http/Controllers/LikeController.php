@@ -21,12 +21,12 @@ class LikeController extends Controller
         return redirect()->back();
     }
 
-    public function getUserLikes()
-    {
-        $userId = Auth::id();
-        $likes = $this->likeRepository->getUserLikes($userId);
-        return view('user.forum.my-likes', compact('likes'));
-    }
+    // public function getUserLikes()
+    // {
+    //     $userId = Auth::id();
+    //     $likes = $this->likeRepository->getUserLikes($userId);
+    //     return view('user.forum.my-likes', compact('likes'));
+    // }
 
     public function getLikeCount($postId)
     {

@@ -41,7 +41,7 @@ class DashboardRepository implements IDashboardRepository
     public function getUpcomingMatches(int $limit = 10): Collection
     {
         return Game::with(['homeTeam', 'awayTeam', 'stadium'])
-            ->where('start_date', '>=', Carbon::now()->toDateString())
+            ->where('status', 'upcoming')
             ->orderBy('start_date')
             ->take($limit)
             ->get();

@@ -530,7 +530,6 @@
                 connect with the global football community.</p>
             <ul class="breadcrumb">
                 <li><a href="{{ url('/') }}">Home</a></li>
-                <li><a href="{{ url('/forum') }}">Community</a></li>
                 <li><a href="{{ url('/forum') }}">Forum</a></li>
             </ul>
         </div>

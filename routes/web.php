@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
     Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
     Route::get('user/tickets/{id}/download', [TicketController::class, 'downloadPdf'])->name('user.ticket.download');
- 
+
     // Forum routes
     Route::prefix('forum')->name('forum.')->group(function () {
         Route::get('/', [GroupController::class, 'index'])->name('index');
@@ -87,13 +87,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/group/{groupId}/post/{postId}/comment', [CommentController::class, 'store'])->name('store-comment');
         Route::post('/group/{groupId}/post/{postId}/like', [LikeController::class, 'toggleLike'])->name('toggle-like');
 
-        Route::get('/group/{groupId}/post/{postId}/edit', [PostController::class, 'edit'])->name('edit-post');
-        Route::put('/group/{groupId}/post/{postId}', [PostController::class, 'update'])->name('update-post');
-
-        Route::get('/group/{id}/edit', [GroupController::class, 'edit'])->name('edit-group');
-        Route::put('/group/{id}', [GroupController::class, 'updateGroup'])->name('update-group');
-
-        Route::get('/my-likes', [LikeController::class, 'getUserLikes'])->name('my-likes');
+        // Route::get('/my-likes', [LikeController::class, 'getUserLikes'])->name('my-likes');
     });
 });
 
@@ -139,14 +133,14 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
     Route::delete('users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
 
-    // Admin profile routes
+    // Profile routes
     Route::get('profile', [AdminController::class, 'adminProfile'])->name('admin.profile');
     Route::post('profile', [UserController::class, 'updateProfile'])->name('admin.profile.update');
 
     // User list for announcements
     Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
 
-    // Admin forum routes
+    // Forum routes
     Route::prefix('forum')->name('admin.forum.')->middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [ForumController::class, 'index'])->name('index');
 
@@ -157,6 +151,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('destroy-comment');
         Route::delete('/group/{id}', [GroupController::class, 'destroyGroup'])->name('destroy-group');
         Route::post('/group', [GroupController::class, 'storeGroup'])->name('store-group');
+
+
+        Route::get('/group/{groupId}/post/{postId}/edit', [PostController::class, 'edit'])->name('edit-post');
+        Route::put('/group/{groupId}/post/{postId}', [PostController::class, 'update'])->name('update-post');
+
+        Route::get('/group/{id}/edit', [GroupController::class, 'edit'])->name('edit-group');
+        Route::put('/group/{id}', [GroupController::class, 'updateGroup'])->name('update-group');
 
         Route::get('/top-posts', [PostController::class, 'getTopPosts'])->name('top-posts');
         Route::get('/recent-posts', [PostController::class, 'getRecentPosts'])->name('recent-posts');
