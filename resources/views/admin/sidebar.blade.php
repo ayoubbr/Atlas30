@@ -50,7 +50,7 @@
                 <li class="nav-item">
                     <a href="{{ url('/admin/teams') }}"
                         class="nav-link {{ request()->is('admin/teams') ? 'active' : '' }}">
-                        <i class="fas fa-users nav-icon"></i>
+                       <i class="fa-brands fa-font-awesome nav-icon"></i>
                         <span class="nav-text">Teams</span>
                     </a>
                 </li>
