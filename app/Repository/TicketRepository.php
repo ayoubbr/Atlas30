@@ -21,9 +21,7 @@ class TicketRepository implements ITicketRepository
 
     public function getTicketsByIds(array $ids): Collection
     {
-        return Ticket::whereIn('id', $ids)
-            ->with(['game.homeTeam', 'game.awayTeam', 'game.stadium'])
-            ->get();
+        return Ticket::whereIn('id', $ids)->get();
     }
 
     public function updateTicket(int $id, array $data): bool

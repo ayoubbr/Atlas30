@@ -786,7 +786,7 @@
                 });
             }
 
-            @if ($game->status != 'completed' && $game->status != 'cancelled')
+            @if ($game->status != 'completed' && $game->status != 'canceled')
                 // Stadium Map Zoom and Pan
                 const stadiumMap = document.getElementById('stadium-map');
                 const zoomInBtn = document.getElementById('zoom-in');

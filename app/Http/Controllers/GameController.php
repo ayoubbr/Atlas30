@@ -111,8 +111,6 @@ class GameController extends Controller
 
     public function buyTickets(Request $request, $gameId)
     {
-        $game = $this->gameRepository->findById($gameId);
-
         $request->validate([
             'section' => 'required|string',
             'quantity' => 'required|integer|min:1|max:10',
@@ -149,7 +147,7 @@ class GameController extends Controller
     {
         $team = Team::findOrFail($teamId);
         $games = $this->gameRepository->getTeamGames($teamId);
-      
+
         return view('user.team-games', compact('games', 'team'));
     }
 

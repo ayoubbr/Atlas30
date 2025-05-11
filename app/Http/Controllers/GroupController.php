@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Repository\Impl\IGroupRepository;
 use App\Repository\Impl\IPostRepository;
 use Illuminate\Http\Request;
@@ -21,9 +22,10 @@ class GroupController extends Controller
     public function index()
     {
         $groups = $this->groupRepository->getGroupsWithStats();
+        
         $stats = [
             'total_posts' => $this->postRepository->getPostCount(),
-            'total_members' => \App\Models\User::count()
+            'total_members' => User::count()
         ];
 
         return view('user.forum.index', compact('groups', 'stats'));

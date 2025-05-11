@@ -57,22 +57,6 @@ class ProfileRepository implements IProfileRepository
         return $user->save();
     }
 
-    public function updateUserNotifications(int $id, array $settings): bool
-    {
-        $user = $this->getUserById($id);
-
-        if (!$user) {
-            return false;
-        }
-
-        $user->email_notifications = $settings['email_notifications'] ?? false;
-        $user->sms_notifications = $settings['sms_notifications'] ?? false;
-        $user->match_reminders = $settings['match_reminders'] ?? false;
-        $user->forum_notifications = $settings['forum_notifications'] ?? false;
-
-        return $user->save();
-    }
-
     public function getUserActivity(int $id): Collection
     {
         $activities = collect();

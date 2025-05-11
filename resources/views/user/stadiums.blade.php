@@ -666,7 +666,7 @@
             <p>Explore the magnificent venues hosting the World Cup 2030 matches</p>
             <ul class="breadcrumb">
                 <li><a href="{{ url('/') }}">Home</a></li>
-                <li>Stadiums</li>
+                <li> <a href="">Stadiums </a></li>
             </ul>
         </div>
     </section>

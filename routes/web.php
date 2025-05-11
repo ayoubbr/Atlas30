@@ -43,21 +43,11 @@ Route::prefix('/')->group(function () {
 
     // GAMES
     Route::get('games', [GameController::class, 'visitorIndex'])->name('games');
-    // Route::get('team/{id}/games', [GameController::class, 'teamGames']);
-
-    // TICKETS
-    Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
-    Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
-    Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
-    Route::get('user/tickets/{id}/download', [TicketController::class, 'downloadPdf'])->name('user.ticket.download');
-    // Route::get('user/tickets/show', [TicketController::class, 'userTicketsShow'])->name('user.ticket.view');
+    Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
 
     // TEAMS
     Route::get('teams', [TeamController::class, 'visitorIndex'])->name('teams');
     Route::get('teams/{id}', [TeamController::class, 'visitorShow'])->name('teams.show');
-
-    // NOTIFICATIONS
-    Route::get('users/notifications', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
     // STADIUMS
     Route::get('stadiums', [StadiumController::class, 'visitorIndex'])->name('stadiums');
@@ -71,12 +61,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('profile/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::post('profile/notifications', [ProfileController::class, 'updateNotifications'])->name('profile.notifications');
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('games/{id}', [GameController::class, 'visitorShow'])->name('games.show');
-    Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
+    // NOTIFICATIONS
+    Route::get('users/notifications', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 
+    // TICKETS
+    Route::post('tickets/buy/{id}', [GameController::class, 'buyTickets'])->name('tickets.buy');
+    Route::get('tickets/checkout', [TicketController::class, 'checkout'])->name('tickets.checkout');
+    Route::post('tickets/process-payment', [PaymentController::class, 'processPayment'])->name('tickets.process-payment');
+    Route::get('tickets/confirmation', [PaymentController::class, 'confirmation'])->name('tickets.confirmation');
+    Route::get('user/tickets/{id}/download', [TicketController::class, 'downloadPdf'])->name('user.ticket.download');
+ 
     // Forum routes
     Route::prefix('forum')->name('forum.')->group(function () {
         Route::get('/', [GroupController::class, 'index'])->name('index');

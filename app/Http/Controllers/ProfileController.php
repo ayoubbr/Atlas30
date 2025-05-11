@@ -18,12 +18,11 @@ class ProfileController extends Controller
     public function index()
     {
         $userId = Auth::id();
-        $user = $this->profileRepository->getUserWithTickets($userId);
+        $user = Auth::user();
         $postCount = $this->profileRepository->getUserPostCount($userId);
         $activities = $this->profileRepository->getUserActivity($userId);
-        $tickets = $this->profileRepository->getUserTickets($userId);
 
-        return view('user.profile', compact('user', 'postCount', 'activities', 'tickets'));
+        return view('user.profile', compact('user', 'postCount', 'activities'));
     }
 
     public function update(Request $request)
@@ -59,23 +58,5 @@ class ProfileController extends Controller
         }
 
         return redirect()->route('profile')->with('success', 'Password updated successfully!');
-    }
-
-    public function updateNotifications(Request $request)
-    {
-        $settings = [
-            'email_notifications' => $request->has('email_notifications'),
-            'sms_notifications' => $request->has('sms_notifications'),
-            'match_reminders' => $request->has('match_reminders'),
-            'forum_notifications' => $request->has('forum_notifications')
-        ];
-
-        $result = $this->profileRepository->updateUserNotifications(Auth::id(), $settings);
-
-        if (!$result) {
-            return redirect()->back()->with('error', 'Failed to update notification settings.');
-        }
-
-        return redirect()->route('profile')->with('success', 'Notification settings updated successfully!');
     }
 }
