@@ -54,7 +54,7 @@ class StadiumController extends Controller
             'name' => 'required|string|max:255|unique:stadiums,name,' . $stadium->id,
             'city' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $result = $this->stadiumRepository->updateStadium($stadiumId, $request->all());
