@@ -54,13 +54,6 @@
                         <span class="nav-text">Tickets</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/roles') }}"
-                        class="nav-link {{ request()->is('admin/roles') ? 'active' : '' }}">
-                        <i class="fa-solid fa-user-gear nav-icon"></i>
-                        <span class="nav-text">Roles</span>
-                    </a>
-                </li>
             </ul>
         </div>
 
@@ -72,6 +65,13 @@
                         class="nav-link {{ request()->is('admin/users') ? 'active' : '' }}">
                         <i class="fas fa-user nav-icon"></i>
                         <span class="nav-text">Users</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/roles') }}"
+                        class="nav-link {{ request()->is('admin/roles') ? 'active' : '' }}">
+                        <i class="fa-solid fa-user-gear nav-icon"></i>
+                        <span class="nav-text">Roles</span>
                     </a>
                 </li>
                 <li class="nav-item">

@@ -44,7 +44,7 @@ class PaymentRepository implements IPaymentRepository
     public function processSuccessfulPayment(Collection $tickets, PaymentIntent $paymentIntent, float $totalAmount): void
     {
         foreach ($tickets as $ticket) {
-            $ticket->status = 'confirmed';
+            $ticket->status = 'sold';
             $ticket->save();
         }
 

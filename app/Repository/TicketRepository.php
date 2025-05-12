@@ -9,9 +9,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TicketRepository implements ITicketRepository
 {
-    public function getAllTickets(int $perPage = 30): LengthAwarePaginator
+    public function getAllTickets(): Collection
     {
-        return Ticket::with(['game.homeTeam', 'game.awayTeam', 'user'])->paginate($perPage);
+        return Ticket::with(['game.homeTeam', 'game.awayTeam', 'user'])->get();
     }
 
     public function getTicketById(int $id): ?Ticket

@@ -8,7 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface ITicketRepository
 {
-    public function getAllTickets(int $perPage = 30): LengthAwarePaginator;
+    public function getAllTickets(): Collection;
     public function getTicketById(int $id): ?Ticket;
     public function getTicketsByIds(array $ids): Collection;
     public function updateTicket(int $id, array $data): bool;

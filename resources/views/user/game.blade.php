@@ -619,7 +619,7 @@
 
                                 <!-- Premium Section (North Stand) -->
                                 <path id="section-premium" class="stadium-section" d="M250,150 L550,150 L550,200 L250,200 Z"
-                                    fill="var(--section-premium)" stroke="#333" stroke-width="1" data-section="Premium"
+                                    fill="var(--section-premium)" stroke="#333" stroke-width="1" data-section="premium"
                                     data-price="250" data-available="50" />
                                 <text x="400" y="175" text-anchor="middle" class="stadium-section-label" fill="white">
                                     Premium
@@ -628,23 +628,23 @@
                                 <!-- Standard Section (South Stand) -->
                                 <path id="section-standard" class="stadium-section"
                                     d="M250,400 L550,400 L550,450 L250,450 Z" fill="var(--section-standard)" stroke="#333"
-                                    stroke-width="1" data-section="Standard" data-price="180" data-available="80" />
+                                    stroke-width="1" data-section="regular" data-price="180" data-available="80" />
                                 <text x="400" y="425" text-anchor="middle" class="stadium-section-label" fill="white">
-                                    Standard
+                                    Regular
                                 </text>
 
                                 <!-- Economy Section (East Stand) -->
                                 <path id="section-economy" class="stadium-section"
                                     d="M550,200 L600,150 L600,450 L550,400 Z" fill="var(--section-economy)" stroke="#333"
-                                    stroke-width="1" data-section="Economy" data-price="120" data-available="100" />
+                                    stroke-width="1" data-section="regular" data-price="120" data-available="100" />
                                 <text x="575" y="300" text-anchor="middle" class="stadium-section-label" fill="white">
-                                    Economy
+                                    Regular
                                 </text>
 
                                 <!-- Economy Section (West Stand) -->
                                 <path id="section-economy-west" class="stadium-section"
                                     d="M250,200 L200,150 L200,450 L250,400 Z" fill="var(--section-economy)" stroke="#333"
-                                    stroke-width="1" data-section="Economy" data-price="120" data-available="100" />
+                                    stroke-width="1" data-section="economy" data-price="120" data-available="100" />
                                 <text x="225" y="300" text-anchor="middle" class="stadium-section-label" fill="white">
                                     Economy
                                 </text>
@@ -652,7 +652,7 @@
                                 <!-- VIP Section -->
                                 <rect id="section-vip" class="stadium-section" x="350" y="120" width="100"
                                     height="30" fill="var(--section-vip)" stroke="#333" stroke-width="1"
-                                    data-section="VIP" data-price="350" data-available="20" />
+                                    data-section="vip" data-price="350" data-available="20" />
                                 <text x="400" y="140" text-anchor="middle" class="stadium-section-label" fill="white">
                                     VIP
                                 </text>

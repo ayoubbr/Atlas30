@@ -935,7 +935,6 @@
 
 @section('content')
 @section('header-title', 'Ticket Management')
-
 <main class="admin-main">
     <div class="tickets-dashboard">
         <div class="ticket-stats">
@@ -1060,7 +1059,7 @@
                                 </td>
                                 <td>{{ date('M j, Y', strtotime($ticket->game->start_date)) }}</td>
                                 <td>{{ date('g:i A', strtotime($ticket->game->start_hour)) }}</td>
-                                <td>{{ $ticket->section }}</td>
+                                <td>{{ ucfirst($ticket->section) }}</td>
                                 <td>{{ $ticket->place_number }}</td>
                                 <td class="ticket-price">${{ number_format($ticket->price) }}</td>
                                 <td><span
@@ -1092,48 +1091,6 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-        <div class="tickets-pagination">
-            <div class="pagination">
-                @if ($tickets->hasPages())
-                    <div class="pagination-container">
-                        <ul class="pagination">
-                            @if ($tickets->onFirstPage())
-                                <li class="page-item disabled">
-                                    <span class="page-link">&laquo;</span>
-                                </li>
-                            @else
-                                <li class="page-item">
-                                    <a href="{{ $tickets->previousPageUrl() }}" class="page-link">&laquo;</a>
-                                </li>
-                            @endif
-
-                            @foreach ($tickets->getUrlRange(1, $tickets->lastPage()) as $page => $url)
-                                @if ($page == $tickets->currentPage())
-                                    <li class="page-item active">
-                                        <span class="page-link">{{ $page }}</span>
-                                    </li>
-                                @else
-                                    <li class="page-item">
-                                        <a href="{{ $url }}" class="page-link">{{ $page }}</a>
-                                    </li>
-                                @endif
-                            @endforeach
-
-                            @if ($tickets->hasMorePages())
-                                <li class="page-item">
-                                    <a href="{{ $tickets->nextPageUrl() }}" class="page-link">&raquo;</a>
-                                </li>
-                            @else
-                                <li class="page-item disabled">
-                                    <span class="page-link">&raquo;</span>
-                                </li>
-                            @endif
-                        </ul>
-                    </div>
-                @endif
             </div>
         </div>
     </div>
