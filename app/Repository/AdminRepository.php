@@ -73,8 +73,7 @@ class AdminRepository implements IAdminRepository
             'email' => $userData['email'],
             'password' => Hash::make($userData['password']),
             'status' => $userData['status'],
-            'role_id' => $userData['role_id'],
-            'country' => $userData['country'] ?? null,
+            'role_id' => $userData['role_id']
         ]);
     }
 

@@ -137,7 +137,6 @@
 @section('content')
 @section('header-title', 'Roles Management')
     <main class="admin-main">
-        <!-- Page Header -->
         <div class="page-header">
             <div class="page-header-content">
                 <h2 class="page-header-title">Role Management</h2>
@@ -150,7 +149,6 @@
             </div>
         </div>
 
-        <!-- Role List -->
         <div class="match-list-container">
             <div class="view-toggle">
                 <button class="view-btn active" data-view="card">
@@ -161,7 +159,6 @@
                 </button>
             </div>
 
-            <!-- Card View -->
             <div class="role-cards-view" id="role-cards-view">
                 @if ($roles->isEmpty())
                     <div class="no-roles">No roles found.</div>
@@ -316,7 +313,7 @@
             const roleTableView = document.getElementById('role-table-view');
             const viewBtns = document.querySelectorAll('.view-btn');
 
-            // Add event listeners for all edit buttons
+            // Add event listeners all edit buttons
             document.querySelectorAll('.edit-role-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const roleId = this.getAttribute('data-id');
@@ -327,7 +324,7 @@
                 });
             });
 
-            // Add event listeners for all delete buttons
+            // Add event listeners all delete buttons
             document.querySelectorAll('.delete-role-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const roleId = this.getAttribute('data-id');
@@ -335,7 +332,6 @@
                 });
             });
 
-            // Event Listeners
             addRoleBtn.addEventListener('click', function() {
                 openAddRoleModal();
             });
@@ -365,7 +361,6 @@
 
             // Functions
             function changeView(view) {
-                // Update active button
                 viewBtns.forEach(btn => {
                     if (btn.getAttribute('data-view') === view) {
                         btn.classList.add('active');
@@ -374,7 +369,6 @@
                     }
                 });
 
-                // Show/hide views
                 if (view === 'card') {
                     roleCardsView.style.display = 'grid';
                     roleTableView.style.display = 'none';

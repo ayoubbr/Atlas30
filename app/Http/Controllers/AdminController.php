@@ -24,9 +24,7 @@ class AdminController extends Controller
         $users = $this->adminRepository->getPaginatedUsers(8);
         $roles = $this->adminRepository->getAllRoles();
 
-        $chartData = $this->adminRepository->getMonthlyRegistrations();
-
-        return view('admin.users', compact('users', 'roles', 'totalUsers', 'activeUsers', 'newUsers', 'chartData'));
+        return view('admin.users', compact('users', 'roles', 'totalUsers', 'activeUsers', 'newUsers'));
     }
 
     public function store(Request $request)
