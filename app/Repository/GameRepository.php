@@ -79,14 +79,14 @@ class GameRepository implements IGameRepository
         return $game;
     }
 
-    public function updateScore($id, array $data)
-    {
-        $game = $this->findById($id);
-        $game->home_team_goals = $data['home_team_goals'];
-        $game->away_team_goals = $data['away_team_goals'];
-        $game->save();
-        return $game;
-    }
+    // public function updateScore($id, array $data)
+    // {
+    //     $game = $this->findById($id);
+    //     $game->home_team_goals = $data['home_team_goals'];
+    //     $game->away_team_goals = $data['away_team_goals'];
+    //     $game->save();
+    //     return $game;
+    // }
 
     public function delete($id)
     {

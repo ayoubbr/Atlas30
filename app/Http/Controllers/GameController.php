@@ -68,18 +68,18 @@ class GameController extends Controller
             ->with('success', 'Match updated successfully.');
     }
 
-    public function updateScore(Request $request, $id)
-    {
-        $request->validate([
-            'home_team_goals' => 'required|integer|min:0',
-            'away_team_goals' => 'required|integer|min:0',
-        ]);
+    // public function updateScore(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'home_team_goals' => 'required|integer|min:0',
+    //         'away_team_goals' => 'required|integer|min:0',
+    //     ]);
 
-        $this->gameRepository->updateScore($id, $request->all());
+    //     $this->gameRepository->updateScore($id, $request->all());
 
-        return redirect()->route('admin.games.index')
-            ->with('success', 'Match score updated successfully.');
-    }
+    //     return redirect()->route('admin.games.index')
+    //         ->with('success', 'Match score updated successfully.');
+    // }
 
     public function destroy($id)
     {

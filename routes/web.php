@@ -108,23 +108,23 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::put('stadiums/{id}', [StadiumController::class, 'update'])->name('admin.stadiums.update');
     Route::delete('stadiums/{id}', [StadiumController::class, 'destroy'])->name('admin.stadiums.destroy');
 
-    // ROLE
-    Route::get('roles', [RoleController::class, 'index'])->name('admin.roles.index');
-    Route::post('roles', [RoleController::class, 'store'])->name('admin.roles.store');
-    Route::put('roles/{id}', [RoleController::class, 'update'])->name('admin.roles.update');
-    Route::delete('roles/{id}', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
-
     // GAME
     Route::get('games', [GameController::class, 'index'])->name('admin.games.index');
     Route::post('games', [GameController::class, 'store'])->name('admin.games.store');
     Route::put('games/{id}', [GameController::class, 'update'])->name('admin.games.update');
     Route::delete('games/{id}', [GameController::class, 'destroy'])->name('admin.games.destroy');
-    Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
+    // Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
 
     // TICKET
     Route::get('tickets', [TicketController::class, 'index'])->name('admin.tickets.index');
     Route::put('tickets/{id}', [TicketController::class, 'update'])->name('admin.tickets.update');
     Route::delete('tickets/{id}', [TicketController::class, 'destroy'])->name('admin.tickets.destroy');
+
+    // ROLE
+    Route::get('roles', [RoleController::class, 'index'])->name('admin.roles.index');
+    Route::post('roles', [RoleController::class, 'store'])->name('admin.roles.store');
+    Route::put('roles/{id}', [RoleController::class, 'update'])->name('admin.roles.update');
+    Route::delete('roles/{id}', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
 
     // USER
     Route::get('users', [AdminController::class, 'index'])->name('admin.users.index');

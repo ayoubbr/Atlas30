@@ -27,6 +27,20 @@
             <div class="nav-section-title">Management</div>
             <ul class="nav-list">
                 <li class="nav-item">
+                    <a href="{{ url('/admin/teams') }}"
+                        class="nav-link {{ request()->is('admin/teams') ? 'active' : '' }}">
+                        <i class="fa-brands fa-font-awesome nav-icon"></i>
+                        <span class="nav-text">Teams</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/stadiums') }}"
+                        class="nav-link {{ request()->is('admin/stadiums') ? 'active' : '' }}">
+                        <i class="fas fa-map-marker-alt nav-icon"></i>
+                        <span class="nav-text">Stadiums</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ url('/admin/games') }}"
                         class="nav-link {{ request()->is('admin/games') ? 'active' : '' }}">
                         <i class="fas fa-futbol nav-icon"></i>
@@ -38,20 +52,6 @@
                         class="nav-link {{ request()->is('admin/tickets') ? 'active' : '' }}">
                         <i class="fas fa-ticket-alt nav-icon"></i>
                         <span class="nav-text">Tickets</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/stadiums') }}"
-                        class="nav-link {{ request()->is('admin/stadiums') ? 'active' : '' }}">
-                        <i class="fas fa-map-marker-alt nav-icon"></i>
-                        <span class="nav-text">Stadiums</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/teams') }}"
-                        class="nav-link {{ request()->is('admin/teams') ? 'active' : '' }}">
-                       <i class="fa-brands fa-font-awesome nav-icon"></i>
-                        <span class="nav-text">Teams</span>
                     </a>
                 </li>
                 <li class="nav-item">
