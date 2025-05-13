@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('home_team_goals')->default(0);
             $table->integer('away_team_goals')->default(0);
             $table->string('image')->nullable();
-            $table->string('status')->default('scheduled');
+            $table->string('status')->default('upcoming');
             $table->timestamps();
         });
     }

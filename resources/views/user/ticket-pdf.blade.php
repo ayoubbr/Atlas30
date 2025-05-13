@@ -365,22 +365,6 @@
                 </div>
             </div>
 
-            <!-- QR Code Section -->
-            <div class="qr-section">
-                <div class="qr-code">
-                    {!! QrCode::size(120)->generate(route('tickets.verify', $ticket->id)) !!}
-                </div>
-                <div class="ticket-instructions">
-                    <div class="instructions-title">IMPORTANT INFORMATION</div>
-                    <div class="instructions-text">
-                        <p>This ticket is valid only with a valid ID matching the purchaser's name. Please arrive at
-                            least 90 minutes before kick-off. Gates open 2 hours before the match.</p>
-                        <p>This ticket cannot be duplicated, transferred or resold without authorization. Violation may
-                            result in refusal of entry.</p>
-                    </div>
-                </div>
-            </div>
-
             <!-- Tear Line -->
             <div class="tear-line">
                 <div class="tear-icon">✂ - - - - - - - - - - - - - - - -</div>

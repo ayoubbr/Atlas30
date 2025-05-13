@@ -287,7 +287,7 @@
             gap: 5px;
         }
 
-        .match-status.scheduled {
+        .match-status.upcoming {
             background-color: var(--info);
             color: white;
         }
@@ -664,9 +664,6 @@
         <section class="filters-section">
             <div class="filters-title">
                 <h2>Filter Matches</h2>
-                <button class="filters-toggle">
-                    Filter Options <i class="fas fa-chevron-up"></i>
-                </button>
             </div>
             <div class="filters-content show">
                 <form class="filters-form" action="{{ url('/games') }}" method="GET">
@@ -703,11 +700,11 @@
                         <label for="status">Status</label>
                         <select class="form-control" id="status" name="status">
                             <option value="">All Statuses</option>
-                            <option value="scheduled">Scheduled</option>
+                            <option value="upcoming">Upcoming</option>
                             <option value="live">Live</option>
                             <option value="completed">Completed</option>
                             <option value="postponed">Postponed</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="canceled">Canceled</option>
                         </select>
                     </div>
                     <div class="filters-actions">
@@ -772,7 +769,7 @@
 
                                 <div class="match-status {{ $game->status }}">
                                     @switch($game->status)
-                                        @case('scheduled')
+                                        @case('upcoming')
                                             <i class="fas fa-clock"></i> {{ ucfirst($game->status) }}
                                         @break
 
@@ -823,17 +820,6 @@
                     </div>
                 @endif
             </div>
-
-            <!-- Pagination - You can implement this if you're using Laravel's pagination -->
-            @if (isset($games) && method_exists($games, 'links') && $games->hasPages())
-                {{ $games->links() }}
-            @else
-                <ul class="pagination">
-                    <li><a href="#" class="disabled"><i class="fas fa-chevron-left"></i></a></li>
-                    <li><a href="#" class="active">1</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i></a></li>
-                </ul>
-            @endif
         </section>
     </main>
 @endsection
@@ -849,16 +835,6 @@
                     mobileMenuBtn.addEventListener('click', function() {
                         navLinks.classList.toggle('active');
                     });
-                });
-            }
-
-            const filtersToggle = document.querySelector('.filters-toggle');
-            const filtersContent = document.querySelector('.filters-content');
-
-            if (filtersToggle && filtersContent) {
-                filtersToggle.addEventListener('click', function() {
-                    filtersContent.classList.toggle('show');
-                    filtersToggle.classList.toggle('collapsed');
                 });
             }
         });

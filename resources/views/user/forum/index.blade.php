@@ -116,7 +116,7 @@
             padding-bottom: 10px;
             border-bottom: 1px solid var(--gray-200);
         }
-        
+
 
         /* Thread List */
         .thread-list {
@@ -530,7 +530,6 @@
                 connect with the global football community.</p>
             <ul class="breadcrumb">
                 <li><a href="{{ url('/') }}">Home</a></li>
-                <li><a href="{{ url('/forum') }}">Community</a></li>
                 <li><a href="{{ url('/forum') }}">Forum</a></li>
             </ul>
         </div>
@@ -577,8 +576,10 @@
                                                 alt="Creator Avatar">
                                         </div>
                                         <div class="author-details">
-                                            <div class="author-name">{{ $group->createdBy->firstname }}</div>
+                                            <div class="author-name">{{ $group->createdBy->firstname }}
+                                                {{ $group->createdBy->lastname }}</div>
                                             <div class="author-role">
+                                               
                                                 @if ($group->createdBy->isAdmin())
                                                     Administrator
                                                 @else

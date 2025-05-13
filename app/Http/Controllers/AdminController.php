@@ -3,45 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Role;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Repository\Impl\IAdminRepository;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
-
 
 class AdminController extends Controller
 {
-    public function index()
+    private $adminRepository;
+
+    public function __construct(IAdminRepository $adminRepository)
     {
-        $totalUsers = User::count();
-        $activeUsers = User::where('status', 'active')->count();
-        $newUsers = User::where('created_at', '>=', Carbon::now()->subDays(7))->count();
-
-        $users = User::with('role')->paginate(8);
-        $roles = Role::all();
-
-        // Get monthly registration data for chart
-        $monthlyRegistrations = DB::table('users')
-            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
-            ->whereYear('created_at', date('Y'))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->pluck('count', 'month')
-            ->toArray();
-
-        $chartData = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $chartData[$i] = $monthlyRegistrations[$i] ?? 0;
-        }
-
-        return view('admin.users', compact('users', 'roles', 'totalUsers', 'activeUsers', 'newUsers', 'chartData'));
+        $this->adminRepository = $adminRepository;
     }
 
+    public function index()
+    {
+        $totalUsers = $this->adminRepository->getTotalUsersCount();
+        $activeUsers = $this->adminRepository->getActiveUsersCount();
+        $newUsers = $this->adminRepository->getNewUsersCount(7);
+
+        $users = $this->adminRepository->getPaginatedUsers(8);
+        $roles = $this->adminRepository->getAllRoles();
+
+        return view('admin.users', compact('users', 'roles', 'totalUsers', 'activeUsers', 'newUsers'));
+    }
 
     public function store(Request $request)
     {
@@ -60,35 +44,27 @@ class AdminController extends Controller
                 ->withInput($request->except('password', 'password_confirmation'));
         }
 
-        $user = User::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'status' => $request->status,
-            'role_id' => $request->role_id,
-            'country' => $request->country,
-        ]);
+        $this->adminRepository->createUser($request->all());
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');
     }
 
-
     public function show($id)
     {
-        $user = User::with('role', 'tickets')->findOrFail($id);
+        $user = $this->adminRepository->findUserById($id, ['role', 'tickets']);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
 
         return response()->json([
             'user' => $user
         ]);
     }
 
-
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-
         $validator = Validator::make($request->all(), [
             'firstname' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -104,27 +80,48 @@ class AdminController extends Controller
                 ->withInput($request->except('password', 'password_confirmation'));
         }
 
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
-        $user->email = $request->email;
-        $user->role_id = $request->role_id;
-        $user->status = $request->status;
+        $user = $this->adminRepository->updateUser($id, $request->all());
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
         }
-
-        $user->save();
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User updated successfully.');
     }
 
-    
     public function adminProfile()
     {
-        $user = Auth::user();
+        $user = $this->adminRepository->getAuthenticatedUser();
 
         return view('admin.profile', compact('user'));
+    }
+
+    public function destroy($id)
+    {
+        if ($this->adminRepository->hasTickets($id)) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Cannot delete user with associated tickets.');
+        }
+
+        if ($this->adminRepository->hasComments($id)) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Cannot delete user with associated comments.');
+        }
+
+        if ($this->adminRepository->hasLikes($id)) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Cannot delete user with associated likes.');
+        }
+
+        if ($this->adminRepository->hasNotifications($id)) {
+            return redirect()->route('admin.users.index')
+                ->with('error', 'Cannot delete user with associated notifications.');
+        }
+
+        $this->adminRepository->deleteUser($id);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User deleted successfully.');
     }
 }

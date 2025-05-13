@@ -2,50 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Role;
+use App\Repository\Impl\IUserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class UserController extends Controller
 {
-  
+    private $userRepository;
+
+    public function __construct(IUserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
     public function profile()
     {
-        $user = Auth::user();
+        $user = $this->userRepository->getAuthenticatedUser();
         return view('user.profile', compact('user'));
     }
 
 
-    public function destroy($id)
-    {
-        $user = User::findOrFail($id);
-
-        // Check if user has tickets
-        if ($user->tickets()->count() > 0) {
-            return redirect()->route('admin.users.index')
-                ->with('error', 'Cannot delete user with associated tickets.');
-        }
-
-        $user->delete();
-
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User deleted successfully.');
-    }
-
-
-   
-
-
     public function updateProfile(Request $request)
     {
-        $user = Auth::user();
+        $user = $this->userRepository->getAuthenticatedUser();
 
         $validator = Validator::make($request->all(), [
             'firstname' => 'required|string|max:255',
@@ -62,40 +41,22 @@ class UserController extends Controller
                 ->withInput($request->except('current_password', 'new_password', 'new_password_confirmation'));
         }
 
-        // Update user data
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
-        $user->email = $request->email;
+        $this->userRepository->updateProfile(
+            $user,
+            $request->all(),
+            $request->hasFile('image') ? $request->file('image') : null
+        );
 
-        if ($request->hasFile('image')) {
-            $imageName = Str::slug($request->firstname) . '_' . Str::slug($request->lastname) . '-' . time() . '.' . $request->image->extension();
-            $request->image->storeAs('public/users', $imageName);
-            $user->image = 'storage/users/' . $imageName;
-        }
-
-        // Update password if provided
         if ($request->filled('new_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (!$this->userRepository->checkCurrentPassword($user, $request->current_password)) {
                 return redirect()->back()
                     ->withErrors(['current_password' => 'The current password is incorrect.'])
                     ->withInput($request->except('current_password', 'new_password', 'new_password_confirmation'));
             }
 
-            $user->password = Hash::make($request->new_password);
+            $this->userRepository->updatePassword($user, $request->new_password);
         }
 
-        $user->save();
-
         return redirect()->route('admin.profile')->with('success', 'Profile updated successfully!');
-    }
-
-
-    public function getUsersList()
-    {
-        $users = User::select('id', 'firstname', 'lastname', 'email')
-            ->orderBy('firstname')
-            ->get();
-
-        return response()->json($users);
     }
 }

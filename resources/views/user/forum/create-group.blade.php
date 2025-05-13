@@ -4,7 +4,6 @@
 
 @section('css')
     <style>
-        /* Form Styles */
         .form-container {
             background-color: white;
             border-radius: 8px;
@@ -159,6 +158,7 @@
             flex: 1;
             min-width: 250px;
         }
+
         .form-container {
             background-color: white;
             border-radius: 8px;
@@ -568,27 +568,22 @@
 @endsection
 
 @section('content')
-    <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>Create Discussion Group</h1>
             <ul class="breadcrumb">
                 <li><a href="{{ url('/') }}">Home</a></li>
                 <li><a href="{{ route('forum.index') }}">Forum</a></li>
-                <li>Create Group</li>
+                <li><a href="">Create Group</a></li>
             </ul>
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="container">
         <div class="row">
             <div class="col-lg-8">
-                <!-- Form Container -->
                 <div class="form-container">
                     <h2 class="form-title">Create a New Discussion Group</h2>
-
-                    <!-- Guidelines Box -->
                     <div class="guidelines-box">
                         <div class="guidelines-title">
                             <i class="fas fa-info-circle"></i> Group Creation Guidelines
@@ -602,7 +597,6 @@
                         </ul>
                     </div>
 
-                    <!-- Create Group Form -->
                     <form action="{{ route('forum.store-group') }}" method="POST">
                         @csrf
                         <div class="form-group">
@@ -635,9 +629,7 @@
             </div>
 
             <div class="col-lg-4">
-                <!-- Sidebar -->
                 <div class="forum-sidebar">
-                    <!-- Back to Forum -->
                     <div class="forum-categories">
                         <div class="category-header">
                             Actions

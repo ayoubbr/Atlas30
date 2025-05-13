@@ -4,7 +4,6 @@
 
 @section('css')
     <style>
-        /* Team-specific styles */
         .team-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -141,7 +140,7 @@
             color: var(--gray-700);
         }
 
-        .team-table th:last-child{
+        .team-table th:last-child {
             width: 0px;
         }
 
@@ -510,9 +509,7 @@
 
 @section('content')
 @section('header-title', 'Team Management')
-<!-- Main Content -->
 <main class="admin-main">
-    <!-- Page Header -->
     <div class="page-header">
         <div>
             <h2 class="page-header-title">Team Management</h2>
@@ -525,7 +522,6 @@
         </div>
     </div>
 
-    <!-- Team Stats -->
     <div class="team-stats">
         <div class="team-stats-card">
             <div class="stats-icon stats-icon-teams">
@@ -676,8 +672,7 @@
                 </div>
                 <div class="team-form-group">
                     <label class="team-form-label" for="teamFlag">Team Flag URL</label>
-                    <input type="file" class="team-form-control" id="teamFlag" name="flag" accept="image/*"
-                        required>
+                    <input type="file" class="team-form-control" id="teamFlag" name="flag" accept="image/*">
                     <img id="flagPreview" src="#" alt="Flag Preview"
                         style="display: none; width: 80px; margin-top: 10px;">
 
@@ -720,7 +715,6 @@
 @section('js')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Mobile menu toggle
         const menuToggle = document.getElementById('menu-toggle');
         const sidebar = document.querySelector('.admin-sidebar');
 

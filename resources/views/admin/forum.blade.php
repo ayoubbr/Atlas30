@@ -798,7 +798,7 @@
                 <i class="fas fa-folder"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($totalGroups) }}</div>
+                <div class="stats-value">{{ number_format($stats['totalGroups']) }}</div>
                 <div class="stats-label">Groups</div>
             </div>
         </div>
@@ -808,7 +808,7 @@
                 <i class="fas fa-comments"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($totalPosts) }}</div>
+                <div class="stats-value">{{ number_format($stats['totalPosts']) }}</div>
                 <div class="stats-label">Total Posts</div>
             </div>
         </div>
@@ -818,7 +818,7 @@
                 <i class="fas fa-comment-alt"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($totalComments) }}</div>
+                <div class="stats-value">{{ number_format($stats['totalComments']) }}</div>
                 <div class="stats-label">Total Comments</div>
             </div>
         </div>
@@ -828,7 +828,7 @@
                 <i class="fas fa-users"></i>
             </div>
             <div class="stats-content">
-                <div class="stats-value">{{ number_format($activeUsers) }}</div>
+                <div class="stats-value">{{ number_format($stats['activeUsers']) }}</div>
                 <div class="stats-label">Active Users</div>
             </div>
         </div>
@@ -888,14 +888,6 @@
                                     <td>{{ $group->updated_at->diffForHumans() }}</td>
                                     <td>
                                         <div class="forum-table-actions">
-                                            <button class="btn btn-sm btn-outline view-group-btn"
-                                                data-id="{{ $group->id }}">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline edit-group-btn"
-                                                data-id="{{ $group->id }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
                                             <button class="btn btn-sm btn-outline btn-danger delete-group-btn"
                                                 data-id="{{ $group->id }}">
                                                 <i class="fas fa-trash"></i>
@@ -1096,6 +1088,9 @@
                 </div>
                 <div class="forum-card-body">
                     <div class="post-list">
+                        {{-- @php
+                            dd($announcements);
+                        @endphp --}}
                         @forelse($announcements as $announcement)
                             <div class="announcement-item">
                                 <div class="announcement-icon">
@@ -1113,7 +1108,9 @@
                                             </div>
                                             <div class="announcement-recipients">
                                                 <i class="fas fa-users"></i>
-                                                {{ $announcement->user_id ? 'Specific User' : 'All Users' }}
+                                                {{ $announcement->user->firstname }}
+                                                {{ $announcement->user->lastname }}
+
                                             </div>
                                         </div>
                                         <div class="announcement-actions">
@@ -1130,18 +1127,6 @@
                         @endforelse
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Forum Activity Chart -->
-    <div class="forum-card">
-        <div class="forum-card-header">
-            <h3>Forum Activity Trend</h3>
-        </div>
-        <div class="forum-card-body">
-            <div class="forum-activity-chart">
-                <canvas id="forumActivityChart"></canvas>
             </div>
         </div>
     </div>
@@ -1407,111 +1392,6 @@
             });
         }
 
-        if (editGroupBtns.length && groupModal) {
-            editGroupBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const groupId = this.getAttribute('data-id');
-                    document.getElementById('groupModalTitle').textContent = 'Edit Group';
-                    document.getElementById('form-method').value = 'PUT';
-                    document.getElementById('group_id').value = groupId;
-                    groupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
-
-                    // Fetch group data and populate the form
-                    fetch("{{ url('admin/forum/groups') }}/" + groupId)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('name').value = data.group.name;
-                            document.getElementById('description').value = data.group
-                                .description;
-
-                            groupModal.classList.add('show');
-                        })
-                        .catch(error => {
-                            console.error('Error fetching group data:', error);
-                        });
-                });
-            });
-        }
-
-        // View Group Modal
-        const viewGroupModal = document.getElementById('viewGroupModal');
-        const viewGroupBtns = document.querySelectorAll('.view-group-btn');
-        const closeViewGroupModal = document.getElementById('closeViewGroupModal');
-        const closeViewGroupBtn = document.getElementById('closeViewGroupBtn');
-
-        if (viewGroupBtns.length && viewGroupModal) {
-            viewGroupBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const groupId = this.getAttribute('data-id');
-
-                    // Fetch group data and populate the modal
-                    fetch("{{ url('admin/forum/groups') }}/" + groupId)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('viewGroupName').textContent = data
-                                .group.name;
-                            document.getElementById('viewGroupDescription').textContent =
-                                data.group.description;
-                            document.getElementById('viewGroupCreator').textContent =
-                                `${data.group.created_by.firstname} ${data.group.created_by.lastname}`;
-                            document.getElementById('viewGroupPosts').textContent = data
-                                .group.posts_count;
-                            document.getElementById('viewGroupComments').textContent = data
-                                .commentCount;
-                            document.getElementById('viewGroupActivity').textContent = data
-                                .lastActivity;
-
-                            // Populate recent posts
-                            const postsList = document.getElementById('viewGroupPostsList');
-                            postsList.innerHTML = '';
-
-                            if (data.group.posts && data.group.posts.length > 0) {
-                                data.group.posts.forEach(post => {
-                                    const postItem = document.createElement('div');
-                                    postItem.className = 'thread-item';
-                                    postItem.innerHTML = `
-                                        <div class="thread-icon thread-icon-normal">
-                                            <i class="fas fa-comment"></i>
-                                        </div>
-                                        <div class="thread-content">
-                                            <div class="thread-title">${post.content.substring(0, 50)}${post.content.length > 50 ? '...' : ''}</div>
-                                            <div class="thread-meta">
-                                                <div class="thread-author">
-                                                    <i class="fas fa-user"></i> ${post.user.firstname} ${post.user.lastname}
-                                                </div>
-                                                <div class="thread-date">
-                                                    <i class="fas fa-calendar"></i> ${new Date(post.created_at).toLocaleString()}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                                    postsList.appendChild(postItem);
-                                });
-                            } else {
-                                postsList.innerHTML =
-                                    '<div class="text-center py-4">No posts found in this group</div>';
-                            }
-
-                            viewGroupModal.classList.add('show');
-                        })
-                        .catch(error => {
-                            console.error('Error fetching group data:', error);
-                        });
-                });
-            });
-        }
-
-        if (closeViewGroupModal && viewGroupModal) {
-            closeViewGroupModal.addEventListener('click', function() {
-                viewGroupModal.classList.remove('show');
-            });
-        }
-
-        if (closeViewGroupBtn && viewGroupModal) {
-            closeViewGroupBtn.addEventListener('click', function() {
-                viewGroupModal.classList.remove('show');
-            });
-        }
 
         // Delete Group Modal
         const deleteGroupModal = document.getElementById('deleteGroupModal');
@@ -1529,7 +1409,7 @@
                         '.forum-table-name div:first-child').textContent.trim();
 
                     document.getElementById('deleteGroupName').textContent = groupName;
-                    deleteGroupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
+                    deleteGroupForm.action = "{{ url('admin/forum/group') }}/" + groupId;
 
                     deleteGroupModal.classList.add('show');
                 });
@@ -1551,29 +1431,6 @@
         if (confirmDeleteBtn && deleteGroupForm) {
             confirmDeleteBtn.addEventListener('click', function() {
                 deleteGroupForm.submit();
-            });
-        }
-
-        // Edit from view button
-        const editFromViewBtn = document.querySelector('.edit-from-view-btn');
-        if (editFromViewBtn && groupModal && viewGroupModal) {
-            editFromViewBtn.addEventListener('click', function() {
-                const groupName = document.getElementById('viewGroupName').textContent;
-                const groupDescription = document.getElementById('viewGroupDescription').textContent;
-                const groupId = document.querySelector('.view-group-btn[data-id]').getAttribute(
-                    'data-id');
-
-                viewGroupModal.classList.remove('show');
-
-                document.getElementById('groupModalTitle').textContent = 'Edit Group';
-                document.getElementById('form-method').value = 'PUT';
-                document.getElementById('group_id').value = groupId;
-                groupForm.action = "{{ url('admin/forum/groups') }}/" + groupId;
-
-                document.getElementById('name').value = groupName;
-                document.getElementById('description').value = groupDescription;
-
-                groupModal.classList.add('show');
             });
         }
 
@@ -1613,40 +1470,6 @@
             });
         }
 
-        if (sendAllRadio && sendSpecificRadio && specificUsersContainer) {
-            sendAllRadio.addEventListener('change', function() {
-                if (this.checked) {
-                    specificUsersContainer.style.display = 'none';
-                }
-            });
-
-            sendSpecificRadio.addEventListener('change', function() {
-                if (this.checked) {
-                    specificUsersContainer.style.display = 'block';
-
-                    // Load users if not already loaded
-                    const userSelect = document.getElementById('user_ids');
-                    if (userSelect && userSelect.options.length <= 1) {
-                        fetch("{{ route('admin.users.list') }}")
-                            .then(response => response.json())
-                            .then(data => {
-                                userSelect.innerHTML = '';
-                                data.forEach(user => {
-                                    const option = document.createElement('option');
-                                    option.value = user.id;
-                                    option.textContent =
-                                        `${user.firstname} ${user.lastname} (${user.email})`;
-                                    userSelect.appendChild(option);
-                                });
-                            })
-                            .catch(error => {
-                                console.error('Error fetching users:', error);
-                            });
-                    }
-                }
-            });
-        }
-
         // Delete Post and Comment buttons
         const deletePostBtns = document.querySelectorAll('.delete-post-btn');
         const deleteCommentBtns = document.querySelectorAll('.delete-comment-btn');
@@ -1662,7 +1485,7 @@
                         // Create and submit a form to delete the post
                         const form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = "{{ url('admin/forum/posts') }}/" + postId;
+                        form.action = "{{ url('admin/forum/post') }}/" + postId;
 
                         const csrfToken = document.createElement('input');
                         csrfToken.type = 'hidden';
@@ -1688,11 +1511,10 @@
                 btn.addEventListener('click', function() {
                     if (confirm('Are you sure you want to delete this comment?')) {
                         const commentId = this.getAttribute('data-id');
-
                         // Create and submit a form to delete the comment
                         const form = document.createElement('form');
                         form.method = 'POST';
-                        form.action = "{{ url('admin/forum/comments') }}/" + commentId;
+                        form.action = "{{ url('admin/forum/comment') }}/" + commentId;
 
                         const csrfToken = document.createElement('input');
                         csrfToken.type = 'hidden';
@@ -1713,11 +1535,8 @@
             });
         }
 
-        // Delete Announcement buttons
         const deleteAnnouncementBtns = document.querySelectorAll('.delete-announcement-btn');
 
-
-        // Delete Announcement Modal
         const deleteAnnouncementModal = document.getElementById('deleteAnnouncementModal');
         const closeDeleteAnnouncementModal = document.getElementById('closeDeleteAnnouncementModal');
         const cancelDeleteAnnouncementBtn = document.getElementById('cancelDeleteAnnouncementBtn');
@@ -1730,8 +1549,9 @@
                     const announcementId = this.getAttribute('data-id');
                     console.log(announcementId);
 
-                    deleteAnnouncementForm.action = "{{ url('admin/forum/announcements') }}/" +
+                    deleteAnnouncementForm.action = "{{ url('admin/forum/announcement') }}/" +
                         announcementId;
+
                     deleteAnnouncementModal.classList.add('show');
                 });
             });
@@ -1755,7 +1575,7 @@
             });
         }
 
-        // Search functionality
+        // Search 
         const groupSearch = document.getElementById('group-search');
         const postSearch = document.getElementById('post-search');
         const commentSearch = document.getElementById('comment-search');
@@ -1818,72 +1638,6 @@
                         item.style.display = 'none';
                     }
                 });
-            });
-        }
-
-        // Forum Activity Chart
-        const forumActivityCtx = document.getElementById('forumActivityChart');
-        if (forumActivityCtx) {
-            const monthlyPosts = @json($monthlyPosts);
-            const monthlyComments = @json($monthlyComments);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-            const forumActivityChart = new Chart(forumActivityCtx, {
-                type: 'line',
-                data: {
-                    labels: months,
-                    datasets: [{
-                            label: 'New Posts',
-                            data: monthlyPosts,
-                            borderColor: '#e63946',
-                            backgroundColor: 'rgba(230, 57, 70, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        },
-                        {
-                            label: 'New Comments',
-                            data: monthlyComments,
-                            borderColor: '#3498db',
-                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                            tension: 0.4,
-                            fill: true,
-                            yAxisID: 'y1'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Posts'
-                            }
-                        },
-                        y1: {
-                            position: 'right',
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Comments'
-                            },
-                            grid: {
-                                drawOnChartArea: false
-                            }
-                        }
-                    }
-                }
             });
         }
     });

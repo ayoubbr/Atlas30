@@ -349,7 +349,7 @@
                 <div class="profile-email">{{ $user->email }}</div>
                 <div class="profile-stats">
                     <div class="stat-item">
-                        <div class="stat-value">{{ $tickets->count() }}</div>
+                        <div class="stat-value">{{ $user->tickets()->count() }}</div>
                         <div class="stat-label">Tickets</div>
                     </div>
                     <div class="stat-item">
@@ -382,7 +382,7 @@
                     <div class="section-title">My Tickets</div>
                 </div>
                 <div class="section-content">
-                    @if ($tickets->isEmpty())
+                    @if ($user->tickets->isEmpty())
                         <div class="empty-state">
                             <div class="empty-state-icon">
                                 <i class="fas fa-ticket-alt"></i>
@@ -392,8 +392,7 @@
                             <a href="" class="btn btn-primary">Browse Tickets</a>
                         </div>
                     @else
-                        @foreach ($tickets as $ticket)
-                            <!-- Ticket Item -->
+                        @foreach ($user->tickets as $ticket)
                             <div class="ticket-card">
                                 <div class="ticket-info">
                                     <div class="ticket-match">{{ $ticket->game->homeTeam->name }} vs
@@ -427,8 +426,6 @@
                 </div>
             </div>
         </div>
-
-
 
         <!-- Account Settings Tab -->
         <div class="tab-content" id="account-tab">
@@ -515,19 +512,13 @@
                         <div class="form-group">
                             <label for="current_password">Current Password</label>
                             <input type="password" id="current_password" name="current_password"
-                                class="form-control @error('current_password') is-invalid @enderror">
-                            @error('current_password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                class="form-control">
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="new_password">New Password</label>
                                 <input type="password" id="new_password" name="new_password"
-                                    class="form-control @error('new_password') is-invalid @enderror">
-                                @error('new_password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                    class="form-control">
                             </div>
                             <div class="form-group">
                                 <label for="new_password_confirmation">Confirm New Password</label>

@@ -149,7 +149,7 @@
             font-weight: 600;
         }
 
-        .team-match-status.scheduled {
+        .team-match-status.upcoming {
             background-color: var(--info-light);
             color: var(--info);
         }
@@ -520,7 +520,7 @@
                                 <i class="far fa-calendar-times team-matches-empty-icon"></i>
                                 <h3 class="team-matches-empty-title">No Upcoming Matches</h3>
                                 <p class="team-matches-empty-text">
-                                    There are no upcoming matches scheduled for {{ $team->name }} at this time.
+                                    There are no upcoming matches upcoming for {{ $team->name }} at this time.
                                 </p>
                             </div>
                         @else
@@ -534,14 +534,14 @@
                                             </div>
                                             <div
                                                 class="team-match-status 
-                                            @if ($match->status === 'scheduled') scheduled
+                                            @if ($match->status === 'upcoming') upcoming
                                             @elseif ($match->status === 'live') live
                                             @elseif ($match->status === 'completed') completed
                                             @elseif ($match->status === 'canceled') canceled
                                             @elseif ($match->status === 'postponed') postponed
                                             @else unknown @endif">
                                                 @switch($match->status)
-                                                    @case('scheduled')
+                                                    @case('upcoming')
                                                         <i class="fas fa-clock"></i> {{ ucfirst($match->status) }}
                                                     @break
 
@@ -629,7 +629,7 @@
                                             </div>
                                             <div
                                                 class="team-match-status 
-                                            @if ($match->status === 'scheduled') scheduled
+                                            @if ($match->status === 'upcoming') upcoming
                                             @elseif ($match->status === 'live') live
                                             @elseif ($match->status === 'completed') completed
                                             @elseif ($match->status === 'canceled') canceled
@@ -637,7 +637,7 @@
                                             @else unknown @endif">
 
                                                 @switch($match->status)
-                                                    @case('scheduled')
+                                                    @case('upcoming')
                                                         <i class="fas fa-clock"></i> {{ ucfirst($match->status) }}
                                                     @break
 
@@ -690,13 +690,15 @@
                                         <div class="team-match-footer">
                                             <div
                                                 class="team-match-tickets 
-                                            @if ($match->status === 'scheduled') scheduled
+                                            @if ($match->status === 'upcoming') upcoming
                                             @elseif ($match->status === 'live') live
                                             @elseif ($match->status === 'completed') completed
+                                            @elseif ($match->status === 'canceled') canceled
+                                            @elseif ($match->status === 'postponed') postponed
                                             @else unknown @endif">
 
                                                 @switch($match->status)
-                                                    @case('scheduled')
+                                                    @case('upcoming')
                                                         <i class="fas fa-ticket-alt"></i> Tickets available
                                                     @break
 
@@ -705,6 +707,9 @@
                                                     @break
 
                                                     @case('completed')
+                                                    @case('canceled')
+
+                                                    @case('postponed')
                                                         <i class="fas fa-times-circle"></i> Ticket sales closed
                                                     @break
 
@@ -744,16 +749,9 @@
                                 <div class="team-stat-label">Away Matches</div>
                                 <div class="team-stat-value">{{ $awayMatches }}</div>
                             </div>
-                            @php
-                                $upcomingCount = \App\Models\Game::where(function ($query) use ($team) {
-                                    $query->where('home_team_id', $team->id)->orWhere('away_team_id', $team->id);
-                                })
-                                    ->where('start_date', '>=', now()->format('Y-m-d'))
-                                    ->count();
-                            @endphp
                             <div class="team-stat-item">
                                 <div class="team-stat-label">Upcoming Matches</div>
-                                <div class="team-stat-value">{{ $upcomingCount }}</div>
+                                <div class="team-stat-value">{{ $upcomingMatchesCount }}</div>
                             </div>
                         </div>
                     </div>

@@ -20,7 +20,6 @@
             display: flex;
         }
 
-        /* Match Card Styles */
         .match-cards-view {
             padding: 20px;
             display: grid;
@@ -125,7 +124,7 @@
             font-weight: 600;
         }
 
-        .status-scheduled {
+        .status-upcoming {
             background-color: var(--info-light);
             color: var(--info);
         }
@@ -145,7 +144,7 @@
             color: var(--warning);
         }
 
-        .status-cancelled {
+        .status-canceled {
             background-color: var(--danger-light);
             color: var(--danger);
         }
@@ -163,10 +162,8 @@
             display: flex;
             justify-content: flex-end;
             gap: 10px;
-            /* border-top: 1px solid var(--gray-200); */
         }
 
-        /* Table View Styles */
         .match-table-view {
             padding: 20px;
         }
@@ -208,7 +205,6 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* Filters */
         .match-filters {
             padding: 20px;
             background-color: white;
@@ -233,39 +229,6 @@
             border-radius: var(--border-radius);
             background-color: white;
             min-width: 150px;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            gap: 10px;
-        }
-
-        .pagination-btn {
-            padding: 8px 16px;
-            border: 1px solid var(--gray-300);
-            background-color: white;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .pagination-btn:hover:not(:disabled) {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .pagination-info {
-            font-size: 0.9rem;
-            color: var(--gray-600);
         }
 
         /* Responsive Styles */
@@ -336,11 +299,11 @@
             <label for="filter-status">Status:</label>
             <select id="filter-status" class="filter-select">
                 <option value="all">All Statuses</option>
-                <option value="scheduled">Scheduled</option>
+                <option value="upcoming">Upcoming</option>
                 <option value="live">Live</option>
                 <option value="completed">Completed</option>
                 <option value="postponed">Postponed</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="canceled">Canceled</option>
             </select>
         </div>
 
@@ -351,7 +314,6 @@
         </div>
     </div>
 
-    <!-- Match List -->
     <div class="match-list-container">
         <div class="view-toggle">
             <button class="view-btn active" data-view="card">
@@ -422,7 +384,7 @@
             @endif
         </div>
 
-        <!-- Table View (hidden by default) -->
+        <!-- Table View -->
         <div class="match-table-view" id="match-table-view" style="display: none;">
             <table class="match-table">
                 <thead>
@@ -563,11 +525,11 @@
                     <div class="form-group">
                         <label for="status">Status</label>
                         <select id="status" name="status" class="form-control" required>
-                            <option value="scheduled">Scheduled</option>
+                            <option value="upcoming">Upcoming</option>
                             <option value="live">Live</option>
                             <option value="completed">Completed</option>
                             <option value="postponed">Postponed</option>
-                            <option value="cancelled">Cancelled</option>
+                            <option value="canceled">Canceled</option>
                         </select>
                     </div>
                 </div>
@@ -651,7 +613,7 @@
         const imageInput = document.getElementById('image');
         const imagePreview = document.getElementById('image-preview');
 
-        // Add event listeners for all edit buttons
+        // Add event listeners all edit buttons
         document.querySelectorAll('.edit-match-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const gameId = this.getAttribute('data-id');
@@ -659,7 +621,7 @@
             });
         });
 
-        // Add event listeners for all delete buttons
+        // Add event listeners all delete buttons
         document.querySelectorAll('.delete-match-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const gameId = this.getAttribute('data-id');
@@ -858,7 +820,6 @@
                 }
             });
 
-            // Check if no matches are visible
             checkNoMatches();
         }
 
@@ -878,7 +839,6 @@
                 row.style.display = '';
             });
 
-            // Remove no matches message if it exists
             const noMatchesCard = document.querySelector('.no-matches');
             if (noMatchesCard) {
                 noMatchesCard.remove();

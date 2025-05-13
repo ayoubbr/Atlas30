@@ -4,7 +4,6 @@
 
 @section('css')
     <style>
-        /* Form Styles */
         .form-container {
             background-color: white;
             border-radius: 8px;
@@ -149,7 +148,7 @@
             margin-bottom: 0;
         }
 
-        /* Guidelines Box */
+
         .guidelines-box {
             background-color: var(--light);
             border-left: 4px solid var(--secondary);
@@ -205,7 +204,6 @@
             min-width: 250px;
         }
 
-        /* Forum Header */
         .forum-header {
             display: flex;
             justify-content: space-between;
@@ -414,7 +412,6 @@
 @endsection
 
 @section('content')
-    <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>Create New Post</h1>
@@ -422,20 +419,17 @@
                 <li><a href="{{ url('/') }}">Home</a></li>
                 <li><a href="{{ route('forum.index') }}">Forum</a></li>
                 <li><a href="{{ route('forum.group', $group->id) }}">{{ $group->name }}</a></li>
-                <li>New Post</li>
+                <li><a href="">New Post</a></li>
             </ul>
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="container">
         <div class="row">
             <div class="col-lg-8">
-                <!-- Form Container -->
                 <div class="form-container">
                     <h2 class="form-title">Create a New Post</h2>
 
-                    <!-- Group Info Box -->
                     <div class="group-info-box">
                         <div class="group-info-header">
                             <div class="group-info-icon">
@@ -446,7 +440,6 @@
                         <p class="group-info-description">{{ \Illuminate\Support\Str::limit($group->description, 150) }}</p>
                     </div>
 
-                    <!-- Guidelines Box -->
                     <div class="guidelines-box">
                         <div class="guidelines-title">
                             <i class="fas fa-info-circle"></i> Posting Guidelines
@@ -493,9 +486,7 @@
             </div>
 
             <div class="col-lg-4">
-                <!-- Sidebar -->
                 <div class="forum-sidebar">
-                    <!-- Back to Group -->
                     <div class="forum-categories">
                         <div class="category-header">
                             Actions

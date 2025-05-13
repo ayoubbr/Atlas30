@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
-use Illuminate\Http\Request;
+use App\Repository\Impl\INotificationRepository;
 
 class NotificationController extends Controller
 {
+    private $notificationRepository;
 
+    public function __construct(INotificationRepository $notificationRepository)
+    {
+        $this->notificationRepository = $notificationRepository;
+    }
 
     public function markAllAsRead()
     {
         $userId = auth()->user()->id;
+        $result = $this->notificationRepository->markAllAsRead($userId);
 
-        $notifications = Notification::where('user_id', $userId)->where('status', 'unread')->get();
-
-        if ($notifications->count() < 1) {
+        if (!$result) {
             return redirect()->back()->with('error', 'Something went wrong!');
         } else {
-            foreach ($notifications as $notification) {
-                $notification->status = 'read';
-                $notification->save();
-            }
             return redirect()->back()->with('success', 'All Notifications set to read');
         }
     }

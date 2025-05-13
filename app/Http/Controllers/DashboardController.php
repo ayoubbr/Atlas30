@@ -2,41 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
-use App\Models\Post;
-use App\Models\Stadium;
-use App\Models\Ticket;
-use Carbon\Carbon;
+use App\Repository\Impl\IDashboardRepository;
 
 class DashboardController extends Controller
 {
+    private $dashboardRepository;
+
+    public function __construct(IDashboardRepository $dashboardRepository)
+    {
+        $this->dashboardRepository = $dashboardRepository;
+    }
+
     public function index()
     {
-        $stadiumCount = Stadium::count();
-
-        $forumPostCount = Post::count();
-
-        $ticketsSoldThisWeek = Ticket::whereBetween('created_at', [
-            Carbon::now()->startOfWeek(),
-            Carbon::now()->endOfWeek()
-        ])->count();
-
-
-        $ticketSalesByMatch = Game::withCount('tickets')
-            ->orderBy('tickets_count', 'desc')
-            ->take(4)
-            ->get();
-
-        $upcomingMatches = Game::with(['homeTeam', 'awayTeam', 'stadium'])
-            ->where('start_date', '>=', Carbon::now()->toDateString())
-            ->orderBy('start_date')
-            ->take(10)
-            ->get();
-
-        $recentForumActivity = Post::with(['user'])
-            ->latest()
-            ->take(4)
-            ->get();
+        $upcomingMatches = $this->dashboardRepository->getUpcomingMatches();
+        $ticketsSoldThisWeek = $this->dashboardRepository->getTicketsSoldThisWeek();
+        $stadiumCount = $this->dashboardRepository->getStadiumCount();
+        $forumPostCount = $this->dashboardRepository->getForumPostCount();
+        $ticketSalesByMatch = $this->dashboardRepository->getTicketSalesByMatch();
+        $recentForumActivity = $this->dashboardRepository->getRecentForumActivity();
 
         return view('admin.dashboard', compact(
             'stadiumCount',

@@ -312,7 +312,6 @@
 @endsection
 
 @section('content')
-    <!-- Page Header -->
     <section class="page-header">
         <div class="container">
             <h1>{{ $post->title }}</h1>
@@ -320,14 +319,12 @@
                 <li><a href="{{ url('/') }}">Home</a></li>
                 <li><a href="{{ route('forum.index') }}">Forum</a></li>
                 <li><a href="{{ route('forum.group', $post->group_id) }}">{{ $post->group->name }}</a></li>
-                <li>Post</li>
+                <li><a href="">Post</a></li>
             </ul>
         </div>
     </section>
 
-    <!-- Main Content -->
     <main class="container">
-        <!-- Post Container -->
         <div class="post-container">
             <div class="post-header">
                 <h2 class="post-title">{{ $post->title }}</h2>
@@ -403,8 +400,8 @@
         <!-- Comments -->
         <div class="comments-container">
             <div class="comments-header">
-                <h3 class="comments-title">{{ $comments->total() }}
-                    {{ \Illuminate\Support\Str::plural('Reply', $comments->total()) }}</h3>
+                <h3 class="comments-title">{{ $comments->count() }}
+                    {{ \Illuminate\Support\Str::plural('Reply', $comments->count()) }}</h3>
             </div>
 
             @foreach ($comments as $comment)
@@ -458,11 +455,6 @@
                     </div>
                 </div>
             @endif
-
-            <!-- Pagination -->
-            <div class="pagination">
-                {{ $comments->links() }}
-            </div>
         </div>
 
         <!-- Reply Form -->
