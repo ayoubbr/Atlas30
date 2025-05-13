@@ -26,6 +26,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function routeNotificationForMail()
+    {
+        return $this->email;
+    }
 
     public function role()
     {
@@ -60,5 +64,10 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role->name === 'admin';
     }
 }

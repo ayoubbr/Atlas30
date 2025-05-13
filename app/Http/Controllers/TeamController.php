@@ -3,51 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
-use App\Models\Team;
+use App\Repository\Impl\ITeamRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Symfony\Component\VarDumper\VarDumper;
 
 class TeamController extends Controller
 {
+    private $teamRepository;
+
+    public function __construct(ITeamRepository $teamRepository)
+    {
+        $this->teamRepository = $teamRepository;
+    }
 
     public function index()
     {
-        $teams = Team::paginate(8);
-        $countTeams = Team::count();
+        $teams = $this->teamRepository->getPaginatedTeams();
+        $countTeams = $this->teamRepository->getTeamCount();
         $countMatches = Game::count();
+
         return view('admin.teams', compact('teams', 'countTeams', 'countMatches'));
     }
 
-
     public function store(Request $request)
     {
-
         $request->validate([
             'name' => 'required|string|max:255|unique:teams',
             'code' => 'required|string|max:3|unique:teams',
             'flag' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $team = new Team();
-        $team->name = $request->name;
-        $team->code = strtoupper($request->code);
-
-        if ($request->hasFile('flag')) {
-            $flagName = Str::slug($request->name) . '-' . time() . '.' . $request->flag->extension();
-            $request->flag->storeAs('public/flags', $flagName);
-            $team->flag = 'storage/flags/' . $flagName;
-        }
-
-        $team->save();
+        $this->teamRepository->createTeam($request->all());
 
         return redirect()->route('admin.teams.index')
             ->with('success', 'Team created successfully.');
     }
 
-
-    public function update(Request $request,  $teamId)
+    public function update(Request $request, $teamId)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -55,42 +46,68 @@ class TeamController extends Controller
             'flag' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $team = Team::find($teamId);
-        $team->name = $request->name;
-        $team->code = strtoupper($request->code);
+        $result = $this->teamRepository->updateTeam($teamId, $request->all());
 
-        if ($request->hasFile('flag')) {
-            if ($team->flag && Storage::exists('public/' . str_replace('storage/', '', $team->flag))) {
-                Storage::delete('public/' . str_replace('storage/', '', $team->flag));
-            }
-
-            $flagName = Str::slug($request->name) . '-' . time() . '.' . $request->flag->extension();
-            $request->flag->storeAs('public/flags', $flagName);
-            $team->flag = 'storage/flags/' . $flagName;
+        if (!$result) {
+            return redirect()->route('admin.teams.index')
+                ->with('error', 'Failed to update team.');
         }
-
-        $team->save();
 
         return redirect()->route('admin.teams.index')
             ->with('success', 'Team updated successfully.');
     }
 
-
     public function destroy($teamId)
     {
-        $team = Team::find($teamId);
-        if ($team->homeGames()->count() > 0 || $team->awayGames()->count() > 0) {
+        $result = $this->teamRepository->deleteTeam($teamId);
+
+        if (!$result) {
             return redirect()->route('admin.teams.index')
                 ->with('error', 'Cannot delete team with associated games.');
         }
 
-        if ($team->flag && Storage::exists('public/' . str_replace('storage/', '', $team->flag))) {
-            Storage::delete('public/' . str_replace('storage/', '', $team->flag));
-        }
-
-        $team->delete();
-
         return redirect()->route('admin.teams.index')
             ->with('success', 'Team deleted successfully.');
+    }
+
+    public function visitorIndex(Request $request)
+    {
+        $search = $request->input('search');
+        $sort = $request->input('sort', 'name');
+        $direction = $request->input('direction', 'asc');
+
+        $teams = $this->teamRepository->searchTeams($search, $sort, $direction);
+        $totalTeams = $this->teamRepository->getTeamCount();
+        $totalMatches = Game::count();
+
+        return view('user.teams', compact('teams', 'totalTeams', 'totalMatches', 'search', 'sort', 'direction'));
+    }
+
+    public function visitorShow($id)
+    {
+        $team = $this->teamRepository->getTeamById($id);
+
+        if (!$team) {
+            return redirect()->back()->with('error', 'Team not found.');
+        }
+
+        $stats = $this->teamRepository->getTeamStatistics($id);
+        $totalMatches =  $this->teamRepository->getTeamGamesCount($id);
+        $homeMatches =  $this->teamRepository->getHomeTeamGamesCount($id);
+        $awayMatches =  $this->teamRepository->getAwayTeamGamesCount($id);
+        $upcomingMatches =  $this->teamRepository->getTeamUpcomingGames($id);
+        $recentMatches =  $this->teamRepository->getTeamRecentGames($id);
+        $upcomingMatchesCount = $upcomingMatches->count();
+
+        return view('user.team-details', compact(
+            'team',
+            'stats',
+            'totalMatches',
+            'homeMatches',
+            'awayMatches',
+            'upcomingMatches',
+            'recentMatches',
+            'upcomingMatchesCount'
+        ));
     }
 }

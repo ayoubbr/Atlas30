@@ -2,115 +2,103 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ticket;
 use App\Models\Game;
 use App\Models\User;
-use App\Models\Category;
+use App\Repository\Impl\ITicketRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    private $ticketRepository;
+
+    public function __construct(ITicketRepository $ticketRepository)
+    {
+        $this->ticketRepository = $ticketRepository;
+    }
 
     public function index()
     {
-        $tickets = Ticket::with(['game.homeTeam', 'game.awayTeam', 'user', 'category'])->paginate(30);
+        $tickets = $this->ticketRepository->getAllTickets();
         $games = Game::with(['homeTeam', 'awayTeam'])->get();
-        $categories = Category::all();
         $users = User::all();
 
-        // Get ticket statistics
-        $availableTickets = Ticket::where('status', 'available')->count();
-        $soldTickets = Ticket::where('status', 'sold')->count();
-        $reservedTickets = Ticket::where('status', 'reserved')->count();
-        $totalRevenue = Ticket::where('status', 'sold')->sum('price');
-
-        // Get category statistics
-        $categoryStats = [];
-        foreach ($categories as $category) {
-            $categoryStats[$category->id] = [
-                'available' => Ticket::where('category_id', $category->id)->where('status', 'available')->count(),
-                'sold' => Ticket::where('category_id', $category->id)->where('status', 'sold')->count(),
-                'reserved' => Ticket::where('category_id', $category->id)->where('status', 'reserved')->count()
-            ];
-        }
-
+        $statistics = $this->ticketRepository->getTicketStatistics();
+        $categories = ['regular', 'premium', 'standard', 'vip'];
 
         return view('admin.tickets', compact(
             'tickets',
             'games',
-            'categories',
             'users',
-            'availableTickets',
-            'soldTickets',
-            'reservedTickets',
-            'totalRevenue',
-            'categoryStats',
+            'categories',
+            'statistics'
         ));
     }
 
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'game_id' => 'required|exists:games,id',
-            'price' => 'required|numeric|min:0',
-            'place_number' => 'required|integer|min:1',
-            'status' => 'required|string|in:available,sold,reserved,canceled',
-            'category_id' => 'required|exists:categories,id',
-        ]);
-
-        $ticket = new Ticket();
-        $ticket->game_id = $request->game_id;
-        $ticket->user_id = $request->user_id;
-        $ticket->price = $request->price;
-        $ticket->place_number = $request->place_number;
-        $ticket->status = $request->status;
-        $ticket->category_id = $request->category_id;
-        $ticket->save();
-
-        return redirect()->route('admin.tickets.index')
-            ->with('success', 'Ticket created successfully.');
-    }
-
-
     public function update(Request $request, $id)
     {
-        $ticket = Ticket::findOrFail($id);
-
         $request->validate([
             'game_id' => 'required|exists:games,id',
             'price' => 'required|numeric|min:0',
             'place_number' => 'required|integer|min:1',
-            'status' => 'required|string|in:available,sold,reserved,canceled',
-            'category_id' => 'required|exists:categories,id',
+            'status' => 'required|string|in:used,paid,sold,canceled'
         ]);
 
-        $ticket->game_id = $request->game_id;
-        $ticket->user_id = $request->user_id;
-        $ticket->price = $request->price;
-        $ticket->place_number = $request->place_number;
-        $ticket->status = $request->status;
-        $ticket->category_id = $request->category_id;
-        $ticket->save();
+        $result = $this->ticketRepository->updateTicket($id, $request->all());
+
+        if (!$result) {
+            return redirect()->route('admin.tickets.index')
+                ->with('error', 'Failed to update ticket.');
+        }
 
         return redirect()->route('admin.tickets.index')
             ->with('success', 'Ticket updated successfully.');
     }
 
-
     public function destroy($id)
     {
-        $ticket = Ticket::findOrFail($id);
+        $result = $this->ticketRepository->deleteTicket($id);
 
-        // Check if ticket has a payment
-        if ($ticket->payment) {
+        if (!$result) {
             return redirect()->route('admin.tickets.index')
                 ->with('error', 'Cannot delete ticket with associated payment.');
         }
 
-        $ticket->delete();
-
         return redirect()->route('admin.tickets.index')
             ->with('success', 'Ticket deleted successfully.');
+    }
+
+    public function checkout(Request $request)
+    {
+        $ticketIds = explode(',', $request->query('tickets'));
+        $success = session('success');
+
+        $tickets = $this->ticketRepository->getTicketsByIds($ticketIds);
+
+        if ($tickets->isEmpty()) {
+            return redirect()->route('games')->with('error', 'No tickets found.');
+        }
+
+        return view('user.payment', compact('tickets', 'success'));
+    }
+
+    public function downloadPdf($ticketId)
+    {
+        $ticket = $this->ticketRepository->getTicketByIdAndUser($ticketId, auth()->id());
+
+        if (!$ticket) {
+            return redirect()->back()->with('error', 'Ticket not found.');
+        }
+
+        $pdf = Pdf::loadView('user.ticket-pdf', compact('ticket'));
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOptions([
+            'dpi' => 150,
+            'defaultFont' => 'sans-serif',
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true
+        ]);
+
+        return $pdf->download('ticket_' . $ticket->id . '.pdf');
     }
 }

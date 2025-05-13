@@ -11,7 +11,7 @@ class Group extends Model
 
     protected $fillable = ['name', 'description', 'created_by'];
 
-   
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -20,5 +20,10 @@ class Group extends Model
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function latestPosts()
+    {
+        return $this->hasMany(Post::class)->latest()->limit(5);
     }
 }

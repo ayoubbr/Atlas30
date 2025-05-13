@@ -15,11 +15,16 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ticket_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->decimal('amount', 10, 2);
+            $table->string('payment_id');
+            $table->string('payment_method');
             $table->string('status');
             $table->timestamps();
         });
     }
+
+
 
     /**
      * Reverse the migrations.

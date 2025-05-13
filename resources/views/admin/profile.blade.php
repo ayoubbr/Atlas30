@@ -186,132 +186,166 @@
 
 @section('content')
 @section('header-title', 'Admin Profile')
-    <main class="admin-main">
-        <div class="page-header">
-            <div>
-                <h2 class="page-header-title">Admin Profile</h2>
-                <p class="page-header-description">View and update your profile information</p>
+<main class="admin-main">
+    <div class="page-header">
+        <div>
+            <h2 class="page-header-title">Admin Profile</h2>
+            <p class="page-header-description">View and update your profile information</p>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <img src="{{ asset($user->image) ?? 'https://via.placeholder.com/120x120' }}" alt="Admin Avatar">
+                </div>
+                <div class="profile-name">{{ $user->firstname }} {{ $user->lastname }}</div>
+                <div class="profile-role">{{ $user->role->name }}</div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <div class="stat-value">{{ $user->created_at->diffInDays() }}</div>
+                    <div class="stat-label">Days Active</div>
+                </div>
+            </div>
+
+            <div class="profile-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Email Address</div>
+                        <div class="info-value">{{ $user->email }}</div>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Joined Date</div>
+                        <div class="info-value">{{ $user->created_at->format('F j, Y') }}</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="profile-container">
-            <div class="profile-card">
-                <div class="profile-header">
-                    <div class="profile-avatar">
-                        <img src="{{ $user->image ?? 'https://via.placeholder.com/120x120' }}" alt="Admin Avatar">
-                    </div>
-                    <div class="profile-name">{{ $user->firstname }} {{ $user->lastname }}</div>
-                    <div class="profile-role">{{ $user->role->name }}</div>
-                </div>
+        <!-- Profile Edit Form -->
+        <div class="profile-card profile-form-card">
+            <h3 class="form-title">Edit Profile</h3>
 
-                <div class="profile-stats">
-                    <div class="profile-stat">
-                        <div class="stat-value">{{ $user->created_at->diffInDays() }}</div>
-                        <div class="stat-label">Days Active</div>
-                    </div>
-                </div>
-
-                <div class="profile-info">
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="info-content">
-                            <div class="info-label">Email Address</div>
-                            <div class="info-value">{{ $user->email }}</div>
+            <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="firstname" class="form-label">First Name</label>
+                            <input type="text" id="firstname" name="firstname" class="form-control"
+                                value="{{ $user->firstname }}" required>
                         </div>
                     </div>
-
-                    <div class="info-item">
-                        <div class="info-icon">
-                            <i class="fas fa-calendar"></i>
-                        </div>
-                        <div class="info-content">
-                            <div class="info-label">Joined Date</div>
-                            <div class="info-value">{{ $user->created_at->format('F j, Y') }}</div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="lastname" class="form-label">Last Name</label>
+                            <input type="text" id="lastname" name="lastname" class="form-control"
+                                value="{{ $user->lastname }}" required>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Profile Edit Form -->
-            <div class="profile-card profile-form-card">
-                <h3 class="form-title">Edit Profile</h3>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control"
+                        value="{{ $user->email }}" required>
+                </div>
 
-                <form action="{{ route('admin.profile.update') }}" method="POST">
-                    @csrf
+                <div class="form-group">
+                    <label for="profileImage" class="form-label">Profile Picture</label>
+                    <div class="custom-file-input">
+                        <input type="file" id="image" name="image" accept="image/*">
+                        <div class="custom-file-button">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span class="custom-file-text">Choose image</span>
+                        </div>
+                        <div class="custom-file-name"></div>
+                        <div class="custom-file-preview">
+                            <img src="#" alt="Image Preview" id="imagePreview">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="password-section">
+                    <h4 class="form-title">Change Password</h4>
+                    <p class="text-muted mb-4">Leave these fields empty if you don't want to change your password</p>
+
+                    <div class="form-group">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" class="form-control">
+                    </div>
 
                     <div class="form-row">
                         <div class="form-col">
                             <div class="form-group">
-                                <label for="firstname" class="form-label">First Name</label>
-                                <input type="text" id="firstname" name="firstname" class="form-control"
-                                    value="{{ $user->firstname }}" required>
+                                <label for="new_password" class="form-label">New Password</label>
+                                <input type="password" id="new_password" name="new_password" class="form-control">
                             </div>
                         </div>
                         <div class="form-col">
                             <div class="form-group">
-                                <label for="lastname" class="form-label">Last Name</label>
-                                <input type="text" id="lastname" name="lastname" class="form-control"
-                                    value="{{ $user->lastname }}" required>
+                                <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+                                <input type="password" id="new_password_confirmation"
+                                    name="new_password_confirmation" class="form-control">
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control"
-                            value="{{ $user->email }}" required>
-                    </div>
-
-                    <div class="password-section">
-                        <h4 class="form-title">Change Password</h4>
-                        <p class="text-muted mb-4">Leave these fields empty if you don't want to change your password</p>
-
-                        <div class="form-group">
-                            <label for="current_password" class="form-label">Current Password</label>
-                            <input type="password" id="current_password" name="current_password" class="form-control">
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="new_password" class="form-label">New Password</label>
-                                    <input type="password" id="new_password" name="new_password" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-col">
-                                <div class="form-group">
-                                    <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
-                                    <input type="password" id="new_password_confirmation" name="new_password_confirmation"
-                                        class="form-control">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="reset" class="btn btn-outline">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
-            </div>
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
         </div>
-    </main>
+    </div>
+</main>
 @endsection
 
 @section('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.querySelector('.admin-sidebar');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.admin-sidebar');
 
-            if (menuToggle && sidebar) {
-                menuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
-                });
+        if (menuToggle && sidebar) {
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+            });
+        }
+
+        document.getElementById('image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            
+            const preview = document.getElementById('imagePreview');
+            const previewImage = document.querySelector('.custom-file-preview');
+            
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.parentElement.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
             }
         });
-    </script>
+    });
+</script>
 @endsection

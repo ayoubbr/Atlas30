@@ -422,7 +422,7 @@
             font-weight: 600;
         }
 
-        .status-scheduled {
+        .status-upcoming {
             background-color: var(--info-light);
             color: var(--info);
         }
@@ -524,7 +524,7 @@
 
         /* Forum Activity */
         .forum-activity {
-            grid-column: span 12;
+            grid-column: span 6;
             background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
@@ -612,21 +612,6 @@
         .activity-actions {
             display: flex;
             gap: 10px;
-        }
-
-        /* Ticket Categories */
-        .ticket-categories {
-            grid-column: span 6;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .categories-chart-container {
-            padding: 20px;
-            height: 300px;
-            position: relative;
         }
 
         /* Ticket Sales by Match */
@@ -753,7 +738,6 @@
                     <div>
                         <h2 class="stadium-title">World Cup 2030 Dashboard</h2>
                         @auth
-
                             <div class="stadium-subtitle">Welcome back, {{ Auth::user()->firstname }}! Here's what's happening
                                 with the tournament.</div>
                         @endauth
@@ -836,11 +820,11 @@
                         @if ($groupedMatches->count() == 0)
                             <div class="timeline-day">
                                 <div class="day-header">
-                                    <div class="day-date">No matches scheduled!</div>
+                                    <div class="day-date">No upcoming matches!</div>
                                 </div>
                             </div>
                         @endif
-                        
+
                         @foreach ($groupedMatches as $date => $matches)
                             <div class="timeline-day">
                                 <div class="day-header">
@@ -857,14 +841,14 @@
                                             <div class="match-teams">
                                                 <div class="match-team">
                                                     <div class="team-flag"
-                                                        style="background-image: url('{{ $match->homeTeam->flag ?? 'https://via.placeholder.com/30x20/e74c3c/ffffff?text=' . substr($match->homeTeam->name, 0, 3) }}')">
+                                                        style="background-image: url('{{ asset($match->homeTeam->flag) ?? 'https://via.placeholder.com/30x20/e74c3c/ffffff?text=' . substr($match->homeTeam->name, 0, 3) }}')">
                                                     </div>
                                                     <div class="team-name">{{ $match->homeTeam->name }}</div>
                                                 </div>
                                                 <div class="match-vs">VS</div>
                                                 <div class="match-team">
                                                     <div class="team-flag"
-                                                        style="background-image: url('{{ $match->awayTeam->flag ?? 'https://via.placeholder.com/30x20/3498db/ffffff?text=' . substr($match->awayTeam->name, 0, 3) }}')">
+                                                        style="background-image: url('{{ asset($match->awayTeam->flag) ?? 'https://via.placeholder.com/30x20/3498db/ffffff?text=' . substr($match->awayTeam->name, 0, 3) }}')">
                                                     </div>
                                                     <div class="team-name">{{ $match->awayTeam->name }}</div>
                                                 </div>
@@ -874,7 +858,7 @@
                                                 {{ $match->stadium->city }}
                                             </div>
                                             <div class="match-status">
-                                                <span class="status-badge status-scheduled">Scheduled</span>
+                                                <span class="status-badge status-upcoming">upcoming</span>
                                                 <div class="match-actions">
                                                     <a href="{{ route('admin.games.index') }}?id={{ $match->id }}"
                                                         class="btn btn-sm btn-icon">
@@ -891,20 +875,6 @@
                 </div>
             </div>
 
-            <!-- Ticket Sales by Category -->
-            <div class="ticket-sales">
-                <div class="section-header">
-                    <h3 class="section-title">Ticket Sales by Category</h3>
-                </div>
-
-                <div class="ticket-chart-container">
-                    <div class="chart-container">
-                        <canvas id="categoriesChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ticket Sales by Match -->
             <div class="ticket-sales-by-match">
                 <div class="section-header">
                     <h3 class="section-title">Ticket Sales by Match</h3>
@@ -962,9 +932,6 @@
                                     <div class="activity-time">
                                         <i class="far fa-clock"></i> {{ $post->created_at->diffForHumans() }}
                                     </div>
-                                    <div class="activity-actions">
-                                        <a href="{{ route('admin.forum.index') }}" class="btn btn-sm">View</a>
-                                    </div>
                                 </div>
                             </div>
                         </li>
@@ -990,41 +957,6 @@
             if (menuToggle && sidebar) {
                 menuToggle.addEventListener('click', function() {
                     sidebar.classList.toggle('show');
-                });
-            }
-
-            // Categories Chart
-            const categoriesCtx = document.getElementById('categoriesChart');
-
-            if (categoriesCtx) {
-                const categoriesChart = new Chart(categoriesCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: @json($categoryLabels),
-                        datasets: [{
-                            data: @json($categoryCounts),
-                            backgroundColor: [
-                                '#e63946',
-                                '#3498db',
-                                '#2ecc71',
-                                '#f1c40f',
-                                '#9b59b6',
-                                '#1abc9c',
-                                '#e67e22'
-                            ],
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'right'
-                            }
-                        },
-                        cutout: '70%'
-                    }
                 });
             }
         });

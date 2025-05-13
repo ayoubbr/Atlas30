@@ -27,6 +27,20 @@
             <div class="nav-section-title">Management</div>
             <ul class="nav-list">
                 <li class="nav-item">
+                    <a href="{{ url('/admin/teams') }}"
+                        class="nav-link {{ request()->is('admin/teams') ? 'active' : '' }}">
+                        <i class="fa-brands fa-font-awesome nav-icon"></i>
+                        <span class="nav-text">Teams</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/stadiums') }}"
+                        class="nav-link {{ request()->is('admin/stadiums') ? 'active' : '' }}">
+                        <i class="fas fa-map-marker-alt nav-icon"></i>
+                        <span class="nav-text">Stadiums</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ url('/admin/games') }}"
                         class="nav-link {{ request()->is('admin/games') ? 'active' : '' }}">
                         <i class="fas fa-futbol nav-icon"></i>
@@ -38,34 +52,6 @@
                         class="nav-link {{ request()->is('admin/tickets') ? 'active' : '' }}">
                         <i class="fas fa-ticket-alt nav-icon"></i>
                         <span class="nav-text">Tickets</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/stadiums') }}"
-                        class="nav-link {{ request()->is('admin/stadiums') ? 'active' : '' }}">
-                        <i class="fas fa-map-marker-alt nav-icon"></i>
-                        <span class="nav-text">Stadiums</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/teams') }}"
-                        class="nav-link {{ request()->is('admin/teams') ? 'active' : '' }}">
-                        <i class="fas fa-users nav-icon"></i>
-                        <span class="nav-text">Teams</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/categories') }}"
-                        class="nav-link {{ request()->is('admin/categories') ? 'active' : '' }}">
-                        <i class="fa-solid fa-table-cells-large nav-icon"></i>
-                        <span class="nav-text">Categories</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('/admin/roles') }}"
-                        class="nav-link {{ request()->is('admin/roles') ? 'active' : '' }}">
-                        <i class="fa-solid fa-user-gear nav-icon"></i>
-                        <span class="nav-text">Roles</span>
                     </a>
                 </li>
             </ul>
@@ -82,6 +68,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ url('/admin/roles') }}"
+                        class="nav-link {{ request()->is('admin/roles') ? 'active' : '' }}">
+                        <i class="fa-solid fa-user-gear nav-icon"></i>
+                        <span class="nav-text">Roles</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ url('/admin/forum') }}"
                         class="nav-link {{ request()->is('admin/forum') ? 'active' : '' }}">
                         <i class="fas fa-comments nav-icon"></i>
@@ -95,7 +88,15 @@
             <div class="nav-section-title">Logout</div>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="{{ url('logout') }}" class="nav-link {{ request()->is('logout') ? 'active' : '' }}">
+                    <a href="/" class="nav-link ">
+                        <i class="fa-solid fa-house nav-icon"></i>
+                        <span class="nav-text">Client View</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="{{ url('logout') }}" class="nav-link ">
                         <i class="fa-solid fa-right-from-bracket nav-icon"></i>
                         <span class="nav-text">Logout</span>
                     </a>
@@ -121,7 +122,7 @@
         @auth
             <div class="user-profile" id="admin-profile-link">
                 <div class="user-avatar">
-                    <img src="{{ Auth::user()->image ?? 'https://via.placeholder.com/40x40' }}" alt="Admin Avatar">
+                    <img src="{{ asset(Auth::user()->image) ?? 'https://via.placeholder.com/40x40' }}" alt="Admin Avatar">
                 </div>
                 <div class="user-info">
                     <div class="user-name">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>

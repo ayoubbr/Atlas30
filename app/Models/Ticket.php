@@ -15,7 +15,7 @@ class Ticket extends Model
         'price',
         'place_number',
         'status',
-        'category_id'
+        'payment_id'
     ];
 
 
@@ -29,13 +29,9 @@ class Ticket extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
 
     public function payment()
     {
-        return $this->hasOne(Payment::class);
+        return $this->belongsTo(Payment::class);
     }
 }

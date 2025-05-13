@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Stadium;
 use App\Models\Team;
-use App\Models\Category;
 use App\Models\Game;
 use App\Models\Ticket;
 use App\Models\Payment;
@@ -31,47 +30,62 @@ class DatabaseSeeder extends Seeder
             'firstname' => 'Admin',
             'lastname' => 'User',
             'email' => 'admin@atlas.com',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make('password'),
             'status' => 'active',
             'image' => 'https://cdn-icons-png.flaticon.com/512/9703/9703596.png',
             'role_id' => $adminRole->id,
         ]);
 
-        User::factory()->count(5)->create(['role_id' => $userRole->id]);
+        // Normal User
+        User::create([
+            'firstname' => 'Ayoub',
+            'lastname' => 'Benmansour',
+            'email' => 'ayoub1benmansour@gmail.com',
+            'password' => Hash::make('password'),
+            'status' => 'active',
+            'image' => 'https://cdn-icons-png.flaticon.com/128/3250/3250434.png',
+            'role_id' => $userRole->id,
+        ]);
 
-        $teams = Team::factory()->count(6)->create();
+        User::factory()->count(3)->create(['role_id' => $userRole->id]);
 
-        $stadiums = Stadium::factory()->count(5)->create();
+        $teams = Team::factory()->count(3)->create();
 
-        $categories = Category::factory()->count(5)->create();
+        $stadiums = Stadium::factory()->count(3)->create();
 
-        $games = Game::factory()->count(10)->create();
+        $games = Game::factory()->count(3)->create();
 
         $users = User::where('role_id', $userRole->id)->get();
-        foreach ($games as $game) {
-            Ticket::factory()->count(5)->create([
-                'game_id' => $game->id,
-                'user_id' => $users->random()->id,
-                'category_id' => $categories->random()->id,
-            ]);
-        }
 
-        $tickets = Ticket::all();
-        foreach ($tickets as $ticket) {
+        foreach ($users as $user) {
             Payment::create([
-                'ticket_id' => $ticket->id,
+                'payment_id' => Str::random(10),
+                'user_id' => $user->id,
                 'status' => 'completed',
+                'amount' => $user->id * 100,
+                'payment_method' => 'stripe',
+                'status' => 'pending'
             ]);
         }
 
-        $groups = Group::factory()->count(5)->create();
+        $payments = Payment::all();
+        foreach ($payments as $payment) {
+            Ticket::factory()->count(2)->create([
+                'game_id' => $games->random()->id,
+                'user_id' => $users->random()->id,
+                'payment_id' => $payment->id,
+            ]);
+        }
 
-        $posts = Post::factory()->count(10)->create();
 
-        Comment::factory()->count(15)->create();
+        $groups = Group::factory()->count(3)->create();
 
-        Like::factory()->count(20)->create();
+        $posts = Post::factory()->count(3)->create();
 
-        Notification::factory()->count(10)->create();
+        Comment::factory()->count(3)->create();
+
+        Like::factory()->count(3)->create();
+
+        Notification::factory()->count(3)->create();
     }
 }

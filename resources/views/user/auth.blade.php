@@ -4,7 +4,6 @@
 
 @section('css')
     <style>
-        /* Auth Container */
         .auth-container {
             max-width: 900px;
             margin: 0 auto 60px;
@@ -22,7 +21,6 @@
             flex: 0 0 300px;
         }
 
-        /* Auth Tabs */
         .auth-tabs {
             display: flex;
             margin-bottom: 20px;
@@ -47,7 +45,6 @@
             border-bottom-color: var(--primary);
         }
 
-        /* Auth Forms */
         .auth-form-container {
             background-color: white;
             border-radius: 8px;
@@ -161,49 +158,6 @@
             margin-top: 20px;
             font-size: 0.9rem;
             color: var(--gray-600);
-        }
-
-        /* Password Strength Meter */
-        .password-strength {
-            margin-top: 10px;
-        }
-
-        .strength-meter {
-            height: 5px;
-            background-color: var(--gray-200);
-            border-radius: 3px;
-            margin-bottom: 5px;
-            overflow: hidden;
-        }
-
-        .strength-meter-fill {
-            height: 100%;
-            width: 0;
-            transition: width 0.3s ease;
-        }
-
-        .strength-text {
-            font-size: 0.8rem;
-        }
-
-        .strength-weak .strength-meter-fill {
-            width: 25%;
-            background-color: var(--danger);
-        }
-
-        .strength-medium .strength-meter-fill {
-            width: 50%;
-            background-color: var(--warning);
-        }
-
-        .strength-good .strength-meter-fill {
-            width: 75%;
-            background-color: var(--info);
-        }
-
-        .strength-strong .strength-meter-fill {
-            width: 100%;
-            background-color: var(--success);
         }
 
         /* Password Toggle */
@@ -343,24 +297,6 @@
             font-size: 0.9rem;
         }
 
-        .alert-success {
-            background-color: rgba(46, 204, 113, 0.1);
-            border: 1px solid rgba(46, 204, 113, 0.2);
-            color: var(--success);
-        }
-
-        .alert-danger {
-            background-color: rgba(231, 76, 60, 0.1);
-            border: 1px solid rgba(231, 76, 60, 0.2);
-            color: var(--danger);
-        }
-
-        .alert-info {
-            background-color: rgba(52, 152, 219, 0.1);
-            border: 1px solid rgba(52, 152, 219, 0.2);
-            color: var(--info);
-        }
-
         /* Responsive Styles */
         @media (max-width: 992px) {
             .auth-container {
@@ -447,46 +383,20 @@
 
                         <div class="form-group">
                             <label for="email" class="form-label">Email Address</label>
-                            <input type="email" id="email" name="email"
-                                class="form-control @error('email') is-invalid @enderror"
+                            <input type="email" id="email" name="email" class="form-control"
                                 placeholder="your.email@example.com" value="{{ old('email') }}" required>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="password" class="form-label">Password</label>
                             <div class="password-toggle">
-                                <input type="password" id="password" name="password"
-                                    class="form-control @error('password') is-invalid @enderror"
+                                <input type="password" id="password" name="password" class="form-control"
                                     placeholder="Enter your password" required>
                                 <i class="far fa-eye toggle-password" data-target="password"></i>
                             </div>
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
-
-                        <div class="form-footer">
-                            <a href="#" id="forgot-password-link">Forgot your password?</a>
-                        </div>
-
-                        <div class="form-divider">or sign in with</div>
-
-                        <div class="social-login">
-                            <a href="#" class="btn-social btn-facebook">
-                                <i class="fab fa-facebook-f"></i> Facebook
-                            </a>
-                            <a href="#" class="btn-social btn-google">
-                                <i class="fab fa-google"></i> Google
-                            </a>
-                            <a href="#" class="btn-social btn-twitter">
-                                <i class="fab fa-twitter"></i> Twitter
-                            </a>
-                        </div>
                     </form>
 
                     <!-- Register Form -->
@@ -497,55 +407,32 @@
 
                         <div class="form-group">
                             <label for="firstname" class="form-label">First Name</label>
-                            <input type="text" id="firstname" name="firstname"
-                                class="form-control @error('firstname') is-invalid @enderror"
+                            <input type="text" id="firstname" name="firstname" class="form-control"
                                 placeholder="Enter your first name" value="{{ old('firstname') }}" required>
-                            @error('firstname')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                             <div class="form-text">This will be displayed publicly in the forum</div>
                         </div>
 
                         <div class="form-group">
                             <label for="lastname" class="form-label">Last name</label>
-                            <input type="text" id="lastname" name="lastname"
-                                class="form-control @error('lastname') is-invalid @enderror"
+                            <input type="text" id="lastname" name="lastname" class="form-control "
                                 placeholder="Enter your last name" value="{{ old('lastname') }}" required>
-                            @error('lastname')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                             <div class="form-text">This will be displayed publicly in the forum</div>
                         </div>
 
                         <div class="form-group">
                             <label for="register-email" class="form-label">Email Address</label>
-                            <input type="email" id="register-email" name="email"
-                                class="form-control @error('email') is-invalid @enderror"
+                            <input type="email" id="register-email" name="email" class="form-control"
                                 placeholder="your.email@example.com" value="{{ old('email') }}" required>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="register-password" class="form-label">Password</label>
                             <div class="password-toggle">
-                                <input type="password" id="register-password" name="password"
-                                    class="form-control @error('password') is-invalid @enderror"
+                                <input type="password" id="register-password" name="password" class="form-control"
                                     placeholder="Create a password" required>
                                 <i class="far fa-eye toggle-password" data-target="register-password"></i>
                             </div>
-                            @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
 
-                            <div class="password-strength">
-                                <div class="strength-meter">
-                                    <div class="strength-meter-fill"></div>
-                                </div>
-                                <div class="strength-text">Password strength: <span id="strength-value">Type a
-                                        password</span></div>
-                            </div>
                         </div>
 
                         <div class="form-group">
@@ -559,43 +446,8 @@
 
                         <button type="submit" class="btn btn-success btn-lg btn-block">Create Account</button>
 
-                        <div class="form-footer">
-                            Already have an account? <a href="{{ route('login') }}" id="login-link">Sign in</a>
-                        </div>
                     </form>
 
-                    <!-- Forgot Password Form -->
-                    <form class="auth-form" id="forgot-password-form" action="{{ route('forgot-password') }}"
-                        method="POST">
-                        @csrf
-                        <h2 class="form-title">Reset Your Password</h2>
-
-                        <div class="alert alert-info">
-                            <div class="alert-icon">
-                                <i class="fas fa-info-circle"></i>
-                            </div>
-                            <div class="alert-content">
-                                <div class="alert-text">Enter your email address below and we'll send you instructions
-                                    to reset your password.</div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="reset-email" class="form-label">Email Address</label>
-                            <input type="email" id="reset-email" name="email"
-                                class="form-control @error('email') is-invalid @enderror"
-                                placeholder="your.email@example.com" value="{{ old('email') }}" required>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Send Reset Link</button>
-
-                        <div class="form-footer">
-                            <a href="{{ route('login') }}" id="back-to-login">Back to Sign In</a>
-                        </div>
-                    </form>
                 </div>
             </div>
 
@@ -616,34 +468,9 @@
                         </li>
                         <li class="benefits-item">
                             <i class="fas fa-check-circle benefits-icon"></i>
-                            <div class="benefits-text">Save your favorite teams and matches for quick access</div>
-                        </li>
-                        <li class="benefits-item">
-                            <i class="fas fa-check-circle benefits-icon"></i>
                             <div class="benefits-text">Receive personalized match recommendations</div>
                         </li>
-                        <li class="benefits-item">
-                            <i class="fas fa-check-circle benefits-icon"></i>
-                            <div class="benefits-text">Access exclusive content and behind-the-scenes footage</div>
-                        </li>
                     </ul>
-
-                    <div class="testimonial">
-                        <div class="testimonial-text">
-                            "The World Cup 2030 community has been amazing! I've connected with fans from all over the
-                            world and made some great friends. The forum discussions are always insightful and
-                            respectful."
-                        </div>
-                        <div class="testimonial-author">
-                            <div class="author-avatar">
-                                <img src="https://via.placeholder.com/40x40" alt="User Avatar">
-                            </div>
-                            <div class="author-info">
-                                <div class="author-name">Maria Rodriguez</div>
-                                <div class="author-role">Football Fan from Spain</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="auth-sidebar-content">
@@ -678,7 +505,7 @@
                 return re.test(String(email).toLowerCase());
             }
 
-            // Auth tabs functionality
+            // Auth tabs 
             const authTabs = document.querySelectorAll('.auth-tab');
             const authForms = document.querySelectorAll('.auth-form');
 
@@ -699,30 +526,6 @@
                 });
             });
 
-            // Forgot password link
-            const forgotPasswordLink = document.getElementById('forgot-password-link');
-            const backToLoginLink = document.getElementById('back-to-login');
-
-            if (forgotPasswordLink) {
-                forgotPasswordLink.addEventListener('click', function(e) {
-                    {
-                        forgotPasswordLink.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            authForms.forEach(form => form.classList.remove('active'));
-                            document.getElementById('forgot-password-form').classList.add('active');
-                        });
-                    }
-                });
-            }
-
-            if (backToLoginLink) {
-                backToLoginLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    authForms.forEach(form => form.classList.remove('active'));
-                    document.getElementById('login-form').classList.add('active');
-                });
-            }
-
             const togglePasswordBtns = document.querySelectorAll('.toggle-password');
 
             togglePasswordBtns.forEach(btn => {
@@ -742,69 +545,9 @@
                 });
             });
 
-            // Password strength meter
-            const passwordInput = document.getElementById('register-password');
-            const strengthMeter = document.querySelector('.strength-meter-fill');
-            const strengthText = document.getElementById('strength-value');
-
-            if (passwordInput) {
-                passwordInput.addEventListener('input', function() {
-                    const password = this.value;
-                    let strength = 0;
-                    let strengthClass = '';
-                    let strengthLabel = '';
-
-                    if (password.length === 0) {
-                        strengthClass = '';
-                        strengthLabel = 'Type a password';
-                    } else if (password.length < 6) {
-                        strength = 1;
-                        strengthClass = 'strength-weak';
-                        strengthLabel = 'Weak';
-                    } else if (password.length < 8) {
-                        strength = 2;
-                        strengthClass = 'strength-medium';
-                        strengthLabel = 'Medium';
-                    } else if (password.length < 10) {
-                        strength = 3;
-                        strengthClass = 'strength-good';
-                        strengthLabel = 'Good';
-                    } else {
-                        strength = 4;
-                        strengthClass = 'strength-strong';
-                        strengthLabel = 'Strong';
-                    }
-
-                    if (password.match(/[A-Z]/) && strength < 4) strength += 1;
-                    if (password.match(/[0-9]/) && strength < 4) strength += 1;
-                    if (password.match(/[^A-Za-z0-9]/) && strength < 4) strength += 1;
-
-                    strengthMeter.className = 'strength-meter-fill';
-
-                    if (strength === 0) {
-                        strengthClass = '';
-                    } else if (strength <= 2) {
-                        strengthClass = 'strength-weak';
-                        strengthLabel = 'Weak';
-                    } else if (strength <= 4) {
-                        strengthClass = 'strength-medium';
-                        strengthLabel = 'Medium';
-                    } else if (strength <= 6) {
-                        strengthClass = 'strength-good';
-                        strengthLabel = 'Good';
-                    } else {
-                        strengthClass = 'strength-strong';
-                        strengthLabel = 'Strong';
-                    }
-
-                    strengthMeter.classList.add(strengthClass);
-                    strengthText.textContent = strengthLabel;
-                });
-            }
-
+            // Simple validation
             const loginForm = document.getElementById('login-form');
             const registerForm = document.getElementById('register-form');
-            const forgotPasswordForm = document.getElementById('forgot-password-form');
 
             if (loginForm) {
                 loginForm.addEventListener('submit', function(e) {
@@ -838,11 +581,10 @@
                     const lastname = document.getElementById('lastname');
                     const email = document.getElementById('register-email');
                     const password = document.getElementById('register-password');
-                    const confirmPassword = document.getElementById(
-                        'register-confirm-password');
+                    const confirmPassword = document.getElementById('register-confirm-password');
+
                     let isValid = true;
 
-                    // Simple validation
                     if (!firstname.value || firstname.value.length < 3 || firstname.value
                         .length > 50) {
                         firstname.classList.add('is-invalid');
@@ -878,24 +620,6 @@
                         isValid = false;
                     } else {
                         confirmPassword.classList.remove('is-invalid');
-                    }
-
-                    if (!isValid) {
-                        e.preventDefault();
-                    }
-                });
-            }
-
-            if (forgotPasswordForm) {
-                forgotPasswordForm.addEventListener('submit', function(e) {
-                    const email = document.getElementById('reset-email');
-                    let isValid = true;
-
-                    if (!email.value || !validateEmail(email.value)) {
-                        email.classList.add('is-invalid');
-                        isValid = false;
-                    } else {
-                        email.classList.remove('is-invalid');
                     }
 
                     if (!isValid) {

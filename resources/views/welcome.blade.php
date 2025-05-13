@@ -4,12 +4,16 @@
 
 @section('css')
     <style>
-        /* Countdown Section */
+        /* Countdown */
         .countdown {
             background-color: var(--secondary);
             color: white;
             padding: 40px 0;
             text-align: center;
+        }
+
+        .container>h2 {
+            color: white
         }
 
         .countdown-container {
@@ -37,7 +41,7 @@
             letter-spacing: 1px;
         }
 
-        /* Features Section */
+        /* Features */
         .features {
             padding: 80px 0;
             background-color: white;
@@ -46,24 +50,6 @@
         .section-title {
             text-align: center;
             margin-bottom: 60px;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background-color: var(--primary);
         }
 
         .features-grid {
@@ -96,7 +82,7 @@
             margin-bottom: 15px;
         }
 
-        /* Upcoming Matches */
+        /* Upcoming */
         .matches {
             padding: 80px 0;
             background-color: #f8f9fa;
@@ -122,7 +108,7 @@
         }
 
         .match-image {
-            height: 200px;
+            height: 325px;
             background-size: cover;
             background-position: center;
         }
@@ -186,7 +172,7 @@
             text-align: center;
         }
 
-        /* Community Section */
+        /* Community */
         .community {
             padding: 80px 0;
             background-color: white;
@@ -233,55 +219,6 @@
             color: var(--success);
             margin-right: 10px;
             font-size: 1.2rem;
-        }
-
-        /* Newsletter */
-        .newsletter {
-            padding: 60px 0;
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-        }
-
-        .newsletter h2 {
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .newsletter p {
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .newsletter-form {
-            display: flex;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .newsletter-form input {
-            flex: 1;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px 0 0 4px;
-            font-size: 1rem;
-        }
-
-        .newsletter-form button {
-            padding: 12px 20px;
-            background-color: var(--accent);
-            color: var(--dark);
-            border: none;
-            border-radius: 0 4px 4px 0;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .newsletter-form button:hover {
-            background-color: #dab10d;
         }
 
         /* Responsive Styles */
@@ -360,7 +297,6 @@
 @endsection
 
 @section('content')
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
@@ -368,14 +304,13 @@
                 <p>Join the global celebration of football. Get your tickets and connect with fans from around the
                     world.</p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn">Buy Tickets</a>
-                    <a href="#" class="btn btn-accent">Join Community</a>
+                    <a href="{{ route('games') }}" class="btn">Buy Tickets</a>
+                    <a href="{{ route('forum.index') }}" class="btn btn-accent">Join Community</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Countdown Section -->
     <section class="countdown">
         <div class="container">
             <h2>Countdown to Kickoff</h2>
@@ -400,7 +335,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section class="features">
         <div class="container">
             <div class="section-title">
@@ -433,7 +367,6 @@
         </div>
     </section>
 
-    <!-- Upcoming Matches -->
     <section class="matches">
         <div class="container">
             <div class="section-title">
@@ -441,110 +374,44 @@
                 <p>Secure your tickets for the most anticipated matches</p>
             </div>
             <div class="matches-grid">
-                <div class="match-card">
-                    <div class="match-image"
-                        style="background-image: url('https://ichef.bbci.co.uk/images/ic/1200x675/p0g3pgmf.jpg')">
-                    </div>
-                    <div class="match-details">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/3498db/ffffff?text=Team+A')">
+                @foreach ($upcomingMatches as $match)
+                    <div class="match-card">
+                        <div class="match-image" style="background-image: url({{ asset($match->image) }})">
+                        </div>
+                        <div class="match-details">
+                            <div class="match-teams">
+                                <div class="match-team">
+                                    <div class="match-flag"
+                                        style="background-image: url({{ asset($match->homeTeam->flag) }})">
+                                    </div>
+                                    <div class="match-name">{{ $match->homeTeam->name }}</div>
                                 </div>
-                                <div class="match-name">Brazil</div>
-                            </div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/e74c3c/ffffff?text=Team+B')">
+                                <div class="match-vs">VS</div>
+                                <div class="match-team">
+                                    <div class="match-flag"
+                                        style="background-image: url({{ asset($match->awayTeam->flag) }})">
+                                    </div>
+                                    <div class="match-name">{{ $match->awayTeam->name }}</div>
                                 </div>
-                                <div class="match-name">France</div>
                             </div>
-                        </div>
-                        <div class="match-info">
-                            <div class="match-date">
-                                <i class="far fa-calendar-alt"></i> June 15, 2030
-                            </div>
-                            <div class="match-venue">
-                                <i class="fas fa-map-marker-alt"></i> Rio Stadium
-                            </div>
-                        </div>
-                        <div class="match-cta">
-                            <a href="#" class="btn">Get Tickets</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="match-card">
-                    <div class="match-image"
-                        style="background-image: url('https://ichef.bbci.co.uk/images/ic/640x360/p0dgf5kf.jpg')">
-                    </div>
-                    <div class="match-details">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/2ecc71/ffffff?text=Team+C')">
+                            <div class="match-info">
+                                <div class="match-date">
+                                    <i class="far fa-calendar-alt"></i> {{ $match->start_date }}
                                 </div>
-                                <div class="match-name">Germany</div>
-                            </div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/f39c12/ffffff?text=Team+D')">
+                                <div class="match-venue">
+                                    <i class="fas fa-map-marker-alt"></i> {{ $match->stadium->name }}
                                 </div>
-                                <div class="match-name">Spain</div>
                             </div>
-                        </div>
-                        <div class="match-info">
-                            <div class="match-date">
-                                <i class="far fa-calendar-alt"></i> June 18, 2030
+                            <div class="match-cta">
+                                <a href="{{ route('games.show', $match->id) }}" class="btn">Get Tickets</a>
                             </div>
-                            <div class="match-venue">
-                                <i class="fas fa-map-marker-alt"></i> Berlin Arena
-                            </div>
-                        </div>
-                        <div class="match-cta">
-                            <a href="#" class="btn">Get Tickets</a>
                         </div>
                     </div>
-                </div>
-                <div class="match-card">
-                    <div class="match-image"
-                        style="background-image: url('https://i.ytimg.com/vi/8h_VAG-rnD0/maxresdefault.jpg')">
-                    </div>
-                    <div class="match-details">
-                        <div class="match-teams">
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/9b59b6/ffffff?text=Team+E')">
-                                </div>
-                                <div class="match-name">Argentina</div>
-                            </div>
-                            <div class="match-vs">VS</div>
-                            <div class="match-team">
-                                <div class="match-flag"
-                                    style="background-image: url('https://via.placeholder.com/60x40/34495e/ffffff?text=Team+F')">
-                                </div>
-                                <div class="match-name">England</div>
-                            </div>
-                        </div>
-                        <div class="match-info">
-                            <div class="match-date">
-                                <i class="far fa-calendar-alt"></i> June 21, 2030
-                            </div>
-                            <div class="match-venue">
-                                <i class="fas fa-map-marker-alt"></i> London Stadium
-                            </div>
-                        </div>
-                        <div class="match-cta">
-                            <a href="#" class="btn">Get Tickets</a>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
 
-    <!-- Community Section -->
     <section class="community">
         <div class="container">
             <div class="community-content">
@@ -570,7 +437,7 @@
                             <span>Participate in discussions and predictions</span>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-secondary">Join Community</a>
+                    <a href="{{ route('forum.index') }}" class="btn btn-secondary">Join Community</a>
                 </div>
                 <div class="community-image">
                     <img src="https://assets.publishing.service.gov.uk/media/619df21d8fa8f5037b09c5ef/Fans_clapping.jpg"
@@ -580,27 +447,11 @@
         </div>
     </section>
 
-    <!-- Newsletter -->
-    <section class="newsletter">
-        <div class="container">
-            <h2>Stay Updated</h2>
-            <p>Subscribe to our newsletter to receive the latest news, ticket releases, and special offers for the World
-                Cup 2030.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email address" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </div>
-    </section>
 @endsection
 
 @section('js')
-    <!-- JavaScript for Countdown -->
     <script>
-        // You can implement the actual countdown functionality here
-        // This is just a placeholder for now
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
             const mobileMenuBtn = document.querySelector('.mobile-menu');
             const navLinks = document.querySelector('.nav-links');
 
@@ -613,24 +464,16 @@
             // Countdown functionality
             const countdownNumbers = document.querySelectorAll('.countdown-number');
 
-            // Set the World Cup date (example: June 8, 2030)
             const worldCupDate = new Date('June 8, 2030 00:00:00').getTime();
-
-            // Update the countdown every second
             const countdownTimer = setInterval(function() {
-                // Get today's date and time
                 const now = new Date().getTime();
-
-                // Find the distance between now and the World Cup date
                 const distance = worldCupDate - now;
 
-                // Time calculations for days, hours, minutes and seconds
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                // Display the results
                 if (countdownNumbers.length >= 4) {
                     countdownNumbers[0].textContent = days;
                     countdownNumbers[1].textContent = hours;
@@ -638,7 +481,6 @@
                     countdownNumbers[3].textContent = seconds;
                 }
 
-                // If the countdown is finished, display a message
                 if (distance < 0) {
                     clearInterval(countdownTimer);
                     document.querySelector('.countdown-container').innerHTML =

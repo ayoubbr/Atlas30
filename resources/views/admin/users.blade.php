@@ -504,7 +504,6 @@
                         <th>Email</th>
                         <th>Role</th>
                         <th>Registration Date</th>
-                        <th>Last Login</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -527,15 +526,11 @@
                                 </span>
                             </td>
                             <td>{{ $user->created_at->format('M j, Y') }}</td>
-                            <td>{{ $user->last_login ?? 'Never' }}</td>
                             <td><span
                                     class="status-badge status-{{ $user->status }}">{{ ucfirst($user->status) }}</span>
                             </td>
                             <td>
                                 <div class="user-table-actions">
-                                    <button class="btn btn-sm btn-outline view-user-btn" data-id="{{ $user->id }}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
                                     <button class="btn btn-sm btn-outline edit-user-btn" data-id="{{ $user->id }}">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -594,18 +589,6 @@
                     </ul>
                 </div>
             @endif
-        </div>
-    </div>
-
-    <!-- User Registration Chart -->
-    <div class="user-card">
-        <div class="user-card-header">
-            <h3>User Registration Trend</h3>
-        </div>
-        <div class="user-card-body">
-            <div class="user-activity-chart">
-                <canvas id="userRegistrationChart"></canvas>
-            </div>
         </div>
     </div>
 </main>
@@ -775,7 +758,6 @@
 @section('js')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Mobile menu toggle
         const menuToggle = document.getElementById('menu-toggle');
         const sidebar = document.querySelector('.admin-sidebar');
 
@@ -818,6 +800,7 @@
         if (editUserBtns.length && userModal) {
             editUserBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
+                    // console.log(btn); 
                     const userId = this.getAttribute('data-id');
                     document.getElementById('userModalTitle').textContent = 'Edit User';
                     document.getElementById('form-method').value = 'PUT';
@@ -845,69 +828,6 @@
             });
         }
 
-        // View User Modal
-        const viewUserModal = document.getElementById('viewUserModal');
-        const viewUserBtns = document.querySelectorAll('.view-user-btn');
-        const closeViewUserModal = document.getElementById('closeViewUserModal');
-        const closeViewUserBtn = document.getElementById('closeViewUserBtn');
-
-        if (viewUserBtns.length && viewUserModal) {
-            viewUserBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const userId = this.getAttribute('data-id');
-
-                    fetch("{{ url('admin/users') }}/" + userId)
-                        .then(response => response.json())
-                        .then(data => {
-                            const user = data.user;
-
-                            document.getElementById('viewUserName').textContent = user
-                                .firstname + ' ' + user.lastname;
-                            document.getElementById('viewUserEmail').textContent = user
-                                .email;
-                            document.getElementById('viewUserRole').textContent = user.role
-                                .name;
-                            document.getElementById('viewUserStatus').textContent = user
-                                .status.charAt(0).toUpperCase() + user.status.slice(1);
-                            document.getElementById('viewUserRegistration').textContent =
-                                new Date(user.created_at).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric'
-                                });
-
-                            document.getElementById('viewUserTickets').textContent = user
-                                .tickets.length;
-
-                            if (user.image) {
-                                document.getElementById('viewUserAvatar').style
-                                    .backgroundImage = `url('${user.image}')`;
-                            } else {
-                                document.getElementById('viewUserAvatar').style
-                                    .backgroundImage =
-                                    "url('https://via.placeholder.com/60x60')";
-                            }
-
-                            viewUserModal.classList.add('show');
-                        })
-                        .catch(error => {
-                            console.error('Error fetching user data:', error);
-                        });
-                });
-            });
-        }
-
-        if (closeViewUserModal && viewUserModal) {
-            closeViewUserModal.addEventListener('click', function() {
-                viewUserModal.classList.remove('show');
-            });
-        }
-
-        if (closeViewUserBtn && viewUserModal) {
-            closeViewUserBtn.addEventListener('click', function() {
-                viewUserModal.classList.remove('show');
-            });
-        }
 
         // Delete User Modal
         const deleteUserModal = document.getElementById('deleteUserModal');
@@ -950,87 +870,8 @@
             });
         }
 
-        // Edit from view button
-        const editFromViewBtn = document.querySelector('.edit-from-view-btn');
-        if (editFromViewBtn && userModal && viewUserModal) {
-            editFromViewBtn.addEventListener('click', function() {
-                const userName = document.getElementById('viewUserName').textContent;
-                const userId = document.querySelector('.view-user-btn[data-id]').getAttribute(
-                    'data-id');
 
-                viewUserModal.classList.remove('show');
-
-                document.getElementById('userModalTitle').textContent = 'Edit User';
-                document.getElementById('form-method').value = 'PUT';
-                userForm.action = "{{ url('admin/users') }}/" + userId;
-
-                fetch("{{ url('admin/users') }}/" + userId)
-                    .then(response => response.json())
-                    .then(data => {
-                        const user = data.user;
-                        document.getElementById('firstname').value = user.firstname;
-                        document.getElementById('lastname').value = user.lastname;
-                        document.getElementById('email').value = user.email;
-                        document.getElementById('role_id').value = user.role_id;
-                        document.getElementById('status').value = user.status;
-
-                        document.getElementById('password').value = '';
-                        document.getElementById('password_confirmation').value = '';
-
-                        userModal.classList.add('show');
-                    })
-                    .catch(error => {
-                        console.error('Error fetching user data:', error);
-                    });
-            });
-        }
-
-        // User Registration Chart
-        const userRegistrationCtx = document.getElementById('userRegistrationChart');
-        if (userRegistrationCtx) {
-            const chartData = @json($chartData);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const chartValues = Object.values(chartData);
-
-            const userRegistrationChart = new Chart(userRegistrationCtx, {
-                type: 'line',
-                data: {
-                    labels: months,
-                    datasets: [{
-                        label: 'New Users',
-                        data: chartValues,
-                        borderColor: '#e63946',
-                        backgroundColor: 'rgba(230, 57, 70, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Users'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Search functionality
+        // Search 
         const searchInput = document.getElementById('user-search-input');
         if (searchInput) {
             searchInput.addEventListener('keyup', function() {
@@ -1052,7 +893,7 @@
             });
         }
 
-        // Filter functionality
+        // Filter 
         const applyFiltersBtn = document.getElementById('apply-filters-btn');
         if (applyFiltersBtn) {
             applyFiltersBtn.addEventListener('click', function() {
@@ -1067,7 +908,8 @@
                         .toLowerCase() || '';
 
                     const roleMatch = !roleFilter || role === roleFilter.toLowerCase();
-                    const statusMatch = !statusFilter || status === statusFilter.toLowerCase();
+                    const statusMatch = !statusFilter || status === statusFilter
+                        .toLowerCase();
 
                     if (roleMatch && statusMatch) {
                         row.style.display = '';

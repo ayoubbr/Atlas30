@@ -2,222 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Models\Post;
-use App\Models\Comment;
-use App\Models\Like;
 use App\Models\Notification;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Repository\Impl\ICommentRepository;
+use App\Repository\Impl\IGroupRepository;
+use App\Repository\Impl\ILikeRepository;
+use App\Repository\Impl\IPostRepository;
+use App\Repository\Impl\INotificationRepository;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ForumController extends Controller
 {
+    private $groupRepository;
+    private $postRepository;
+    private $commentRepository;
+    private $likeRepository;
+    private $notificationRepository;
+
+    public function __construct(
+        IGroupRepository $groupRepository,
+        IPostRepository $postRepository,
+        ICommentRepository $commentRepository,
+        ILikeRepository $likeRepository,
+        INotificationRepository $notificationRepository
+    ) {
+        $this->groupRepository = $groupRepository;
+        $this->postRepository = $postRepository;
+        $this->commentRepository = $commentRepository;
+        $this->likeRepository = $likeRepository;
+        $this->notificationRepository = $notificationRepository;
+    }
+
     public function index()
     {
-        $totalGroups = Group::count();
-        $totalPosts = Post::count();
-        $totalComments = Comment::count();
-        $totalLikes = Like::count();
+        $stats = [
+            'totalGroups' => $this->groupRepository->getGroupCount(),
+            'totalPosts' => $this->postRepository->getPostCount(),
+            'totalComments' => $this->commentRepository->getCommentCount(),
+            'totalLikes' => $this->likeRepository->getTotalLikes(),
+            'activeUsers' => $this->getActiveUsers()
+        ];
 
-        $activeUsers = User::whereHas('posts', function ($query) {
-            $query->where('created_at', '>=', Carbon::now()->subDays(30));
-        })
-            ->orWhereHas('comments', function ($query) {
-                $query->where('created_at', '>=', Carbon::now()->subDays(30));
-            })
-            ->count();
-
-        $topGroups = Group::withCount('posts')
-            ->with(['posts' => function ($query) {
-                $query->withCount('comments');
-            }])
-            ->orderBy('posts_count', 'desc')
-            ->take(10)
-            ->get();
-
-        $recentPosts = Post::with(['user', 'group'])
-            ->withCount(['comments', 'likes'])
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-
-        foreach ($topGroups as $group) {
-            $group->comments_count = $group->posts->sum('comments_count');
-        }
-
-        $recentComments = Comment::with(['user', 'post.group'])
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-
-        $topPosts = Post::with(['user', 'group'])
-            ->withCount(['comments', 'likes'])
-            ->orderBy('likes_count', 'desc')
-            ->orderBy('comments_count', 'desc')
-            ->take(5)
-            ->get();
-
-        $monthlyPosts = $this->getMonthlyActivityData(Post::class);
-        $monthlyComments = $this->getMonthlyActivityData(Comment::class);
-
-        $announcements = Notification::orderBy('created_at', 'desc')
-            ->get()
-            ->unique('content')
-            ->take(10)
-            ->values();
+        $topGroups = $this->groupRepository->getTopGroups();
+        $recentPosts = $this->postRepository->getRecentPosts();
+        $recentComments = $this->commentRepository->getRecentComments();
+        $topPosts = $this->postRepository->getTopPosts();
+        $announcements = $this->getAnnouncements();
 
         return view('admin.forum', compact(
-            'totalGroups',
-            'totalPosts',
-            'totalComments',
-            'totalLikes',
-            'activeUsers',
+            'stats',
             'topGroups',
             'recentPosts',
             'recentComments',
             'topPosts',
-            'monthlyPosts',
-            'monthlyComments',
             'announcements'
         ));
     }
 
-
-    private function getMonthlyActivityData($model)
+    private function getActiveUsers()
     {
-        $data = $model::select(
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('COUNT(*) as count')
-        )
-            ->whereYear('created_at', date('Y'))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->pluck('count', 'month')
-            ->toArray();
-
-        // Fill in missing months with zeros
-        $result = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $result[$i] = $data[$i] ?? 0;
-        }
-
-        return array_values($result);
-    }
-
-
-    public function storeGroup(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
-
-        Group::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'created_by' => auth()->id(),
-        ]);
-
-        return redirect()->route('admin.forum.index')
-            ->with('success', 'Group created successfully.');
-    }
-
-
-    public function updateGroup(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
-
-        $group = Group::findOrFail($id);
-
-        $group->update([
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
-
-        return redirect()->route('admin.forum.index')
-            ->with('success', 'Group updated successfully.');
-    }
-
-
-    public function destroyGroup($id)
-    {
-        $group = Group::findOrFail($id);
-
-        $posts = $group->posts;
-        foreach ($posts as $post) {
-            $post->comments()->delete();
-            $post->likes()->delete();
-
-            $post->delete();
-        }
-
-        $group->delete();
-
-        return redirect()->route('admin.forum.index')
-            ->with('success', 'Group and all associated content deleted successfully.');
-    }
-
-
-    public function getGroup($id)
-    {
-        $group = Group::with(['createdBy', 'posts' => function ($query) {
-            $query->with('user')->latest()->take(5);
-        }])
-            ->withCount(['posts'])
-            ->findOrFail($id);
-
-        $commentCount = Comment::whereHas('post', function ($query) use ($id) {
-            $query->where('group_id', $id);
+        return User::whereHas('posts', function ($query) {
+            $query->where('created_at', '>=', Carbon::now()->subDays(30));
         })
-            ->count();
-
-        $lastActivity = Post::where('group_id', $id)
-            ->latest()
-            ->first();
-
-        if (!$lastActivity) {
-            $lastActivity = $group->created_at;
-        } else {
-            $lastActivity = $lastActivity->created_at;
-        }
-
-        return response()->json([
-            'group' => $group,
-            'commentCount' => $commentCount,
-            'lastActivity' => $lastActivity->diffForHumans(),
-        ]);
+            ->orWhereHas('comments', function ($query) {
+                $query->where('created_at', '>=', Carbon::now()->subDays(30));
+            })->count();
     }
 
-
-    public function destroyPost($id)
+    private function getAnnouncements()
     {
-        $post = Post::findOrFail($id);
-
-        $post->comments()->delete();
-        $post->likes()->delete();
-
-        $post->delete();
-
-        return redirect()->route('admin.forum.index')
-            ->with('success', 'Post and all associated content deleted successfully.');
+        return Notification::orderBy('created_at', 'desc')
+            ->get();
     }
-
-
-    public function destroyComment($id)
-    {
-        $comment = Comment::findOrFail($id);
-        $comment->delete();
-
-        return redirect()->route('admin.forum.index')
-            ->with('success', 'Comment deleted successfully.');
-    }
-
 
     public function createAnnouncement(Request $request)
     {
@@ -227,21 +84,22 @@ class ForumController extends Controller
             'user_ids.*' => 'exists:users,id',
         ]);
 
-        // Create notifications for specific users
-        if ($request->has('user_ids') && !empty($request->user_ids)) {
-            foreach ($request->user_ids as $userId) {
+        $content = $request['content'];
+        $userIds = $request->has('user_ids') ? $request['user_ids'] : null;
+
+        if ($userIds && !empty($userIds)) {
+            foreach ($userIds as $userId) {
                 Notification::create([
-                    'content' => $request->content,
+                    'content' => $content,
                     'status' => 'unread',
                     'user_id' => $userId,
                 ]);
             }
         } else {
-            // Create notification for all users
             $users = User::all();
             foreach ($users as $user) {
                 Notification::create([
-                    'content' => $request->content,
+                    'content' => $content,
                     'status' => 'unread',
                     'user_id' => $user->id,
                 ]);
@@ -252,7 +110,6 @@ class ForumController extends Controller
             ->with('success', 'Announcement created and notifications sent successfully.');
     }
 
-
     public function destroyAnnouncement($id)
     {
         $announcement = Notification::findOrFail($id);
@@ -261,34 +118,6 @@ class ForumController extends Controller
         return redirect()->route('admin.forum.index')
             ->with('success', 'Announcement deleted successfully.');
     }
-
-
-    public function getGroupPosts($groupId)
-    {
-        $posts = Post::with(['user', 'comments' => function ($query) {
-            $query->with('user')->latest();
-        }])
-            ->withCount(['comments', 'likes'])
-            ->where('group_id', $groupId)
-            ->latest()
-            ->paginate(10);
-
-        return response()->json($posts);
-    }
-
-
-    public function getTopPosts()
-    {
-        $topPosts = Post::with(['user', 'group'])
-            ->withCount(['comments', 'likes'])
-            ->orderBy('likes_count', 'desc')
-            ->orderBy('comments_count', 'desc')
-            ->take(10)
-            ->get();
-
-        return response()->json($topPosts);
-    }
-
 
     public function getMostActiveUsers()
     {

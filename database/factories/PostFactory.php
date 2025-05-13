@@ -17,6 +17,7 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
+            'title' => $this->faker->unique()->title,
             'user_id' => User::inRandomOrder()->first()->id,
             'group_id' => Group::inRandomOrder()->first()->id,
             'content' => $this->faker->paragraph,
