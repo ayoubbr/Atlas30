@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\Notification;
+use App\Models\User;
 use App\Repository\Impl\ICommentRepository;
 use App\Repository\Impl\IGroupRepository;
 use App\Repository\Impl\ILikeRepository;
 use App\Repository\Impl\IPostRepository;
 use App\Repository\Impl\INotificationRepository;
-use Illuminate\Support\Facades\Request;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ForumController extends Controller
 {
@@ -46,8 +48,6 @@ class ForumController extends Controller
         $recentPosts = $this->postRepository->getRecentPosts();
         $recentComments = $this->commentRepository->getRecentComments();
         $topPosts = $this->postRepository->getTopPosts();
-        $monthlyPosts = $this->postRepository->getMonthlyPostData();
-        $monthlyComments = $this->commentRepository->getMonthlyCommentData();
         $announcements = $this->getAnnouncements();
 
         return view('admin.forum', compact(
@@ -56,29 +56,24 @@ class ForumController extends Controller
             'recentPosts',
             'recentComments',
             'topPosts',
-            'monthlyPosts',
-            'monthlyComments',
             'announcements'
         ));
     }
 
     private function getActiveUsers()
     {
-        return \App\Models\User::whereHas('posts', function ($query) {
-            $query->where('created_at', '>=', \Carbon\Carbon::now()->subDays(30));
+        return User::whereHas('posts', function ($query) {
+            $query->where('created_at', '>=', Carbon::now()->subDays(30));
         })
             ->orWhereHas('comments', function ($query) {
-                $query->where('created_at', '>=', \Carbon\Carbon::now()->subDays(30));
+                $query->where('created_at', '>=', Carbon::now()->subDays(30));
             })->count();
     }
 
     private function getAnnouncements()
     {
-        return \App\Models\Notification::orderBy('created_at', 'desc')
-            ->get()
-            ->unique('content')
-            ->take(10)
-            ->values();
+        return Notification::orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function createAnnouncement(Request $request)
@@ -94,16 +89,16 @@ class ForumController extends Controller
 
         if ($userIds && !empty($userIds)) {
             foreach ($userIds as $userId) {
-                \App\Models\Notification::create([
+                Notification::create([
                     'content' => $content,
                     'status' => 'unread',
                     'user_id' => $userId,
                 ]);
             }
         } else {
-            $users = \App\Models\User::all();
+            $users = User::all();
             foreach ($users as $user) {
-                \App\Models\Notification::create([
+                Notification::create([
                     'content' => $content,
                     'status' => 'unread',
                     'user_id' => $user->id,
@@ -117,7 +112,7 @@ class ForumController extends Controller
 
     public function destroyAnnouncement($id)
     {
-        $announcement = \App\Models\Notification::findOrFail($id);
+        $announcement = Notification::findOrFail($id);
         $announcement->delete();
 
         return redirect()->route('admin.forum.index')
@@ -126,7 +121,7 @@ class ForumController extends Controller
 
     public function getMostActiveUsers()
     {
-        $activeUsers = \App\Models\User::withCount(['posts', 'comments'])
+        $activeUsers = User::withCount(['posts', 'comments'])
             ->orderByRaw('posts_count + comments_count DESC')
             ->take(10)
             ->get();

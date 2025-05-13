@@ -68,19 +68,6 @@ class GameController extends Controller
             ->with('success', 'Match updated successfully.');
     }
 
-    // public function updateScore(Request $request, $id)
-    // {
-    //     $request->validate([
-    //         'home_team_goals' => 'required|integer|min:0',
-    //         'away_team_goals' => 'required|integer|min:0',
-    //     ]);
-
-    //     $this->gameRepository->updateScore($id, $request->all());
-
-    //     return redirect()->route('admin.games.index')
-    //         ->with('success', 'Match score updated successfully.');
-    // }
-
     public function destroy($id)
     {
         if ($this->gameRepository->hasTickets($id)) {
@@ -141,31 +128,5 @@ class GameController extends Controller
 
         return redirect()->route('tickets.checkout', ['tickets' => implode(',', array_column($tickets, 'id'))])
             ->with('success', 'Tickets reserved successfully. Please complete your payment.');
-    }
-
-    public function teamGames($teamId)
-    {
-        $team = Team::findOrFail($teamId);
-        $games = $this->gameRepository->getTeamGames($teamId);
-
-        return view('user.team-games', compact('games', 'team'));
-    }
-
-    public function upcomingGames($limit = 5)
-    {
-        $games = $this->gameRepository->getUpcomingGames($limit);
-        return response()->json($games);
-    }
-
-    public function liveGames()
-    {
-        $games = $this->gameRepository->getLiveGames();
-        return response()->json($games);
-    }
-
-    public function recentResults($limit = 5)
-    {
-        $games = $this->gameRepository->getRecentResults($limit);
-        return response()->json($games);
     }
 }

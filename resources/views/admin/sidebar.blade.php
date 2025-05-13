@@ -88,7 +88,15 @@
             <div class="nav-section-title">Logout</div>
             <ul class="nav-list">
                 <li class="nav-item">
-                    <a href="{{ url('logout') }}" class="nav-link {{ request()->is('logout') ? 'active' : '' }}">
+                    <a href="/" class="nav-link ">
+                        <i class="fa-solid fa-house nav-icon"></i>
+                        <span class="nav-text">Client View</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="{{ url('logout') }}" class="nav-link ">
                         <i class="fa-solid fa-right-from-bracket nav-icon"></i>
                         <span class="nav-text">Logout</span>
                     </a>

@@ -77,27 +77,6 @@ class ForumRepository implements IForumRepository
             ->get();
     }
 
-    public function getMonthlyActivityData(string $model): array
-    {
-        $data = $model::select(
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('COUNT(*) as count')
-        )
-            ->whereYear('created_at', date('Y'))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->pluck('count', 'month')
-            ->toArray();
-
-        $result = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $result[$i] = $data[$i] ?? 0;
-        }
-
-        return array_values($result);
-    }
-
     public function getAnnouncements(int $limit = 10): Collection
     {
         return Notification::orderBy('created_at', 'desc')

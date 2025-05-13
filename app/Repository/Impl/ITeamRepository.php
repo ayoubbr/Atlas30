@@ -19,4 +19,8 @@ interface ITeamRepository
     public function getTeamWithMatches(int $id): ?Team;
     public function getTeamStatistics(int $id): array;
     public function getTeamRecentGames(int $id): Collection;
+    public function getTeamGamesCount(int $id);
+    public function getHomeTeamGamesCount(int $id);
+    public function getAwayTeamGamesCount(int $id);
+    public function getTeamUpcomingGames(int $id);
 }

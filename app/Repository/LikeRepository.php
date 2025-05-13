@@ -31,13 +31,6 @@ class LikeRepository implements ILikeRepository
         return Like::where('post_id', $postId)->count();
     }
 
-    // public function getUserLikes(int $userId): Collection
-    // {
-    //     return Like::where('user_id', $userId)
-    //         ->with('post.group')
-    //         ->get();
-    // }
-
     public function checkUserLiked(int $postId, int $userId): bool
     {
         return Like::where('post_id', $postId)

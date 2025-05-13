@@ -59,10 +59,4 @@ class UserController extends Controller
 
         return redirect()->route('admin.profile')->with('success', 'Profile updated successfully!');
     }
-
-    public function getUsersList()
-    {
-        $users = $this->userRepository->getUsersList();
-        return response()->json($users);
-    }
 }

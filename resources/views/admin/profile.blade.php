@@ -328,17 +328,18 @@
 
         document.getElementById('image').addEventListener('change', function(event) {
             const file = event.target.files[0];
+            
             const preview = document.getElementById('imagePreview');
             const previewImage = document.querySelector('.custom-file-preview');
-
+            
             if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
-
+                
                 reader.onload = function(e) {
                     preview.src = e.target.result;
                     preview.parentElement.style.display = 'block';
                 }
-
+                
                 reader.readAsDataURL(file);
             } else {
                 preview.src = '#';

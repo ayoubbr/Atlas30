@@ -55,9 +55,6 @@
                                     </div>
                                 @endforelse
                             </div>
-                            <div class="dropdown-footer">
-                                {{-- <a href="{{ route('notifications.index') }}">View all notifications</a> --}}
-                            </div>
                         </div>
                     </div>
 
@@ -71,6 +68,12 @@
                                 <i class="fas fa-user"></i> My Profile
                             </a>
                             <div class="dropdown-divider"></div>
+                            @if (Auth::user()->isAdmin())
+                            <a href="{{ url('/admin/dashboard') }}">
+                                <i class="fa-solid fa-user-tie"></i> Admin
+                            </a>
+                                
+                            @endif
                             <a href="{{ route('logout') }}">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
@@ -80,8 +83,7 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline">Sign In</a>
-                    <a href="{{ route('login') }}" class="btn btn-primary">Register</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline">Login</a>
                 @endauth
             </div>
 

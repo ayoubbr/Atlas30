@@ -13,7 +13,6 @@ interface ICommentRepository
     public function updateComment(int $id, string $content): bool;
     public function deleteComment(int $id): bool;
     public function getRecentComments(int $limit = 10): Collection;
-    public function getMonthlyCommentData(): array;
     public function getCommentCount(): int;
     public function getCommentCountByPostId(int $postId): int;
 }

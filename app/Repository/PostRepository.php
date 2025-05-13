@@ -111,27 +111,6 @@ class PostRepository implements IPostRepository
             ->get();
     }
 
-    public function getMonthlyPostData(): array
-    {
-        $data = Post::select(
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('COUNT(*) as count')
-        )
-            ->whereYear('created_at', date('Y'))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->pluck('count', 'month')
-            ->toArray();
-
-        $result = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $result[$i] = $data[$i] ?? 0;
-        }
-
-        return array_values($result);
-    }
-
     public function getPostCount(): int
     {
         return Post::count();

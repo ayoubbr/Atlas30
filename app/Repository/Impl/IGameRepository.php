@@ -13,7 +13,6 @@ interface IGameRepository
     public function findById($id);
     public function store(array $data);
     public function update($id, array $data);
-    // public function updateScore($id, array $data);
     public function delete($id);
     public function getFilteredGames(Request $request);
     public function getGameWithRelations($id);

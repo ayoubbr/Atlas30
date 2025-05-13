@@ -16,7 +16,6 @@ interface IPostRepository
     public function deletePost(int $id): bool;
     public function getTopPosts(int $limit = 5): Collection;
     public function getRecentPosts(int $limit = 10): Collection;
-    public function getMonthlyPostData(): array;
     public function getPostCount(): int;
     public function getPostsByGroupId(int $groupId, int $perPage = 10): LengthAwarePaginator;
 }

@@ -14,7 +14,6 @@ interface IForumRepository
     public function getRecentPosts(int $limit = 10): Collection;
     public function getRecentComments(int $limit = 10): Collection;
     public function getTopPosts(int $limit = 5): Collection;
-    public function getMonthlyActivityData(string $model): array;
     public function getAnnouncements(int $limit = 10): Collection;
     public function deletePost(int $id): bool;
     public function deleteComment(int $id): bool;

@@ -58,10 +58,4 @@ class CommentController extends Controller
         $recentComments = $this->commentRepository->getRecentComments();
         return response()->json($recentComments);
     }
-
-    public function getMonthlyCommentData()
-    {
-        $monthlyData = $this->commentRepository->getMonthlyCommentData();
-        return response()->json($monthlyData);
-    }
 }

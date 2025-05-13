@@ -67,8 +67,7 @@ class PostController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|max:255',
-            'content' => 'required',
-            'is_pinned' => 'sometimes|boolean'
+            'content' => 'required'
         ]);
 
         $result = $this->postRepository->updatePost($postId, $validated);
@@ -91,23 +90,5 @@ class PostController extends Controller
 
         return redirect()->route('admin.forum.index')
             ->with('success', 'Post and all associated content deleted successfully.');
-    }
-
-    public function getTopPosts()
-    {
-        $topPosts = $this->postRepository->getTopPosts(10);
-        return response()->json($topPosts);
-    }
-
-    public function getRecentPosts()
-    {
-        $recentPosts = $this->postRepository->getRecentPosts();
-        return response()->json($recentPosts);
-    }
-
-    public function getMonthlyPostData()
-    {
-        $monthlyData = $this->postRepository->getMonthlyPostData();
-        return response()->json($monthlyData);
     }
 }

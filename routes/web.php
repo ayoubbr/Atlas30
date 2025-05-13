@@ -86,8 +86,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/group/{groupId}/post/{postId}/comment', [CommentController::class, 'store'])->name('store-comment');
         Route::post('/group/{groupId}/post/{postId}/like', [LikeController::class, 'toggleLike'])->name('toggle-like');
-
-        // Route::get('/my-likes', [LikeController::class, 'getUserLikes'])->name('my-likes');
     });
 });
 
@@ -113,7 +111,6 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::post('games', [GameController::class, 'store'])->name('admin.games.store');
     Route::put('games/{id}', [GameController::class, 'update'])->name('admin.games.update');
     Route::delete('games/{id}', [GameController::class, 'destroy'])->name('admin.games.destroy');
-    // Route::post('games/{game}/score', [GameController::class, 'updateScore'])->name('games.score');
 
     // TICKET
     Route::get('tickets', [TicketController::class, 'index'])->name('admin.tickets.index');
@@ -137,16 +134,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('profile', [AdminController::class, 'adminProfile'])->name('admin.profile');
     Route::post('profile', [UserController::class, 'updateProfile'])->name('admin.profile.update');
 
-    // User list for announcements
-    Route::get('users/list', [UserController::class, 'getUsersList'])->name('admin.users.list');
-
     // Forum routes
     Route::prefix('forum')->name('admin.forum.')->middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [ForumController::class, 'index'])->name('index');
 
         Route::post('/announcement', [ForumController::class, 'createAnnouncement'])->name('create-announcement');
         Route::delete('/announcement/{id}', [ForumController::class, 'destroyAnnouncement'])->name('destroy-announcement');
-
+        
         Route::delete('/post/{id}', [PostController::class, 'destroy'])->name('destroy-post');
         Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('destroy-comment');
         Route::delete('/group/{id}', [GroupController::class, 'destroyGroup'])->name('destroy-group');
@@ -171,5 +165,3 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 Route::fallback(function () {
     return redirect('/')->with('error', 'The page you are looking for does not exist.');
 });
-
-// Route::get('admin/forum/group/{id}', [GroupController::class, 'getGroup'])->name('edit-group-2');
